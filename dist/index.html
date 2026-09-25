@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Borewell Water Forecast</title>
+  <meta name="description" content="Explore dynamic water-level forecasts and uncertainty for monitored borewells.">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230a3047'/%3E%3Cpath d='M32 10C24 23 17 30 17 40a15 15 0 0 0 30 0c0-10-7-17-15-30Z' fill='%2328c7c2'/%3E%3Cpath d='M23 41c5 3 13 3 18 0' fill='none' stroke='%23e9fbfa' stroke-width='4' stroke-linecap='round'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-mark" aria-hidden="true">
+        <svg viewBox="0 0 36 36"><path d="M18 3C13 12 8 17 8 24a10 10 0 0 0 20 0c0-7-5-12-10-21Z"/><path class="wave" d="M12 24c4 2 8 2 12 0"/></svg>
+      </div>
+      <div>
+        <h1>Borewell Water Forecast</h1>
+        <p>Dynamic level projection from the current 15-day dataset</p>
+      </div>
+    </div>
+    <div class="status-pill"><span></span> Proof of concept</div>
+  </header>
+
+  <main class="workspace">
+    <aside class="controls" aria-label="Forecast settings">
+      <div class="panel-heading">
+        <p class="eyebrow">Forecast settings</p>
+        <h2>Choose a well and horizon</h2>
+      </div>
+
+      <form id="forecastForm">
+        <label for="wellInput">Borewell</label>
+        <input id="wellInput" list="wellOptions" value="BW046" autocomplete="off" required aria-describedby="wellHelp">
+        <datalist id="wellOptions"></datalist>
+        <p class="field-help" id="wellHelp">Select one of the 579 monitored well IDs.</p>
+
+        <div class="field-row">
+          <div>
+            <label for="horizonValue">Forecast length</label>
+            <input id="horizonValue" type="number" min="1" step="1" value="30" required>
+          </div>
+          <div>
+            <label for="horizonUnit">Unit</label>
+            <select id="horizonUnit">
+              <option value="days">Days</option>
+              <option value="weeks">Weeks</option>
+              <option value="months">Months</option>
+              <option value="years">Years</option>
+            </select>
+          </div>
+        </div>
+
+        <label for="pumpingScenario">Expected pumping</label>
+        <select id="pumpingScenario">
+          <option value="low">Lower than recent</option>
+          <option value="typical" selected>Similar to recent</option>
+          <option value="high">Higher than recent</option>
+        </select>
+
+        <label for="rainScenario">Rainfall and recharge</label>
+        <select id="rainScenario">
+          <option value="dry">Drier / weaker recharge</option>
+          <option value="typical" selected>Similar to recent</option>
+          <option value="wet">Wetter / stronger recharge</option>
+        </select>
+
+        <label for="confidence">Uncertainty range</label>
+        <select id="confidence">
+          <option value="80" selected>80% projection range</option>
+          <option value="95">95% projection range</option>
+        </select>
+
+        <button type="submit">Generate forecast</button>
+        <p class="form-error" id="formError" role="alert"></p>
+      </form>
+
+      <div class="method-note">
+        <strong>How scenarios work</strong>
+        <p>Pumping and recharge choices shift the recent well trend using that well’s observed pumping and recovery changes. They are sensitivity assumptions because rainfall was not supplied.</p>
+      </div>
+    </aside>
+
+    <section class="results" aria-live="polite">
+      <div class="result-header">
+        <div>
+          <p class="eyebrow" id="resultEyebrow">BW046 · 30-day projection</p>
+          <h2 id="resultTitle">Water-level forecast</h2>
+        </div>
+        <div class="evidence-badge" id="evidenceBadge">Higher evidence</div>
+      </div>
+
+      <div class="metric-grid">
+        <article class="metric-card primary">
+          <span>Projected dynamic level</span>
+          <strong id="forecastLevel">—</strong>
+          <small id="forecastDate">—</small>
+        </article>
+        <article class="metric-card">
+          <span>Current observed level</span>
+          <strong id="currentLevel">—</strong>
+          <small id="currentDate">—</small>
+        </article>
+        <article class="metric-card">
+          <span>Approximate error</span>
+          <strong id="forecastError">—</strong>
+          <small id="confidenceLabel">80% projection range</small>
+        </article>
+        <article class="metric-card">
+          <span>Expected direction</span>
+          <strong id="directionValue">—</strong>
+          <small id="changeValue">—</small>
+        </article>
+      </div>
+
+      <article class="chart-card">
+        <div class="chart-topline">
+          <div>
+            <h3>Depth below ground surface</h3>
+            <p>Lower on this chart means the water is deeper.</p>
+          </div>
+          <div class="legend" aria-label="Chart legend">
+            <span><i class="history-key"></i>Observed daily median</span>
+            <span><i class="forecast-key"></i>Projection</span>
+            <span><i class="range-key"></i>Uncertainty</span>
+          </div>
+        </div>
+        <div class="chart-wrap" id="chartWrap">
+          <svg id="forecastChart" viewBox="0 0 980 410" role="img" aria-labelledby="chartTitle chartDesc">
+            <title id="chartTitle">Borewell water-level forecast</title>
+            <desc id="chartDesc">Observed daily median levels followed by a projected water-level path and uncertainty range.</desc>
+          </svg>
+        </div>
+      </article>
+
+      <div class="interpretation-grid">
+        <article class="plain-result">
+          <p class="eyebrow">Plain-language result</p>
+          <h3 id="plainHeadline">Select settings to generate a forecast.</h3>
+          <p id="plainText"></p>
+        </article>
+        <article class="model-status">
+          <p class="eyebrow">Model status</p>
+          <dl>
+            <div><dt>Short-term pattern</dt><dd id="stabilityValue">—</dd></div>
+            <div><dt>Usable sessions</dt><dd id="sessionsValue">—</dd></div>
+            <div><dt>Validated range</dt><dd>Later 4-day holdout</dd></div>
+            <div><dt>Selected horizon</dt><dd id="horizonStatus">—</dd></div>
+          </dl>
+        </article>
+      </div>
+
+      <div class="warning" id="forecastWarning">
+        <strong>Exploratory forecast</strong>
+        <p id="warningText">The source contains 15 days of observations. Longer forecasts are extrapolations and their uncertainty expands rapidly.</p>
+      </div>
+    </section>
+  </main>
+
+  <script src="./app.js" defer></script>
+</body>
+</html>
