@@ -3,210 +3,179 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Compare the Bengaluru borewell forecast with a public-rainfall experiment.">
-  <title>Forecast Evidence Comparison</title>
-  <link rel="stylesheet" href="./comparison.css">
+  <meta name="description" content="Forecast synthetic borewell water levels using a 450-well, 180-day groundwater test system.">
+  <title>450-Well Forecast Lab</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%2317171c'/%3E%3Cpath d='M32 10C24 23 17 30 17 40a15 15 0 0 0 30 0c0-10-7-17-15-30Z' fill='%23e7ff56'/%3E%3Cpath d='M23 41c5 3 13 3 18 0' fill='none' stroke='%2317171c' stroke-width='4' stroke-linecap='round'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="../lab.css">
 </head>
 <body>
-  <header class="topbar">
-    <a class="back-link" href="../" aria-label="Return to the current forecast">← Current forecast</a>
-    <div>
-      <p class="eyebrow">Groundwater data lab · Experiment 02</p>
-      <h1>What changes when rainfall enters the model?</h1>
+  <header class="lab-header">
+    <nav class="page-nav" aria-label="Project pages">
+      <a href="../">01 · Existing model</a>
+      <a class="active" href="./" aria-current="page">02 · 450-well forecast</a>
+      <a href="../validation/">03 · Validation lab</a>
+    </nav>
+    <div class="header-title">
+      <p class="eyebrow">Synthetic groundwater lab · Page 02</p>
+      <h1>Forecast one well from the new 450-well system</h1>
     </div>
-    <span class="page-tag">Evidence test</span>
+    <span class="page-tag">180 days of data</span>
   </header>
 
-  <main>
-    <section class="finding-strip" aria-labelledby="findingTitle">
-      <div>
-        <p class="section-kicker">Backtest verdict</p>
-        <h2 id="findingTitle">The public rainfall feed works. The model still needs time.</h2>
-        <p>The rainfall model was tested on the same four-day holdout as the current model. Its combined screened error changed from <strong id="combinedBefore">—</strong> to <strong id="combinedAfter">—</strong>.</p>
-      </div>
-      <div class="finding-number">
-        <span id="improvementValue">—</span>
-        <small>accuracy gain in this 15-day trial</small>
-      </div>
+  <main class="lab-main prediction-main">
+    <section class="model-strip" aria-label="Model data summary">
+      <article><strong>450</strong><span>synthetic wells</span></article>
+      <article><strong>81,000</strong><span>well-day records</span></article>
+      <article><strong>150 + 30</strong><span>training and test days</span></article>
+      <p>The model learns daily movement from pumping, effective rainfall, municipal supply, demand, and the previous level change.</p>
     </section>
 
-    <section class="controls-card" aria-labelledby="controlsTitle">
-      <div class="section-heading">
-        <div>
-          <p class="section-kicker">Experiment controls</p>
-          <h2 id="controlsTitle">Set up one comparison</h2>
-        </div>
-        <p class="control-note">Depth is metres below ground surface. Larger values mean deeper water.</p>
-      </div>
-      <form id="comparisonForm" class="controls-grid">
-        <label>
-          <span>Borewell</span>
-          <input id="wellInput" list="wellOptions" value="BW046" autocomplete="off">
+    <section class="workspace-grid">
+      <aside class="control-panel" aria-labelledby="controlTitle">
+        <p class="section-kicker">Forecast controls</p>
+        <h2 id="controlTitle">Choose the well and future conditions</h2>
+        <form id="forecastForm">
+          <label for="wellInput">Borewell</label>
+          <input id="wellInput" list="wellOptions" value="SYN001" autocomplete="off" required aria-describedby="wellHelp">
           <datalist id="wellOptions"></datalist>
-        </label>
-        <label>
-          <span>Forecast length</span>
-          <input id="horizonValue" type="number" min="0.1" max="100" step="0.1" value="6">
-        </label>
-        <label>
-          <span>Unit</span>
-          <select id="horizonUnit">
-            <option value="days">Days</option>
-            <option value="weeks">Weeks</option>
-            <option value="months" selected>Months</option>
-            <option value="years">Years</option>
-          </select>
-        </label>
-        <label>
-          <span>Expected pumping</span>
+          <p class="field-help" id="wellHelp">Select any synthetic well from SYN001 to SYN450.</p>
+
+          <div class="field-pair">
+            <div>
+              <label for="horizonValue">Forecast length</label>
+              <input id="horizonValue" type="number" min="1" max="1825" step="1" value="6" required>
+            </div>
+            <div>
+              <label for="horizonUnit">Unit</label>
+              <select id="horizonUnit">
+                <option value="days">Days</option>
+                <option value="weeks">Weeks</option>
+                <option value="months" selected>Months</option>
+                <option value="years">Years</option>
+              </select>
+            </div>
+          </div>
+
+          <label for="pumpingScenario">Expected pumping</label>
           <select id="pumpingScenario">
-            <option value="low">Lower than recent</option>
+            <option value="low">25% lower than recent</option>
             <option value="typical" selected>Similar to recent</option>
-            <option value="high">Higher than recent</option>
+            <option value="high">25% higher than recent</option>
           </select>
-        </label>
-        <label>
-          <span>Future rainfall</span>
+
+          <label for="rainfallScenario">Rainfall and recharge</label>
           <select id="rainfallScenario">
-            <option value="dry">Historically dry</option>
-            <option value="typical" selected>Historically typical</option>
-            <option value="wet">Historically wet</option>
+            <option value="dry">40% below the simulated pattern</option>
+            <option value="typical" selected>Repeat the simulated pattern</option>
+            <option value="wet">40% above the simulated pattern</option>
           </select>
-        </label>
-        <label>
-          <span>Uncertainty range</span>
+
+          <label for="confidence">Uncertainty range</label>
           <select id="confidence">
-            <option value="80" selected>80%</option>
-            <option value="95">95%</option>
+            <option value="80" selected>80% projection range</option>
+            <option value="95">95% projection range</option>
           </select>
-        </label>
-        <button type="submit">Update comparison</button>
-      </form>
-      <p id="formError" class="form-error" role="alert"></p>
-    </section>
 
-    <section class="comparison-grid" aria-label="Side-by-side forecast comparison">
-      <article class="forecast-card current-card">
-        <div class="card-heading">
+          <button type="submit">Generate new-data forecast</button>
+          <p class="form-error" id="formError" role="alert"></p>
+        </form>
+
+        <div class="scope-note">
+          <strong>Proof-of-concept boundary</strong>
+          <p>The fitted history is six months. Longer selections are scenario extrapolations and the uncertainty expands with the horizon.</p>
+        </div>
+      </aside>
+
+      <section class="results-panel" aria-live="polite">
+        <div class="result-heading">
           <div>
-            <p class="model-label">Given data</p>
-            <h2>Evidence available today</h2>
+            <p class="section-kicker" id="resultEyebrow">SYN001 · Recharge dominated</p>
+            <h2 id="resultTitle">Water-level scenario forecast</h2>
           </div>
-          <span class="status-chip neutral">Existing model</span>
+          <span class="scenario-chip" id="scenarioChip">Recharge dominated</span>
         </div>
-        <div class="headline-value">
-          <strong id="currentProjection">—</strong>
-          <span id="currentRange">—</span>
-        </div>
-        <svg id="currentChart" class="forecast-chart" viewBox="0 0 760 350" role="img" aria-labelledby="currentChartTitle currentChartDesc"></svg>
-        <div class="basis-list">
-          <span>15 days</span>
-          <span>Pump sessions</span>
-          <span>Discharge and power</span>
-        </div>
-      </article>
 
-      <article class="forecast-card rainfall-card">
-        <div class="card-heading">
-          <div>
-            <p class="model-label">Added data</p>
-            <h2>Public rainfall experiment</h2>
-          </div>
-          <span class="status-chip caution">Experimental</span>
+        <div class="metric-grid">
+          <article class="metric-card primary">
+            <span>Projected level</span>
+            <strong id="projectedLevel">—</strong>
+            <small id="projectedDate">—</small>
+          </article>
+          <article class="metric-card">
+            <span>Current observed level</span>
+            <strong id="currentLevel">—</strong>
+            <small>on 29 June 2026</small>
+          </article>
+          <article class="metric-card">
+            <span>Approximate error range</span>
+            <strong id="errorRange">—</strong>
+            <small id="confidenceLabel">80% projection range</small>
+          </article>
+          <article class="metric-card accent">
+            <span>Expected movement</span>
+            <strong id="directionValue">—</strong>
+            <small id="changeValue">—</small>
+          </article>
         </div>
-        <div class="headline-value">
-          <strong id="rainProjection">—</strong>
-          <span id="rainRange">—</span>
-        </div>
-        <svg id="rainChart" class="forecast-chart" viewBox="0 0 760 350" role="img" aria-labelledby="rainChartTitle rainChartDesc"></svg>
-        <div class="basis-list rainfall-basis">
-          <span>NASA daily rainfall</span>
-          <span>2001–2025 seasons</span>
-          <span id="rainScenarioLabel">Typical scenario</span>
-        </div>
-      </article>
-    </section>
 
-    <section class="plain-result" aria-labelledby="plainTitle">
-      <p class="section-kicker">Model memo</p>
-      <h2 id="plainTitle">Choose a well to compare the forecasts.</h2>
-      <p id="plainText"></p>
-    </section>
-
-    <section class="validation-section" aria-labelledby="validationTitle">
-      <div class="section-heading">
-        <div>
-          <p class="section-kicker">Four-day holdout</p>
-          <h2 id="validationTitle">Did rainfall improve the measured error?</h2>
-        </div>
-        <span class="verdict-badge">No material change yet</span>
-      </div>
-      <div class="validation-grid">
-        <article>
-          <p>Pump start → stop</p>
-          <div><strong id="pumpBefore">—</strong><span>current MAE</span></div>
-          <div><strong id="pumpAfter">—</strong><span>with rainfall</span></div>
-          <small id="pumpChange">—</small>
-        </article>
-        <article>
-          <p>Stop → next start</p>
-          <div><strong id="recoveryBefore">—</strong><span>current MAE</span></div>
-          <div><strong id="recoveryAfter">—</strong><span>with rainfall</span></div>
-          <small id="recoveryChange">—</small>
-        </article>
-        <article class="validation-explanation">
-          <p>What this means</p>
-          <strong>Rainfall alone cannot replace longer paired observations.</strong>
-          <span>The test contains one short monsoon window and applies one city-centre rainfall cell to every anonymized well.</span>
-        </article>
-      </div>
-    </section>
-
-    <section class="rainfall-section" aria-labelledby="rainfallTitle">
-      <div class="section-heading">
-        <div>
-          <p class="section-kicker">Public input used</p>
-          <h2 id="rainfallTitle">Bengaluru rainfall evidence</h2>
-        </div>
-        <a id="sourceLink" class="source-link" href="https://power.larc.nasa.gov/docs/services/api/temporal/daily/" target="_blank" rel="noreferrer">NASA POWER source ↗</a>
-      </div>
-      <div class="rainfall-grid">
-        <article class="rain-panel">
-          <div class="rain-panel-heading">
+        <article class="chart-card">
+          <div class="chart-heading">
             <div>
-              <strong>Overlap with borewell readings</strong>
-              <span>15–29 July 2026</span>
+              <h3>Observed history and selected future scenario</h3>
+              <p>Depth below ground: a lower position means the water surface is deeper.</p>
             </div>
-            <div><strong id="overlapRain">—</strong><span>total rainfall</span></div>
-          </div>
-          <svg id="dailyRainChart" class="rain-chart" viewBox="0 0 700 230" role="img" aria-label="Daily rainfall during the borewell observation period"></svg>
-        </article>
-        <article class="rain-panel">
-          <div class="rain-panel-heading">
-            <div>
-              <strong>Typical seasonal pattern</strong>
-              <span>Monthly median, 2001–2025</span>
+            <div class="legend" aria-label="Chart legend">
+              <span><i class="observed-key"></i>Observed</span>
+              <span><i class="forecast-key"></i>Forecast</span>
+              <span><i class="range-key"></i>Uncertainty</span>
             </div>
           </div>
-          <svg id="monthlyRainChart" class="rain-chart" viewBox="0 0 700 230" role="img" aria-label="Bengaluru monthly median rainfall climatology"></svg>
+          <div class="chart-scroll">
+            <svg id="forecastChart" class="main-chart" viewBox="0 0 1040 440" role="img" aria-labelledby="forecastChartTitle forecastChartDesc"></svg>
+          </div>
         </article>
-      </div>
-    </section>
 
-    <section class="roadmap-section" aria-labelledby="roadmapTitle">
-      <p class="section-kicker">What would change the result</p>
-      <h2 id="roadmapTitle">Data that can materially improve the right-hand graph</h2>
-      <div class="roadmap-grid">
-        <article><span>01</span><strong>Longer overlap</strong><p>At least two complete wet and dry cycles for the same wells.</p></article>
-        <article><span>02</span><strong>Well coordinates</strong><p>Enough location precision to assign a nearby rainfall grid or gauge.</p></article>
-        <article><span>03</span><strong>Ground gauges</strong><p>KSNDMC or local gauge rainfall and intensity instead of one coarse city value.</p></article>
-        <article><span>04</span><strong>Recovery protocol</strong><p>Consistent readings after a known pump-off duration.</p></article>
-      </div>
-    </section>
+        <section class="explanation-grid">
+          <article class="plain-card">
+            <p class="section-kicker">Plain result</p>
+            <h3 id="plainTitle">Preparing the selected well.</h3>
+            <p id="plainText"></p>
+          </article>
+          <article class="evidence-card">
+            <p class="section-kicker">Known performance</p>
+            <dl>
+              <div><dt>30-day holdout MAE</dt><dd id="wellMae">—</dd></div>
+              <div><dt>Holdout RMSE</dt><dd id="wellRmse">—</dd></div>
+              <div><dt>Scenario</dt><dd id="wellScenario">—</dd></div>
+              <div><dt>Cluster</dt><dd id="wellCluster">—</dd></div>
+            </dl>
+            <a href="../validation/" id="validationLink">Open this well in Page 3 →</a>
+          </article>
+        </section>
 
-    <p class="method-note">The rainfall comparison uses only rainfall known before each predicted session. Rainfall features were selected on 24–25 July and measured on 26–29 July. Future rainfall lines are historical dry, typical and wet scenarios, not weather forecasts.</p>
+        <section class="driver-grid" aria-label="Scenario effects">
+          <article><span>Pumping choice</span><strong id="pumpEffect">—</strong><small>difference from typical pumping</small></article>
+          <article><span>Rainfall choice</span><strong id="rainEffect">—</strong><small>difference from typical rainfall</small></article>
+          <article><span>Historical fit</span><strong id="fitSigma">—</strong><small>daily residual spread</small></article>
+        </section>
+
+        <section class="checkpoint-card" aria-labelledby="checkpointTitle">
+          <div>
+            <p class="section-kicker">Plain numerical view</p>
+            <h3 id="checkpointTitle">Forecast checkpoints</h3>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Checkpoint</th><th>Date</th><th>Expected level</th><th id="rangeHeader">80% range</th></tr></thead>
+              <tbody id="checkpointRows"></tbody>
+            </table>
+          </div>
+        </section>
+      </section>
+    </section>
   </main>
 
+  <script src="../data/synthetic_model_loader.js"></script>
   <script src="./comparison.js"></script>
 </body>
 </html>

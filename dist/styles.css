@@ -37,6 +37,10 @@ button, input, select { font: inherit; }
 .comparison-link { display: inline-flex; align-items: center; gap: 8px; min-height: 38px; padding: 0 14px; border-radius: 10px; background: var(--cyan); color: #062f3d; font-size: .8rem; font-weight: 800; text-decoration: none; }
 .comparison-link:hover { background: #8ceae5; }
 .comparison-link:focus-visible { outline: 3px solid white; outline-offset: 3px; }
+.topbar-nav { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 7px; }
+.topbar-nav a { padding: 8px 10px; border: 1px solid rgba(255,255,255,.24); border-radius: 8px; color: #d5e8ed; font-size: .72rem; font-weight: 800; text-decoration: none; text-transform: uppercase; }
+.topbar-nav a:hover, .topbar-nav a:focus-visible { border-color: var(--cyan); outline: none; }
+.topbar-nav a.active { background: var(--cyan); color: #062f3d; border-color: var(--cyan); }
 
 .workspace { display: grid; grid-template-columns: minmax(275px, 340px) minmax(0, 1fr); gap: 24px; max-width: 1540px; margin: 0 auto; padding: 26px clamp(18px, 3vw, 42px) 44px; }
 .controls, .results { min-width: 0; }
@@ -112,6 +116,7 @@ button:focus-visible { outline: 3px solid rgba(10,167,162,.35); outline-offset: 
   .topbar { height: auto; padding-block: 16px; align-items: flex-start; flex-wrap: wrap; gap: 12px; }
   .brand p, .status-pill { display: none; }
   .comparison-link { min-height: 36px; padding-inline: 11px; }
+  .topbar-nav { justify-content: flex-start; margin-top: 10px; }
   .workspace { padding-inline: 12px; }
   .controls { padding: 19px; }
   form { display: block; }

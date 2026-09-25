@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Validate the 450-well groundwater model against hidden synthetic truth over a 30-day holdout.">
+  <title>Borewell Model Validation Lab</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%2317171c'/%3E%3Cpath d='M32 10C24 23 17 30 17 40a15 15 0 0 0 30 0c0-10-7-17-15-30Z' fill='%236de4f2'/%3E%3Cpath d='M23 41c5 3 13 3 18 0' fill='none' stroke='%2317171c' stroke-width='4' stroke-linecap='round'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="../lab.css">
+</head>
+<body class="validation-page">
+  <header class="lab-header validation-header">
+    <nav class="page-nav" aria-label="Project pages">
+      <a href="../">01 · Existing model</a>
+      <a href="../comparison/">02 · 450-well forecast</a>
+      <a class="active" href="./" aria-current="page">03 · Validation lab</a>
+    </nav>
+    <div class="header-title">
+      <p class="eyebrow">Synthetic groundwater lab · Page 03</p>
+      <h1>Can the model recover a level it was not shown?</h1>
+    </div>
+    <span class="page-tag cyan-tag">30-day holdout</span>
+  </header>
+
+  <main class="lab-main validation-main">
+    <section class="fleet-strip" aria-labelledby="fleetTitle">
+      <div>
+        <p class="section-kicker">Fleet result</p>
+        <h2 id="fleetTitle">13,500 hidden well-days tested</h2>
+        <p>The first 150 days train each model. The final 30 days remain hidden until the forecast is scored against the simulated true groundwater level.</p>
+      </div>
+      <article><span>Fleet MAE</span><strong id="fleetMae">—</strong><small>mean absolute error</small></article>
+      <article><span>Fleet RMSE</span><strong id="fleetRmse">—</strong><small>larger errors weighted more</small></article>
+      <article><span>80% coverage</span><strong id="fleetCoverage">—</strong><small>share of truth inside the band</small></article>
+    </section>
+
+    <section class="validation-controls" aria-labelledby="validationControlsTitle">
+      <div>
+        <p class="section-kicker">Inspect a test case</p>
+        <h2 id="validationControlsTitle">Select a scenario and well</h2>
+      </div>
+      <form id="validationForm">
+        <label for="scenarioSelect">Designed scenario</label>
+        <select id="scenarioSelect"></select>
+        <label for="wellInput">Borewell</label>
+        <input id="wellInput" list="wellOptions" value="SYN001" autocomplete="off">
+        <datalist id="wellOptions"></datalist>
+        <button type="submit">Inspect validation</button>
+      </form>
+      <p class="form-error" id="formError" role="alert"></p>
+    </section>
+
+    <section class="well-validation" aria-live="polite">
+      <div class="result-heading validation-result-heading">
+        <div>
+          <p class="section-kicker" id="validationEyebrow">SYN001 · Recharge dominated</p>
+          <h2>Held-out forecast compared with hidden truth</h2>
+        </div>
+        <a class="forecast-jump" id="forecastJump" href="../comparison/?well=SYN001">Forecast this well on Page 2 →</a>
+      </div>
+
+      <div class="metric-grid validation-metrics">
+        <article class="metric-card primary"><span>30-day MAE</span><strong id="wellMae">—</strong><small>average absolute miss</small></article>
+        <article class="metric-card"><span>RMSE</span><strong id="wellRmse">—</strong><small>penalizes larger misses</small></article>
+        <article class="metric-card"><span>Bias</span><strong id="wellBias">—</strong><small id="biasMeaning">—</small></article>
+        <article class="metric-card accent"><span>80% coverage</span><strong id="wellCoverage">—</strong><small>truth inside uncertainty band</small></article>
+      </div>
+
+      <article class="chart-card validation-chart-card">
+        <div class="chart-heading">
+          <div>
+            <h3>Training history, hidden truth, and model forecast</h3>
+            <p>The model sees observed readings through day 150. The blue path is hidden until scoring.</p>
+          </div>
+          <div class="legend" aria-label="Validation chart legend">
+            <span><i class="observed-key"></i>Observed training</span>
+            <span><i class="truth-key"></i>Hidden truth</span>
+            <span><i class="forecast-key"></i>Prediction</span>
+            <span><i class="range-key"></i>80% band</span>
+          </div>
+        </div>
+        <div class="chart-scroll">
+          <svg id="validationChart" class="main-chart" viewBox="0 0 1040 440" role="img" aria-labelledby="validationChartTitle validationChartDesc"></svg>
+        </div>
+      </article>
+
+      <section class="diagnostic-grid">
+        <article class="scenario-card">
+          <p class="section-kicker">Designed behavior</p>
+          <h3 id="scenarioTitle">—</h3>
+          <p id="scenarioBehavior"></p>
+          <strong>What this case tests</strong>
+          <p id="scenarioTest"></p>
+        </article>
+        <article class="diagnosis-card">
+          <p class="section-kicker">Model diagnosis</p>
+          <h3 id="diagnosisTitle">—</h3>
+          <p id="diagnosisText"></p>
+          <dl>
+            <div><dt>Geology</dt><dd id="geologyValue">—</dd></div>
+            <div><dt>Land use</dt><dd id="landUseValue">—</dd></div>
+            <div><dt>Average pumping</dt><dd id="volumeValue">—</dd></div>
+          </dl>
+        </article>
+      </section>
+    </section>
+
+    <section class="scenario-benchmark" aria-labelledby="benchmarkTitle">
+      <div class="section-heading">
+        <div>
+          <p class="section-kicker">Across all 450 wells</p>
+          <h2 id="benchmarkTitle">Which designed cases are hardest?</h2>
+        </div>
+        <p>The sensor-drift group is intentionally difficult because observed readings move away from the physical groundwater state.</p>
+      </div>
+      <div class="benchmark-layout">
+        <article class="benchmark-chart-card">
+          <svg id="scenarioChart" viewBox="0 0 760 380" role="img" aria-label="Mean absolute error by synthetic scenario"></svg>
+        </article>
+        <div class="table-wrap benchmark-table-wrap">
+          <table>
+            <thead><tr><th>Scenario</th><th>Wells</th><th>MAE</th><th>Bias</th><th>80% coverage</th></tr></thead>
+            <tbody id="scenarioRows"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <p class="closing-note"><strong>Interpretation:</strong> this page measures whether the statistical structure can recover the known synthetic system. It does not establish real-world Bengaluru accuracy; that requires the same inputs and holdout design on genuine wells.</p>
+  </main>
+
+  <script src="../data/synthetic_model_loader.js"></script>
+  <script src="./validation.js"></script>
+</body>
+</html>
