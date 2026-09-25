@@ -31,8 +31,12 @@ button, input, select { font: inherit; }
 .brand-mark .wave { fill: none; stroke: white; stroke-width: 2.4; stroke-linecap: round; }
 .brand h1 { margin: 0; font-size: 1.12rem; letter-spacing: -.01em; }
 .brand p { margin: 4px 0 0; color: #afcbd5; font-size: .82rem; }
+.topbar-actions { display: flex; align-items: center; gap: 10px; }
 .status-pill { border: 1px solid rgba(255,255,255,.2); border-radius: 99px; padding: 8px 12px; font-size: .78rem; color: #d5e8ed; }
 .status-pill span { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--cyan); margin-right: 7px; box-shadow: 0 0 0 4px rgba(87,216,208,.12); }
+.comparison-link { display: inline-flex; align-items: center; gap: 8px; min-height: 38px; padding: 0 14px; border-radius: 10px; background: var(--cyan); color: #062f3d; font-size: .8rem; font-weight: 800; text-decoration: none; }
+.comparison-link:hover { background: #8ceae5; }
+.comparison-link:focus-visible { outline: 3px solid white; outline-offset: 3px; }
 
 .workspace { display: grid; grid-template-columns: minmax(275px, 340px) minmax(0, 1fr); gap: 24px; max-width: 1540px; margin: 0 auto; padding: 26px clamp(18px, 3vw, 42px) 44px; }
 .controls, .results { min-width: 0; }
@@ -105,8 +109,9 @@ button:focus-visible { outline: 3px solid rgba(10,167,162,.35); outline-offset: 
   .method-note { margin-top: 16px; }
 }
 @media (max-width: 760px) {
-  .topbar { height: auto; padding-block: 16px; align-items: flex-start; }
+  .topbar { height: auto; padding-block: 16px; align-items: flex-start; flex-wrap: wrap; gap: 12px; }
   .brand p, .status-pill { display: none; }
+  .comparison-link { min-height: 36px; padding-inline: 11px; }
   .workspace { padding-inline: 12px; }
   .controls { padding: 19px; }
   form { display: block; }
