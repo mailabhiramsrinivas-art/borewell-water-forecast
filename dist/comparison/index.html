@@ -11,30 +11,30 @@
   <header class="topbar">
     <a class="back-link" href="/" aria-label="Return to the current forecast">← Current forecast</a>
     <div>
-      <p class="eyebrow">Bengaluru borewell proof of concept</p>
-      <h1>Forecast evidence comparison</h1>
+      <p class="eyebrow">Groundwater data lab · Experiment 02</p>
+      <h1>What changes when rainfall enters the model?</h1>
     </div>
-    <span class="page-tag">Rainfall trial</span>
+    <span class="page-tag">Evidence test</span>
   </header>
 
   <main>
     <section class="finding-strip" aria-labelledby="findingTitle">
       <div>
-        <p class="section-kicker">Result from the test</p>
-        <h2 id="findingTitle">Rainfall is available. The paired well history is still too short.</h2>
+        <p class="section-kicker">Backtest verdict</p>
+        <h2 id="findingTitle">The public rainfall feed works. The model still needs time.</h2>
         <p>The rainfall model was tested on the same four-day holdout as the current model. Its combined screened error changed from <strong id="combinedBefore">—</strong> to <strong id="combinedAfter">—</strong>.</p>
       </div>
       <div class="finding-number">
         <span id="improvementValue">—</span>
-        <small>measured MAE improvement</small>
+        <small>accuracy gain in this 15-day trial</small>
       </div>
     </section>
 
     <section class="controls-card" aria-labelledby="controlsTitle">
       <div class="section-heading">
         <div>
-          <p class="section-kicker">Same well, same horizon</p>
-          <h2 id="controlsTitle">Compare the two forecast inputs</h2>
+          <p class="section-kicker">Experiment controls</p>
+          <h2 id="controlsTitle">Set up one comparison</h2>
         </div>
         <p class="control-note">Depth is metres below ground surface. Larger values mean deeper water.</p>
       </div>
@@ -89,8 +89,8 @@
       <article class="forecast-card current-card">
         <div class="card-heading">
           <div>
-            <p class="model-label">Current dataset</p>
-            <h2>Well and pumping data</h2>
+            <p class="model-label">Given data</p>
+            <h2>Evidence available today</h2>
           </div>
           <span class="status-chip neutral">Existing model</span>
         </div>
@@ -109,8 +109,8 @@
       <article class="forecast-card rainfall-card">
         <div class="card-heading">
           <div>
-            <p class="model-label">Public rainfall added</p>
-            <h2>Seasonal rainfall scenario</h2>
+            <p class="model-label">Added data</p>
+            <h2>Public rainfall experiment</h2>
           </div>
           <span class="status-chip caution">Experimental</span>
         </div>
@@ -128,7 +128,7 @@
     </section>
 
     <section class="plain-result" aria-labelledby="plainTitle">
-      <p class="section-kicker">Plain-language comparison</p>
+      <p class="section-kicker">Model memo</p>
       <h2 id="plainTitle">Choose a well to compare the forecasts.</h2>
       <p id="plainText"></p>
     </section>
