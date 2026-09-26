@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>The five-year twin · Borewell Forecast</title>
+  <meta name="description" content="How five years of borewell history were simulated for 579 wells, and how a physics-informed forecaster was tested blind on it.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230b3a52'/%3E%3Cpath d='M16 5C12 12 9 16 9 20.5a7 7 0 0 0 14 0C23 16 20 12 16 5Z' fill='%235fc4d8'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="../assets/site.css?v=cd22e42713">
+  <style>
+    ul.plain { padding-left: 1.2em; margin: 0; } ul.plain li { margin-bottom: 6px; }
+    .eq { font-family: "Times New Roman", Georgia, serif; font-style: italic; font-size: 1.15rem; margin: 6px 0 4px; }
+    .eq sub, .eq sup { font-size: .72em; }
+    .twin-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+    @media (max-width: 900px) { .twin-grid { grid-template-columns: 1fr; } }
+    .twin-grid .card h3 { font-size: 1.02rem; }
+    .twin-grid .card p { font-size: .95rem; }
+    .ka-grid .stat .value { font-size: 1.9rem; }
+    .gate { display: grid; grid-template-columns: 110px 1fr; gap: 10px 14px; align-items: start; font-size: .95rem; }
+    .gate b { color: var(--brand-2); }
+  </style>
+</head>
+<body data-page="five-year">
+<!--SHELL:HEADER-->
+<a class="skip" href="#main">Skip to content</a>
+<header class="site-header"><div class="wrap"><a class="brand" href="../"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M16 3C11 11 7 16 7 21.5a9 9 0 0 0 18 0C25 16 21 11 16 3Z" fill="#5fc4d8"/><path d="M11.5 22c2.8 1.8 6.2 1.8 9 0" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round"/></svg><span>Borewell Forecast</span><span class="poc">Proof of concept</span></a><button class="menu-toggle" aria-expanded="false" aria-controls="site-nav">Menu</button><nav class="site-nav" id="site-nav" aria-label="Main"><ul><li><a href="../">Overview</a></li><li><a href="../forecast/">Try a forecast</a></li><li><a href="../accuracy/">How accurate</a></li><li><a href="../drivers/">What moves the water</a></li><li><a href="../network/">Wells affect each other</a></li><li><a href="../journey/">Our journey</a></li><li><a href="../next/">What's next</a></li></ul></nav></div></header>
+<!--/SHELL:HEADER-->
+<main id="main">
+  <div class="wrap">
+    <div class="page-hero">
+      <p class="kicker">Stage 5 · <span class="source twin"><svg viewBox="0 0 14 14" aria-hidden="true"><path d="M7 1l6 6-6 6-6-6z" fill="currentColor"/></svg>Digital twin: five years, 579 wells</span></p>
+      <h1>Five years of history for every well, and a forecaster that reads each well's own physics.</h1>
+      <p class="lede">The company's real records cover two weeks. Forecasting a week ahead needs years: several monsoons, several dry seasons, and the slow decline in between. So we built a physics twin of the fleet, five years long, and tested the forecaster on it blind. The one-year digital twin used elsewhere on this site is the final year of this same twin.</p>
+      <p><a class="btn" href="./results/">See the five-year results →</a> <a class="btn secondary" href="../journey/">Back to the journey</a></p>
+    </div>
+
+    <section style="padding-top:0">
+      <div class="section-title"><h2>What we have, what we built, what we test</h2></div>
+      <div class="grid-3">
+        <div class="card"><span class="source real"><svg viewBox="0 0 14 14" aria-hidden="true"><circle cx="7" cy="7" r="5" fill="currentColor"/></svg>Real pump data</span><h3 style="margin-top:12px">A 14.5-day export</h3><p>579 wells, 15–29 July 2026, in the vendor's file format. Its level values are demonstration data: it gives us the format and each well's operating pattern, not a real level history.</p></div>
+        <div class="card"><span class="source twin"><svg viewBox="0 0 14 14" aria-hidden="true"><path d="M7 1l6 6-6 6-6-6z" fill="currentColor"/></svg>Digital twin</span><h3 style="margin-top:12px">A five-year twin of the fleet</h3><p>579 simulated wells, hour by hour, August 2021 to July 2026, driven by real IMD rainfall, with hidden traits, interference between wells, sensor noise and faults. It writes files in the exact vendor format.</p></div>
+        <div class="card"><span class="source twin"><svg viewBox="0 0 14 14" aria-hidden="true"><path d="M7 1l6 6-6 6-6-6z" fill="currentColor"/></svg>Known answer</span><h3 style="margin-top:12px">The pipeline, run blind</h3><p>The forecaster sees only the files and public rainfall. Its forecasts are scored against the twin's hidden truth, which the model code is checked never to read. When real data arrives, the same pipeline recalibrates each well on it.</p></div>
+      </div>
+    </section>
+
+    <section>
+      <div class="section-title"><h2>How the twin was generated</h2><p>A simulator, not a dataset. It draws hidden traits for each well, then integrates its water level hour by hour under rain, pumping, neighbours and a sensor model. One seed reproduces it exactly; the build takes under two minutes.</p></div>
+      <div class="twin-grid">
+        <div class="card"><h3>1 · Each well's hidden traits</h3><p>Every well is a two-store reservoir: a fast store that the pump draws down and that recovers when it stops, and a slow store, the resting level of the surrounding rock. Its traits are drawn once and never shown to the model: resting level (median 55 m), recovery pace τ (median 8 h), drawdown coefficient <i>a</i> (median 0.4 m per m³), pump rate and efficiency, intake depth, and a fracture zone below which drawdown steepens.</p></div>
+        <div class="card"><h3>2 · Real rain, delayed recharge</h3><p>IMD gridded daily rainfall for the city, so every monsoon and every dry spell in the twin happened. A soil bucket takes the rain; its overflow reaches the aquifer after a per-well delay of 5–30 days and lifts the resting level. A slow drain and a dry-season decline pull it back down.</p></div>
+        <div class="card"><h3>3 · Pumping and dry runs</h3><p>Each well pumps on its own pattern from the export: sessions per day, start hours, durations, scaled by season and cut on supply-outage days. When the level reaches the intake the pump runs dry: discharge collapses, the controller locks it out, the session is logged as cancelled. Five years produced 38,882 dry-run events in 113 wells.</p></div>
+        <div class="card"><h3>4 · Wells that affect each other</h3><p>A hidden graph of 733 edges links neighbours. Water flows along each edge in proportion to the difference in the two wells' drawdowns, so a pumping well drags its neighbours down and an idle one lets them recover. The model never knows who is connected to whom.</p></div>
+        <div class="card"><h3>5 · What the sensors see</h3><p>The true level is never written to the observed files. The forecaster gets what the vendor's sensors would record: a level at the start and stop of each session with ±0.2 m noise, 0.5 % outlier readings, 3 % missing days, telemetry every five minutes, and faults on 10 % of wells: stuck level, slow drift, spikes, a flowmeter reading double.</p></div>
+        <div class="card"><h3>6 · The twin's own gate</h3><p>Before any model was trained the twin had to pass six automated checks: file format, physics (drawdown positive, idle wells recover, monsoons lift levels), the observation model, isolation of the truth, and fidelity to the real export (sessions per day, duration, cadence, discharge all within band). Then it was frozen.</p></div>
+      </div>
+      <p class="note" style="margin-top:12px">Output: 1.64 million sessions and 54.6 million telemetry rows over five years; the final year also as 1,158 CSV files byte-compatible with the real export; 25 million hourly true levels, traits, edges and the dry-run log kept as hidden truth.</p>
+    </section>
+
+    <section>
+      <div class="section-title"><h2>The forecaster in five steps</h2><p>A physics core makes the first guess; a learning layer corrects it; calibration makes the range honest.</p></div>
+      <ol class="steps">
+        <li><strong>Read each well's physics from its own records.</strong> Recovery segments (pump off) give τ and the resting level; drawdown segments (pump on) give <i>a</i>. Readings far from a 61-day median are dropped before fitting. 216 features per well-day, all from the observed files.</li>
+        <li><strong>Two equations give the first guess for each of the next seven days.</strong>
+          <div class="eq">h<sub>rest</sub> = h<sub>s</sub> + (h<sub>stop</sub> − h<sub>s</sub>) · e<sup>−rest/τ</sup></div>
+          <span class="note">Recovery, pump off: the gap to the resting level closes at the well's own pace τ.</span>
+          <div class="eq">deepest = h<sub>rest</sub> + <i>a</i> · Q · τ · (1 − e<sup>−t/τ</sup>)</div>
+          <span class="note">Drawdown, pump on: a session of length t at rate Q deepens the level toward a limit set by <i>a</i>, Q and τ.</span>
+        </li>
+        <li><strong>A learning layer corrects what the physics leaves out.</strong> Gradient-boosted models (LightGBM) predict the difference between the observed level and the physics core, for each day ahead and for the 10th, 50th and 90th percentile: 21 models. Because they predict a correction, not a level, the physics carries the forecast when history is short and the models take over as evidence accumulates.</li>
+        <li><strong>Calibrate the range.</strong> Conformal calibration widens or narrows the band, per day ahead and per season, until on the calibration year the 80 % band holds 80 % of readings. The offsets are then applied unchanged to the test year.</li>
+        <li><strong>Turn levels into decisions.</strong> The drawdown equation is inverted against each well's threshold to give a safe pumping volume for the day and the week; a risk model blends the level-forecast probability with a classifier trained on the well's own dry-run history to raise the weekly dry-run flag.</li>
+      </ol>
+    </section>
+
+    <section>
+      <div class="section-title"><h2>The known-answer test</h2><p>Because the twin's traits are hidden, we can ask whether the features recover them from the sensor files alone: the same step the pipeline will perform on real wells.</p></div>
+      <div class="grid-4 ka-grid">
+        <div class="stat"><span class="label">Recovery pace τ, fitted vs true</span><span class="value">0.75</span><span class="sub">rank correlation; target ≥ 0.70</span></div>
+        <div class="stat"><span class="label">Drawdown coefficient <i>a</i>, fitted vs true</span><span class="value">0.95</span><span class="sub">rank correlation; target ≥ 0.70</span></div>
+        <div class="stat"><span class="label">Size of <i>a</i>, fitted over true</span><span class="value">0.86</span><span class="sub">inside the 0.85–1.15 band</span></div>
+        <div class="stat"><span class="label">Look-ahead cells out of 8,200</span><span class="value">0</span><span class="sub">50 rows rebuilt with the future removed: identical</span></div>
+      </div>
+      <p class="note" style="margin-top:12px">Estimating <i>a</i> took two attempts. A straight-line fit read it 36 % low, because long sessions flatten as the level saturates; a fit that follows the flattening corrected it. On real wells nobody knows the true <i>a</i>, so that bias would have gone unnoticed. Catching it is what a known-answer test is for.</p>
+    </section>
+
+    <section>
+      <div class="section-title"><h2>How it was tested honestly</h2></div>
+      <div class="grid-2">
+        <div class="card">
+          <div class="gate">
+            <b>Split</b><span>Train August 2021 – July 2024; choose thresholds, blend weights and band widths on August 2024 – July 2025; test once on August 2025 – July 2026, with a forecast every week.</span>
+            <b>Unseen wells</b><span>116 wells (20 %) held out of training entirely and scored separately.</span>
+            <b>Baselines</b><span>Assume the level stays where it is today; a seasonal guess; the well's running mean; the physics core alone.</span>
+            <b>Three gates</b><span>Twin, features and forecaster each pass an automated test suite before the next stage starts; the forecaster's gate checks 13 thresholds fixed in the plan before any model was trained.</span>
+            <b>Truth firewall</b><span>Nothing in the feature or model code reads the hidden truth; a test greps for it, and the feature build is re-run with the truth hidden to prove it.</span>
+          </div>
+        </div>
+        <div class="callout caution"><strong>Honest status</strong><p>Every figure from this stage is on the twin, with ±0.2 m level noise. No real level measurement was used. The twin also has known limits: it is a two-store reservoir with random traits, not real hydrogeology; one rain cell serves the whole city; nobody in it reacts to a low level; and its recharge was too generous in this iteration, which is being corrected. What the stage proves is the method: that the pipeline reads a well's behaviour from its files and forecasts it a week ahead with an honest range.</p><p style="margin-top:8px"><a href="./results/">See what it achieved →</a></p></div>
+      </div>
+    </section>
+  </div>
+</main>
+<!--SHELL:FOOTER-->
+<footer class="site-footer"><div class="wrap"><div><strong>Borewell Forecast</strong> is a proof of concept for forecasting groundwater levels in Bengaluru borewells. Results are labelled by where the data came from: <span class="source real">real pump data</span> (15 days, July 2026), <span class="source synthetic">synthetic test system</span> (450 simulated wells with a known answer) or <span class="source twin">digital twin</span> (a physics-based simulation of the 579 wells over a year). Nothing here is yet a validated field forecast.</div><div><strong>Explore</strong><ul><li><a href="../">Overview</a></li><li><a href="../forecast/">Try a forecast</a></li><li><a href="../accuracy/">How accurate</a></li><li><a href="../drivers/">What moves the water</a></li><li><a href="../network/">Wells affect each other</a></li><li><a href="../journey/">Our journey</a></li><li><a href="../next/">What's next</a></li></ul></div><div><strong>More</strong><ul><li><a href="../glossary/">Glossary of terms</a></li><li><a href="../prototype/">Stage 1 · First prototype (real data)</a></li><li><a href="../comparison/">Stage 2 · Scenario explorer</a></li><li><a href="../validation/">Stage 2 · Hidden-truth test</a></li><li><a href="../models/">Stage 2 · Three models compared</a></li><li><a href="https://github.com/mailabhiramsrinivas-art/borewell-water-forecast">Source code</a></li></ul></div></div></footer>
+<!--/SHELL:FOOTER-->
+<script src="../assets/site.js?v=cd22e42713"></script>
+</body>
+</html>
