@@ -1,7 +1,7 @@
 const $=id=>document.getElementById(id), NS='http://www.w3.org/2000/svg';
 const state={data:null,well:null,real:[],rain:null};
 const colors={M1:'#d66635',M2:'#8a55b5',M3:'#087d76',persistence:'#999',linear60:'#ba9b22',M1_static:'#58768c',truth:'#3b78c8',observed:'#142521'};
-const names={M1:'M1 · Real-data trend',M2:'M2 · Rainfall scenario',M3:'M3 · 450-well driver',persistence:'Persistence baseline',linear60:'60-day linear baseline',M1_static:'M1 on static readings'};
+const names={M1:'M1 · Trend method',M2:'M2 · Rainfall scenario',M3:'M3 · 450-well driver',persistence:'Persistence baseline',linear60:'60-day linear baseline',M1_static:'M1 on static readings'};
 const fmt=(v,n=3)=>v==null?'—':Number(v).toFixed(n);
 const title=s=>s.replaceAll('_',' ').replace(/\b\w/g,c=>c.toUpperCase());
 const clamp=(v,a,b)=>Math.min(b,Math.max(a,v));
@@ -39,7 +39,7 @@ function calculateMetrics(wells,key) {
 }
 window.calculateBorewellMetrics=calculateMetrics;
 const FRIENDLY={
-  M1:{name:'Trend from pump-start readings',rows:[['What it uses','The level recorded when each pump starts, as a daily median'],['What it predicts','Where the well\'s recent trend leads'],['How it was tested','On real wells for short-term changes (Stage 1), and here on the test system'],['Strength','Works today with the company\'s existing records, and is easy to explain'],['Weakness','Pump-start readings are affected by recent pumping, so they sit too deep'],['Best use','A quick fallback where little data exists']]},
+  M1:{name:'Trend from pump-start readings',rows:[['What it uses','The level recorded when each pump starts, as a daily median'],['What it predicts','Where the well\'s recent trend leads'],['How it was tested','On the 15-day vendor export (demonstration levels) for short-term changes, and here on the test system'],['Strength','Works today with the company\'s existing records, and is easy to explain'],['Weakness','Pump-start readings are affected by recent pumping, so they sit too deep'],['Best use','A quick fallback where little data exists']]},
   M2:{name:'Trend plus rainfall',rows:[['What it uses','The same as M1, plus public rainfall records'],['What it predicts','The trend, nudged by how wet the season is'],['How it was tested','The same tests as M1'],['Strength','Uses free public data and shows seasonal what-ifs'],['Weakness','Adds little when the underlying readings are off'],['Best use','Seasonal what-if planning']]},
   M3:{name:'Driver model',rows:[['What it uses','Resting-level readings, pumping volume, past rainfall, water supply and demand'],['What it predicts','Each day\'s change in the resting level'],['How it was tested','A 30-day hidden-truth test on the 450 simulated wells'],['Strength','Learns that rain arrives with a delay, and its pumping and rain settings behave sensibly'],['Weakness','Only tested on simulated data so far; cannot see a drifting sensor'],['Best use','The target system, once real long-term data is available']]}};
 function modelCards() {
@@ -99,7 +99,7 @@ function renderReal(event) {
   }
  }
  $('realResult').textContent=`${w.well_id} · latest usable reading ${start.toLocaleDateString('en-IN',{timeZone:'UTC'})} · ${days}-day scenario: M1 ${fmt(vals1.at(-1),1)} m; M2 ${fmt(vals2.at(-1),1)} m below ground. Both ranges are rules of thumb, not tested guarantees.`;
- chart('realChart',[{id:'M1',values:vals1,days:allDays,low:low1,high:high1},{id:'M2',values:vals2,days:allDays,low:low2,high:high2}],{title:w.well_id+' real-data seasonal scenario comparison'});
+ chart('realChart',[{id:'M1',values:vals1,days:allDays,low:low1,high:high1},{id:'M2',values:vals2,days:allDays,low:low2,high:high2}],{title:w.well_id+' vendor-export seasonal scenario comparison'});
 }
 async function init() {
  try {

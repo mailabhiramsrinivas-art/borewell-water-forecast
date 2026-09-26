@@ -6,7 +6,7 @@
   <title>Our journey · Borewell Forecast</title>
   <meta name="description" content="How the borewell forecast was built, stage by stage, and what each stage proved.">
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230b3a52'/%3E%3Cpath d='M16 5C12 12 9 16 9 20.5a7 7 0 0 0 14 0C23 16 20 12 16 5Z' fill='%235fc4d8'/%3E%3C/svg%3E">
-  <link rel="stylesheet" href="../assets/site.css?v=cd22e42713">
+  <link rel="stylesheet" href="../assets/site.css?v=3a0284c170">
   <style>
     .stage-head { display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: center; margin-bottom: 6px; }
     .stage-head .when { font-size: .85rem; color: var(--muted); font-weight: 600; }
@@ -22,7 +22,7 @@
 <!--SHELL:HEADER-->
 <a class="skip" href="#main">Skip to content</a>
 <header class="site-header"><div class="wrap"><a class="brand" href="../"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M16 3C11 11 7 16 7 21.5a9 9 0 0 0 18 0C25 16 21 11 16 3Z" fill="#5fc4d8"/><path d="M11.5 22c2.8 1.8 6.2 1.8 9 0" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round"/></svg><span>Borewell Forecast</span><span class="poc">Proof of concept</span></a><button class="menu-toggle" aria-expanded="false" aria-controls="site-nav">Menu</button><nav class="site-nav" id="site-nav" aria-label="Main"><ul><li><a href="../">Overview</a></li><li><a href="../forecast/">Try a forecast</a></li><li><a href="../accuracy/">How accurate</a></li><li><a href="../drivers/">What moves the water</a></li><li><a href="../network/">Wells affect each other</a></li><li><a href="../journey/" aria-current="page">Our journey</a></li><li><a href="../next/">What's next</a></li></ul></nav></div></header>
-<nav class="subnav" aria-label="Earlier-stage tools"><div class="wrap"><span>Earlier stages:</span><a href="../prototype/">Stage 1 · First prototype (real data)</a><a href="../comparison/">Stage 2 · Scenario explorer</a><a href="../validation/">Stage 2 · Hidden-truth test</a><a href="../models/">Stage 2 · Three models compared</a></div></nav>
+<nav class="subnav" aria-label="Earlier-stage tools"><div class="wrap"><span>Earlier stages:</span><a href="../prototype/">Stage 1 · First prototype (vendor export)</a><a href="../comparison/">Stage 2 · Scenario explorer</a><a href="../validation/">Stage 2 · Hidden-truth test</a><a href="../models/">Stage 2 · Three models compared</a></div></nav>
 <!--/SHELL:HEADER-->
 <main id="main">
   <div class="wrap">
@@ -36,12 +36,12 @@
       <li>
         <span class="dot">1</span>
         <div class="card">
-          <div class="stage-head"><h2 style="margin:0">A first prototype on real pump data</h2><span class="source real"><svg viewBox="0 0 14 14" aria-hidden="true"><circle cx="7" cy="7" r="5" fill="currentColor"/></svg>Real pump data</span><span class="when">15–29 July 2026 · 579 wells</span></div>
+          <div class="stage-head"><h2 style="margin:0">A first prototype on the vendor's export</h2><span class="source real"><svg viewBox="0 0 14 14" aria-hidden="true"><circle cx="7" cy="7" r="5" fill="currentColor"/></svg>Vendor export (demo levels)</span><span class="when">15–29 July 2026 · 579 wells</span></div>
           <p class="q">Can routine pump records be turned into water-level forecasts at all?</p>
-          <p>We received 15 days of real records: about 490,000 pump readings and 12,355 pumping sessions, each with the water level when the pump started and stopped. We cleaned them, linked readings to sessions, and built models that predict the level at the end of each pump run and at the next start. We then tested those models on the last four days.</p>
+          <p>We received a 15-day export in the monitoring vendor's own format: about 490,000 pump readings and 12,355 pumping sessions, each with a water level when the pump started and stopped. Its water-level values are demonstration data, so this stage tested the pipeline, not real-world accuracy. We cleaned the records, linked readings to sessions, and built models that predict the level at the end of each pump run and at the next start. We then tested those models on the last four days.</p>
           <div class="found">
             <div><b>Yes, it works</b><span>the pipeline from raw records to forecasts runs end to end</span></div>
-            <div><b>≈ 9 m</b><span>typical miss per pump run, because the raw readings are noisy</span></div>
+            <div><b>≈ 9 m</b><span>typical miss per pump run on the export's demonstration levels, which are noisy</span></div>
             <div><b>35%</b><span>of sessions had readings too odd to trust, and needed screening out</span></div>
           </div>
           <p class="note">Fifteen days could not show seasons or test rainfall: adding rain changed accuracy by just 0.03%. That told us we needed longer histories.</p>
@@ -104,7 +104,7 @@
         <span class="dot">→</span>
         <div class="card">
           <div class="stage-head"><h2 style="margin:0">Next: prove it on real wells</h2></div>
-          <p>Every long-range result above comes from simulations. The next stage repeats these tests on real long-term records from the company's wells. We are also developing a 7-day early warning for wells about to run dry.</p>
+          <p>Every result above comes from simulations or demonstration data; no real water-level measurement has been used yet. The full sensor history is released after approval, and the next stage repeats these tests on it. We are also developing a 7-day early warning for wells about to run dry.</p>
           <div class="link-row"><a class="btn" href="../next/">What we need next</a></div>
         </div>
       </li>
@@ -123,8 +123,8 @@
   </div>
 </main>
 <!--SHELL:FOOTER-->
-<footer class="site-footer"><div class="wrap"><div><strong>Borewell Forecast</strong> is a proof of concept for forecasting groundwater levels in Bengaluru borewells. Results are labelled by where the data came from: <span class="source real">real pump data</span> (15 days, July 2026), <span class="source synthetic">synthetic test system</span> (450 simulated wells with a known answer) or <span class="source twin">digital twin</span> (a physics-based simulation of the 579 wells over a year). Nothing here is yet a validated field forecast.</div><div><strong>Explore</strong><ul><li><a href="../">Overview</a></li><li><a href="../forecast/">Try a forecast</a></li><li><a href="../accuracy/">How accurate</a></li><li><a href="../drivers/">What moves the water</a></li><li><a href="../network/">Wells affect each other</a></li><li><a href="../journey/">Our journey</a></li><li><a href="../next/">What's next</a></li></ul></div><div><strong>More</strong><ul><li><a href="../glossary/">Glossary of terms</a></li><li><a href="../prototype/">Stage 1 · First prototype (real data)</a></li><li><a href="../comparison/">Stage 2 · Scenario explorer</a></li><li><a href="../validation/">Stage 2 · Hidden-truth test</a></li><li><a href="../models/">Stage 2 · Three models compared</a></li><li><a href="https://github.com/mailabhiramsrinivas-art/borewell-water-forecast">Source code</a></li></ul></div></div></footer>
+<footer class="site-footer"><div class="wrap"><div><strong>Borewell Forecast</strong> is a proof of concept for forecasting groundwater levels in Bengaluru borewells. Results are labelled by where the data came from: <span class="source real">vendor export</span> (15 days, July 2026, in the vendor's real format but with demonstration water-level values), <span class="source synthetic">synthetic test system</span> (450 simulated wells with a known answer) or <span class="source twin">digital twin</span> (a physics-based simulation of the 579 wells over a year). No real water-level measurement has been used yet, and nothing here is yet a validated field forecast.</div><div><strong>Explore</strong><ul><li><a href="../">Overview</a></li><li><a href="../forecast/">Try a forecast</a></li><li><a href="../accuracy/">How accurate</a></li><li><a href="../drivers/">What moves the water</a></li><li><a href="../network/">Wells affect each other</a></li><li><a href="../journey/">Our journey</a></li><li><a href="../next/">What's next</a></li></ul></div><div><strong>More</strong><ul><li><a href="../glossary/">Glossary of terms</a></li><li><a href="../prototype/">Stage 1 · First prototype (vendor export)</a></li><li><a href="../comparison/">Stage 2 · Scenario explorer</a></li><li><a href="../validation/">Stage 2 · Hidden-truth test</a></li><li><a href="../models/">Stage 2 · Three models compared</a></li><li><a href="https://github.com/mailabhiramsrinivas-art/borewell-water-forecast">Source code</a></li></ul></div></div></footer>
 <!--/SHELL:FOOTER-->
-<script src="../assets/site.js?v=cd22e42713"></script>
+<script src="../assets/site.js?v=3a0284c170"></script>
 </body>
 </html>

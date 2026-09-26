@@ -4,29 +4,29 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>First prototype · Borewell Forecast</title>
-  <meta name="description" content="Stage 1: the first prototype, built on 15 days of real pump data from 579 Bengaluru borewells.">
+  <meta name="description" content="Stage 1: the first prototype, built on a 15-day vendor export for 579 Bengaluru borewells (demonstration water levels).">
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230b3a52'/%3E%3Cpath d='M16 5C12 12 9 16 9 20.5a7 7 0 0 0 14 0C23 16 20 12 16 5Z' fill='%235fc4d8'/%3E%3C/svg%3E">
-  <link rel="stylesheet" href="../assets/site.css?v=cd22e42713">
-  <link rel="stylesheet" href="./prototype.css?v=cd22e42713">
+  <link rel="stylesheet" href="../assets/site.css?v=3a0284c170">
+  <link rel="stylesheet" href="./prototype.css?v=3a0284c170">
 </head>
 <body data-page="prototype">
 <!--SHELL:HEADER-->
 <a class="skip" href="#main">Skip to content</a>
 <header class="site-header"><div class="wrap"><a class="brand" href="../"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M16 3C11 11 7 16 7 21.5a9 9 0 0 0 18 0C25 16 21 11 16 3Z" fill="#5fc4d8"/><path d="M11.5 22c2.8 1.8 6.2 1.8 9 0" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round"/></svg><span>Borewell Forecast</span><span class="poc">Proof of concept</span></a><button class="menu-toggle" aria-expanded="false" aria-controls="site-nav">Menu</button><nav class="site-nav" id="site-nav" aria-label="Main"><ul><li><a href="../">Overview</a></li><li><a href="../forecast/">Try a forecast</a></li><li><a href="../accuracy/">How accurate</a></li><li><a href="../drivers/">What moves the water</a></li><li><a href="../network/">Wells affect each other</a></li><li><a href="../journey/" class="section-active">Our journey</a></li><li><a href="../next/">What's next</a></li></ul></nav></div></header>
-<nav class="subnav" aria-label="Earlier-stage tools"><div class="wrap"><span>Earlier stages:</span><a href="../prototype/" aria-current="page">Stage 1 · First prototype (real data)</a><a href="../comparison/">Stage 2 · Scenario explorer</a><a href="../validation/">Stage 2 · Hidden-truth test</a><a href="../models/">Stage 2 · Three models compared</a></div></nav>
+<nav class="subnav" aria-label="Earlier-stage tools"><div class="wrap"><span>Earlier stages:</span><a href="../prototype/" aria-current="page">Stage 1 · First prototype (vendor export)</a><a href="../comparison/">Stage 2 · Scenario explorer</a><a href="../validation/">Stage 2 · Hidden-truth test</a><a href="../models/">Stage 2 · Three models compared</a></div></nav>
 <!--/SHELL:HEADER-->
 <main id="main">
   <div class="wrap">
     <div class="page-hero">
-      <p class="kicker">Stage 1 of our journey · <span class="source real"><svg viewBox="0 0 14 14" aria-hidden="true"><circle cx="7" cy="7" r="5" fill="currentColor"/></svg>Real pump data</span></p>
-      <h1>The first prototype: 15 days of real pump data</h1>
-      <p class="lede">Our first step used a real export of pump records from 579 Bengaluru borewells, covering 15–29 July 2026. It proved the data could be turned into forecasts. Fifteen days is far too short to forecast months ahead, which is why later stages exist.</p>
+      <p class="kicker">Stage 1 of our journey · <span class="source real"><svg viewBox="0 0 14 14" aria-hidden="true"><circle cx="7" cy="7" r="5" fill="currentColor"/></svg>Vendor export (demo levels)</span></p>
+      <h1>The first prototype: a 15-day vendor export</h1>
+      <p class="lede">Our first step used a 15-day export (15–29 July 2026) for 579 Bengaluru borewells, in the monitoring vendor's own format. Its water-level values are demonstration data, not real measurements, so this stage proved the data pipeline rather than real-world accuracy. Fifteen days is also far too short to forecast months ahead, which is why later stages exist.</p>
     </div>
 
     <div class="grid-3">
       <div class="callout plain"><strong>What you can do here</strong><p>Pick a well and a time span. The page shows where that well's water was last measured and a rough what-if for the future.</p></div>
       <div class="callout caution"><strong>Read the range, not the line</strong><p>With only 15 days of data, the shaded range is deliberately wide. For long spans it mostly shows how uncertain the future is.</p></div>
-      <div class="callout proof"><strong>What this stage proved</strong><p>Pump records can be cleaned and linked to water levels. Short-term changes during pumping were predictable to within about 9 m on raw records. <a href="../journey/">See the full story</a>.</p></div>
+      <div class="callout proof"><strong>What this stage proved</strong><p>Pump records can be cleaned and linked to water levels. Short-term changes during pumping were predictable to within about 9 m on the raw, demonstration-level records. <a href="../journey/">See the full story</a>.</p></div>
     </div>
 
     <div class="proto-workspace">
@@ -110,9 +110,9 @@
   </div>
 </main>
 <!--SHELL:FOOTER-->
-<footer class="site-footer"><div class="wrap"><div><strong>Borewell Forecast</strong> is a proof of concept for forecasting groundwater levels in Bengaluru borewells. Results are labelled by where the data came from: <span class="source real">real pump data</span> (15 days, July 2026), <span class="source synthetic">synthetic test system</span> (450 simulated wells with a known answer) or <span class="source twin">digital twin</span> (a physics-based simulation of the 579 wells over a year). Nothing here is yet a validated field forecast.</div><div><strong>Explore</strong><ul><li><a href="../">Overview</a></li><li><a href="../forecast/">Try a forecast</a></li><li><a href="../accuracy/">How accurate</a></li><li><a href="../drivers/">What moves the water</a></li><li><a href="../network/">Wells affect each other</a></li><li><a href="../journey/">Our journey</a></li><li><a href="../next/">What's next</a></li></ul></div><div><strong>More</strong><ul><li><a href="../glossary/">Glossary of terms</a></li><li><a href="../prototype/">Stage 1 · First prototype (real data)</a></li><li><a href="../comparison/">Stage 2 · Scenario explorer</a></li><li><a href="../validation/">Stage 2 · Hidden-truth test</a></li><li><a href="../models/">Stage 2 · Three models compared</a></li><li><a href="https://github.com/mailabhiramsrinivas-art/borewell-water-forecast">Source code</a></li></ul></div></div></footer>
+<footer class="site-footer"><div class="wrap"><div><strong>Borewell Forecast</strong> is a proof of concept for forecasting groundwater levels in Bengaluru borewells. Results are labelled by where the data came from: <span class="source real">vendor export</span> (15 days, July 2026, in the vendor's real format but with demonstration water-level values), <span class="source synthetic">synthetic test system</span> (450 simulated wells with a known answer) or <span class="source twin">digital twin</span> (a physics-based simulation of the 579 wells over a year). No real water-level measurement has been used yet, and nothing here is yet a validated field forecast.</div><div><strong>Explore</strong><ul><li><a href="../">Overview</a></li><li><a href="../forecast/">Try a forecast</a></li><li><a href="../accuracy/">How accurate</a></li><li><a href="../drivers/">What moves the water</a></li><li><a href="../network/">Wells affect each other</a></li><li><a href="../journey/">Our journey</a></li><li><a href="../next/">What's next</a></li></ul></div><div><strong>More</strong><ul><li><a href="../glossary/">Glossary of terms</a></li><li><a href="../prototype/">Stage 1 · First prototype (vendor export)</a></li><li><a href="../comparison/">Stage 2 · Scenario explorer</a></li><li><a href="../validation/">Stage 2 · Hidden-truth test</a></li><li><a href="../models/">Stage 2 · Three models compared</a></li><li><a href="https://github.com/mailabhiramsrinivas-art/borewell-water-forecast">Source code</a></li></ul></div></div></footer>
 <!--/SHELL:FOOTER-->
-<script src="../assets/site.js?v=cd22e42713"></script>
-<script src="./app.js?v=cd22e42713" defer></script>
+<script src="../assets/site.js?v=3a0284c170"></script>
+<script src="./app.js?v=3a0284c170" defer></script>
 </body>
 </html>

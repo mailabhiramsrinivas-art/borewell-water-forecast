@@ -6,7 +6,7 @@
   <title>Borewell Forecast · Knowing when a well will run low</title>
   <meta name="description" content="A proof of concept that forecasts groundwater levels in Bengaluru borewells weeks ahead, with honest ranges.">
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230b3a52'/%3E%3Cpath d='M16 5C12 12 9 16 9 20.5a7 7 0 0 0 14 0C23 16 20 12 16 5Z' fill='%235fc4d8'/%3E%3C/svg%3E">
-  <link rel="stylesheet" href="./assets/site.css?v=cd22e42713">
+  <link rel="stylesheet" href="./assets/site.css?v=3a0284c170">
   <style>
     .home-hero { background: linear-gradient(180deg, #0b3a52 0%, #0e5575 100%); color: #fff; padding: 56px 0 48px; }
     .home-hero .wrap { display: grid; grid-template-columns: 1.15fr .85fr; gap: 40px; align-items: center; }
@@ -108,9 +108,9 @@
     </section>
 
     <section>
-      <div class="section-title"><h2>Where the data comes from</h2><p>We are careful to say which results come from real wells and which come from simulations. Each result on this site carries one of these labels.</p></div>
+      <div class="section-title"><h2>Where the data comes from</h2><p>We are careful to say where every result comes from. No real water-level measurement has been used yet, and each result on this site carries one of these labels.</p></div>
       <div class="grid-3">
-        <div class="card"><span class="source real"><svg viewBox="0 0 14 14" aria-hidden="true"><circle cx="7" cy="7" r="5" fill="currentColor"/></svg>Real pump data</span><h3 style="margin-top:12px">15 days, 579 real wells</h3><p>A real export of pump sessions and water levels from July 2026. Enough to build and check the method, too short to forecast months ahead.</p></div>
+        <div class="card"><span class="source real"><svg viewBox="0 0 14 14" aria-hidden="true"><circle cx="7" cy="7" r="5" fill="currentColor"/></svg>Vendor export (demo levels)</span><h3 style="margin-top:12px">15 days, 579 wells, vendor format</h3><p>A 15-day export (July 2026) in the monitoring vendor's own format. Its water-level values are demonstration data, not real measurements, so it proves the data pipeline, not real-world accuracy. The full sensor history is released after approval.</p></div>
         <div class="card"><span class="source synthetic"><svg viewBox="0 0 14 14" aria-hidden="true"><rect x="2" y="2" width="10" height="10" rx="2" fill="none" stroke="currentColor" stroke-width="2"/></svg>Synthetic test system</span><h3 style="margin-top:12px">450 simulated wells, known answers</h3><p>A test system where the true water level is known, so we could check which methods recover it and what data they need.</p></div>
         <div class="card"><span class="source twin"><svg viewBox="0 0 14 14" aria-hidden="true"><path d="M7 1l6 6-6 6-6-6z" fill="currentColor"/></svg>Digital twin</span><h3 style="margin-top:12px">A full year for all 579 wells</h3><p>A physics-based simulation of the same wells over a year, including the monsoon. It stands in for the long real history we are requesting.</p></div>
       </div>
@@ -119,7 +119,7 @@
     <section>
       <div class="section-title"><h2>How we got here</h2><p>Each stage answered one question and set up the next.</p></div>
       <div class="journey-mini">
-        <a class="card" href="./prototype/"><span class="num">STAGE 1</span><h3>Can pump records become forecasts?</h3><p>Yes: 15 days of real data were cleaned, linked and modelled.</p></a>
+        <a class="card" href="./prototype/"><span class="num">STAGE 1</span><h3>Can pump records become forecasts?</h3><p>Yes: a 15-day vendor export was cleaned, linked and modelled.</p></a>
         <a class="card" href="./models/"><span class="num">STAGE 2</span><h3>What matters most: data or model?</h3><p>Data. Resting-level readings cut error from 4.2 m to 0.5 m on a test system.</p></a>
         <a class="card" href="./accuracy/"><span class="num">STAGE 3</span><h3>How far ahead can we see?</h3><p>Twelve weeks, at half the error of guessing, with honest ranges.</p></a>
         <a class="card" href="./network/"><span class="num">STAGE 4</span><h3>Do wells affect each other?</h3><p>In simulation, yes. We know what data would measure it.</p></a>
@@ -128,13 +128,13 @@
     </section>
 
     <section>
-      <div class="callout caution"><strong>Honest status</strong><p>This is a proof of concept. The long-range results come from a digital twin and a synthetic test system, not yet from years of real field records. The next step is to repeat these tests on real long-term data. <a href="./next/">Here is what that needs</a>.</p></div>
+      <div class="callout caution"><strong>Honest status</strong><p>This is a proof of concept. The long-range results come from a digital twin and a synthetic test system, and the 15-day vendor export carries demonstration water levels, so no real level measurement has been used yet. The next step is to repeat these tests on real long-term data. <a href="./next/">Here is what that needs</a>.</p></div>
     </section>
   </div>
 </main>
 <!--SHELL:FOOTER-->
-<footer class="site-footer"><div class="wrap"><div><strong>Borewell Forecast</strong> is a proof of concept for forecasting groundwater levels in Bengaluru borewells. Results are labelled by where the data came from: <span class="source real">real pump data</span> (15 days, July 2026), <span class="source synthetic">synthetic test system</span> (450 simulated wells with a known answer) or <span class="source twin">digital twin</span> (a physics-based simulation of the 579 wells over a year). Nothing here is yet a validated field forecast.</div><div><strong>Explore</strong><ul><li><a href="./">Overview</a></li><li><a href="./forecast/">Try a forecast</a></li><li><a href="./accuracy/">How accurate</a></li><li><a href="./drivers/">What moves the water</a></li><li><a href="./network/">Wells affect each other</a></li><li><a href="./journey/">Our journey</a></li><li><a href="./next/">What's next</a></li></ul></div><div><strong>More</strong><ul><li><a href="./glossary/">Glossary of terms</a></li><li><a href="./prototype/">Stage 1 · First prototype (real data)</a></li><li><a href="./comparison/">Stage 2 · Scenario explorer</a></li><li><a href="./validation/">Stage 2 · Hidden-truth test</a></li><li><a href="./models/">Stage 2 · Three models compared</a></li><li><a href="https://github.com/mailabhiramsrinivas-art/borewell-water-forecast">Source code</a></li></ul></div></div></footer>
+<footer class="site-footer"><div class="wrap"><div><strong>Borewell Forecast</strong> is a proof of concept for forecasting groundwater levels in Bengaluru borewells. Results are labelled by where the data came from: <span class="source real">vendor export</span> (15 days, July 2026, in the vendor's real format but with demonstration water-level values), <span class="source synthetic">synthetic test system</span> (450 simulated wells with a known answer) or <span class="source twin">digital twin</span> (a physics-based simulation of the 579 wells over a year). No real water-level measurement has been used yet, and nothing here is yet a validated field forecast.</div><div><strong>Explore</strong><ul><li><a href="./">Overview</a></li><li><a href="./forecast/">Try a forecast</a></li><li><a href="./accuracy/">How accurate</a></li><li><a href="./drivers/">What moves the water</a></li><li><a href="./network/">Wells affect each other</a></li><li><a href="./journey/">Our journey</a></li><li><a href="./next/">What's next</a></li></ul></div><div><strong>More</strong><ul><li><a href="./glossary/">Glossary of terms</a></li><li><a href="./prototype/">Stage 1 · First prototype (vendor export)</a></li><li><a href="./comparison/">Stage 2 · Scenario explorer</a></li><li><a href="./validation/">Stage 2 · Hidden-truth test</a></li><li><a href="./models/">Stage 2 · Three models compared</a></li><li><a href="https://github.com/mailabhiramsrinivas-art/borewell-water-forecast">Source code</a></li></ul></div></div></footer>
 <!--/SHELL:FOOTER-->
-<script src="./assets/site.js?v=cd22e42713"></script>
+<script src="./assets/site.js?v=3a0284c170"></script>
 </body>
 </html>

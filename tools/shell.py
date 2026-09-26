@@ -14,7 +14,7 @@ NAV = [("overview", "", "Overview"), ("forecast", "forecast/", "Try a forecast")
        ("drivers", "drivers/", "What moves the water"), ("network", "network/", "Wells affect each other"),
        ("journey", "journey/", "Our journey"), ("next", "next/", "What's next")]
 # earlier-stage tools live under "Our journey"
-JOURNEY_TOOLS = [("prototype", "prototype/", "Stage 1 · First prototype (real data)"),
+JOURNEY_TOOLS = [("prototype", "prototype/", "Stage 1 · First prototype (vendor export)"),
                  ("comparison", "comparison/", "Stage 2 · Scenario explorer"),
                  ("validation", "validation/", "Stage 2 · Hidden-truth test"),
                  ("models", "models/", "Stage 2 · Three models compared")]
@@ -42,10 +42,10 @@ def header(page, p):
 def footer(p):
     return (f'<footer class="site-footer"><div class="wrap">'
             f'<div><strong>Borewell Forecast</strong> is a proof of concept for forecasting groundwater levels in Bengaluru borewells. '
-            f'Results are labelled by where the data came from: <span class="source real">real pump data</span> (15 days, July 2026), '
+            f'Results are labelled by where the data came from: <span class="source real">vendor export</span> (15 days, July 2026, in the vendor\'s real format but with demonstration water-level values), '
             f'<span class="source synthetic">synthetic test system</span> (450 simulated wells with a known answer) or '
             f'<span class="source twin">digital twin</span> (a physics-based simulation of the 579 wells over a year). '
-            f'Nothing here is yet a validated field forecast.</div>'
+            f'No real water-level measurement has been used yet, and nothing here is yet a validated field forecast.</div>'
             f'<div><strong>Explore</strong><ul>{"".join(f"<li><a href={chr(34)}{p}{h}{chr(34)}>{l}</a></li>" for _, h, l in NAV)}</ul></div>'
             f'<div><strong>More</strong><ul><li><a href="{p}glossary/">Glossary of terms</a></li>'
             f'{"".join(f"<li><a href={chr(34)}{p}{h}{chr(34)}>{l}</a></li>" for _, h, l in JOURNEY_TOOLS)}'
