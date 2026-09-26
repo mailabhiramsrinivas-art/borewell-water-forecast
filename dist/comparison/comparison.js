@@ -22,55 +22,10 @@ function readInputs() {
   };
 }
 
-function futureInputs(well, day, inputs) {
-  const drivers = state.data.drivers;
-  const index = (day - 1) % drivers.rainfall.length;
-  const pumpFactor = { low: .75, typical: 1, high: 1.25 }[inputs.pumping];
-  const rainFactor = { dry: .6, typical: 1, wet: 1.4 }[inputs.rainfall];
-  const weeklyRhythm = 1 + .08 * Math.sin(day * Math.PI * 2 / 7);
-  const volume = well.model.average_volume_m3 * pumpFactor * weeklyRhythm;
-  const rainfall = drivers.rainfall[index] * rainFactor;
-  const effectiveRain = rainfall * (1 - well.impervious_fraction) * .72;
-  return {
-    volume,
-    effectiveRain,
-    supply: drivers.supply[index],
-    demand: drivers.demand[index],
-  };
-}
-
 function createForecast(well, inputs) {
   const requestedDays = horizonDays(inputs.value, inputs.unit);
-  const days = Math.ceil(requestedDays);
-  const z = inputs.confidence === 95 ? 1.96 : 1.282;
-  let level = well.model.latest_observed_m_bgs;
-  const history = well.history.observed;
-  let previousDelta = history.at(-1) - history.at(-2);
-  const points = [{ day: 0, mean: level, low: level, high: level }];
-  for (let day = 1; day <= days; day += 1) {
-    const driver = futureInputs(well, day, inputs);
-    const x = [
-      1,
-      previousDelta,
-      (driver.volume - well.model.volume_center) / well.model.volume_scale,
-      driver.effectiveRain / well.model.rain_scale,
-      (1 - driver.supply) / .2,
-      driver.demand - 1,
-    ];
-    const learnedDelta = clamp(dot(x, well.model.beta), -.8, .8);
-    const delta = learnedDelta / (1 + day / 365);
-    level = clamp(level + delta, 0, well.construction_depth_m - 1);
-    previousDelta = delta;
-    const uncertainty = Math.max(
-      well.model.residual_sigma * Math.sqrt(day) * 1.35,
-      .35 + .035 * day,
-      well.validation.mae_m * Math.sqrt(day / 30),
-    );
-    const width = z * uncertainty;
-    points.push({ day, mean: level, low: Math.max(0, level - width), high: Math.min(well.construction_depth_m, level + width) });
-  }
-  const targetIndex = Math.min(days, Math.round(requestedDays));
-  return { days: requestedDays, points, final: points[targetIndex], inputs };
+  const points = BorewellCore.forecast(state.data, well, Math.ceil(requestedDays), inputs.pumping, inputs.rainfall, inputs.confidence);
+  return { days: requestedDays, points, final: points[Math.min(points.length-1, Math.round(requestedDays))], inputs };
 }
 
 function sampleSeries(points, maximum = 180) {
@@ -184,11 +139,11 @@ function renderResult(well, result, inputs) {
   $("projectedDate").textContent = formatDate(targetDate);
   $("currentLevel").textContent = `${fmt(current)} m bgs`;
   $("errorRange").textContent = `±${fmt(halfWidth)} m`;
-  $("confidenceLabel").textContent = `${inputs.confidence}% projection range`;
+  $("confidenceLabel").textContent = `Nominal ${inputs.confidence}% range`;
   $("directionValue").textContent = direction;
   $("changeValue").textContent = `${change >= 0 ? "+" : "−"}${fmt(Math.abs(change))} m from the latest reading`;
   $("plainTitle").textContent = `${well.id} is projected to be ${direction.toLowerCase()} after ${horizonLabel(inputs.value, inputs.unit)}.`;
-  $("plainText").textContent = `The selected scenario ends at approximately ${fmt(result.final.mean)} m below ground, with a ${inputs.confidence}% range of ${fmt(result.final.low)}–${fmt(result.final.high)} m. ${scenario.behavior} ${longRange ? "This selection extends beyond the six-month system history, so it should be treated as a stress-test scenario." : "This selection stays within the length of the simulated history."}`;
+  $("plainText").textContent = `The selected scenario ends at approximately ${fmt(result.final.mean)} m below ground, with a ${inputs.confidence}% range of ${fmt(result.final.low)}–${fmt(result.final.high)} m. ${scenario.behavior} ${longRange ? "Beyond 30 days this is a scenario extrapolation. Band width grows with the square root of horizon; coverage is not validated here." : "Only the first 30 days have a held-out test; later days and bands are extrapolated."}`;
   $("wellMae").textContent = `${fmt(well.validation.mae_m, 2)} m`;
   $("wellRmse").textContent = `${fmt(well.validation.rmse_m, 2)} m`;
   $("wellScenario").textContent = scenario.label;
@@ -207,12 +162,13 @@ function renderResult(well, result, inputs) {
 
 function runForecast(event) {
   event?.preventDefault();
+  state.lastResult = null;
   const inputs = readInputs();
   const well = state.wells.get(inputs.wellId);
   const days = horizonDays(inputs.value, inputs.unit);
   if (!well) return showError("Choose a well ID from SYN001 to SYN450.");
   if (!Number.isFinite(days) || days <= 0) return showError("Enter a forecast length greater than zero.");
-  if (days > 1825) return showError("Use a forecast horizon of five years or less for this proof of concept.");
+  if (days > 1827) return showError("Use a forecast horizon of five years or less for this proof of concept.");
   showError("");
   const result = createForecast(well, inputs);
   state.lastResult = { well, inputs, result };

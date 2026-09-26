@@ -1,0 +1,46 @@
+{
+  "feature_check": {
+    "wells": 5,
+    "days_each": 10,
+    "max_difference": 2.220446049250313e-15
+  },
+  "scenario_monotonicity": {
+    "wells": 450,
+    "horizons_days": [
+      92,
+      366,
+      1827
+    ],
+    "paths": 8100,
+    "violations": 0
+  },
+  "page1": {
+    "BW046": "74.9 ±32.0 m; first chart label 14d ago",
+    "BW028": "no readings",
+    "BW163": "no reading passed screening",
+    "BW005": "rejected reading date 19 Jul 2026"
+  },
+  "metric_recomputation_max_difference": 0,
+  "webmcp": [
+    {
+      "page": "page1",
+      "tool": "configure_water_level_forecast",
+      "passed": true
+    },
+    {
+      "page": "page2",
+      "tool": "configure_synthetic_borewell_forecast",
+      "passed": true
+    },
+    {
+      "page": "page3",
+      "tool": "inspect_synthetic_borewell_validation",
+      "passed": true
+    },
+    {
+      "page": "page4",
+      "tool": "compare_borewell_models",
+      "passed": true
+    }
+  ]
+}

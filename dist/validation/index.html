@@ -11,12 +11,13 @@
 <body class="validation-page">
   <header class="lab-header validation-header">
     <nav class="page-nav" aria-label="Project pages">
-      <a href="../">01 · Existing model</a>
+      <a href="../">01 · Real-data trend</a>
       <a href="../comparison/">02 · 450-well forecast</a>
       <a class="active" href="./" aria-current="page">03 · Validation lab</a>
+    <a href="../models/">04 · Model comparison</a>
     </nav>
     <div class="header-title">
-      <p class="eyebrow">Synthetic groundwater lab · Page 03</p>
+      <p class="eyebrow">M3 · 450-well driver model validation · Page 03</p>
       <h1>Can the model recover a level it was not shown?</h1>
     </div>
     <span class="page-tag cyan-tag">30-day holdout</span>
@@ -40,10 +41,10 @@
         <h2 id="validationControlsTitle">Select a scenario and well</h2>
       </div>
       <form id="validationForm">
-        <label for="scenarioSelect">Designed scenario</label>
-        <select id="scenarioSelect"></select>
-        <label for="wellInput">Borewell</label>
-        <input id="wellInput" list="wellOptions" value="SYN001" autocomplete="off">
+        <div class="form-field"><label for="scenarioSelect">Designed scenario</label>
+        <select id="scenarioSelect"></select></div>
+        <div class="form-field"><label for="wellInput">Borewell</label>
+        <input id="wellInput" list="wellOptions" value="SYN001" autocomplete="off"></div>
         <datalist id="wellOptions"></datalist>
         <button type="submit">Inspect validation</button>
       </form>
@@ -127,7 +128,7 @@
     </section>
 
     <p class="closing-note"><strong>Interpretation:</strong> this page measures whether the statistical structure can recover the known synthetic system. It does not establish real-world Bengaluru accuracy; that requires the same inputs and holdout design on genuine wells.</p>
-  </main>
+  <p class="closing-note"><strong>Conditional-input test:</strong> the model receives actual future pumping, supply, demand and raw rain. This tests how it follows the level when those inputs are known. Rain delay is selected on days 121–150; final days 151–180 are used only for scoring. Nominal 80% bands are calibrated on the inner window; the coverage above is their measured final holdout coverage.</p></main>
 
   <script src="../data/synthetic_model_loader.js"></script>
   <script src="./validation.js"></script>

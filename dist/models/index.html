@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Model comparison · Borewell Water Forecast</title>
+  <meta name="description" content="Three transparent borewell models compared on the same 450 synthetic wells, with predictions, errors and data requirements.">
+  <link rel="stylesheet" href="../lab.css">
+</head>
+<body>
+<header class="lab-header">
+  <nav class="page-nav" aria-label="Project pages">
+    <a href="../">01 · Real-data trend</a><a href="../comparison/">02 · 450-well forecast</a>
+    <a href="../validation/">03 · Validation lab</a><a class="active" aria-current="page" href="./">04 · Model comparison</a>
+  </nav>
+  <div class="header-title"><p class="eyebrow">Bengaluru borewell project · Page 04</p><h1>Better readings.<br>Then better predictions.</h1><p>Compare three models on the same wells, dates and hidden static-level truth.</p></div>
+  <span class="page-tag">Proof of concept</span>
+</header>
+<main class="lab-main models-main">
+  <p class="takeaway" id="takeaway">Loading the comparison…</p>
+  <div class="model-cards" id="modelCards"></div>
+  <section class="compare-section" aria-labelledby="predictionTitle">
+    <p class="section-kicker">01 / Predictions</p><h2 id="predictionTitle">One well. Three approaches.</h2>
+    <p>Train: 1 Jan–30 May 2026 (150 days). Test: 31 May–29 Jun (30 days). Every model receives the actual future drivers it uses: M1 none; M2 rain; M3 volume, rain, supply and demand. This is a conditional-input test.</p>
+    <form id="comparisonForm" class="compare-controls">
+      <div class="form-field"><label for="scenarioSelect">Designed scenario</label><select id="scenarioSelect"></select></div>
+      <div class="form-field"><label for="wellInput">Synthetic borewell</label><input id="wellInput" list="wellOptions" value="SYN001" autocomplete="off"><datalist id="wellOptions"></datalist></div>
+      <button type="submit">Compare this well</button><p id="formError" class="form-error" role="alert"></p>
+    </form>
+    <div class="band-controls" aria-label="Show interval bands">
+      <label class="check-label"><input type="checkbox" id="bandM1">M1 heuristic band</label>
+      <label class="check-label"><input type="checkbox" id="bandM2">M2 heuristic band</label>
+      <label class="check-label"><input type="checkbox" id="bandM3" checked>M3 calibrated band</label>
+    </div>
+    <h3 id="wellTitle">Held-out daily static levels</h3>
+    <div class="model-legend"><span style="--model-color:#142521">Observed static</span><span style="--model-color:#3b78c8">Hidden truth</span><span style="--model-color:#d66635">M1</span><span style="--model-color:#8a55b5">M2</span><span style="--model-color:#087d76">M3</span><span style="--model-color:#999">Persistence</span></div>
+    <div class="chart-scroll"><svg id="holdoutChart" class="main-chart" viewBox="0 0 1040 440" role="img" aria-labelledby="holdoutChartTitle holdoutChartDesc"></svg></div>
+    <p class="field-help">All levels are m below ground; deeper plots lower. M1/M2 start from dynamic pump-start readings; the target is static. Switching on their broad heuristic bands changes the chart scale.</p>
+    <div class="table-wrap"><table><thead><tr><th>Day</th><th>Hidden truth</th><th>M1 level / error</th><th>M2 level / error</th><th>M3 level / error</th></tr></thead><tbody id="checkpointRows"></tbody></table></div>
+    <p class="field-help">Checkpoint errors are prediction minus truth; positive means too deep.</p><h3>Six-month forward scenarios</h3><div class="model-legend"><span style="--model-color:#d66635">M1</span><span style="--model-color:#8a55b5">M2</span><span style="--model-color:#087d76">M3</span></div><p>No hidden truth exists after 29 June. These paths use typical pumping and a synthetic calendar year including monsoon assumptions. Long horizons and M3 bands beyond 30 days are extrapolated.</p>
+    <div class="chart-scroll"><svg id="forwardChart" class="main-chart" viewBox="0 0 1040 440" role="img" aria-labelledby="forwardChartTitle forwardChartDesc"></svg></div>
+  </section>
+  <section class="compare-section" aria-labelledby="errorTitle">
+    <p class="section-kicker">02 / Errors</p><h2 id="errorTitle">Separate data quality from model complexity.</h2>
+    <label class="check-label"><input type="checkbox" id="excludeDrift">Exclude sensor-drift wells</label>
+    <p class="field-help">25 wells deliberately acquire measurement bias. All models see biased readings, while scoring uses the physical truth. Omitting these wells changes the evaluation population; it does not solve drift.</p>
+    <div class="table-wrap"><table><thead><tr><th>Model / reference</th><th>MAE</th><th>RMSE</th><th>Bias</th><th>80% coverage</th><th>Mean half-width</th><th>Well-days</th></tr></thead><tbody id="fleetRows"></tbody></table></div>
+    <p class="notice" id="bandNotice"></p><p class="field-help">M1/M2 and the static ablation use the specified broad heuristic ranges; their high coverage is not calibration. Baselines have no claimed interval. Bias is prediction minus truth: positive means too deep.</p>
+    <h3>Absolute error by lead day</h3><div class="model-legend"><span style="--model-color:#d66635">M1</span><span style="--model-color:#8a55b5">M2</span><span style="--model-color:#087d76">M3</span><span style="--model-color:#58768c">M1 static</span><span style="--model-color:#999">Persistence</span><span style="--model-color:#ba9b22">60-day trend</span></div><div class="chart-scroll"><svg id="leadChart" class="main-chart" viewBox="0 0 1040 440" role="img" aria-labelledby="leadChartTitle leadChartDesc"></svg></div>
+    <h3>MAE by designed scenario</h3><div class="table-wrap"><table class="heat"><thead><tr><th>Scenario</th><th>M1</th><th>M2</th><th>M3</th><th>M1 static</th><th>Persistence</th><th>60-day trend</th></tr></thead><tbody id="scenarioRows"></tbody></table></div>
+    <h3>Lowest error among the three models</h3><div id="winShares" class="win-shares"></div><p class="field-help">Share of wells won by per-well MAE. Reference baselines are excluded from this three-model contest.</p>
+  </section>
+  <section class="compare-section" aria-labelledby="overallTitle">
+    <p class="section-kicker">03 / Overall comparison</p><h2 id="overallTitle">Each model answers a different data situation.</h2>
+    <div class="table-wrap"><table class="matrix"><thead><tr><th>Question</th><th>M1 · Real-data trend</th><th>M2 · Rainfall scenario</th><th>M3 · 450-well driver</th></tr></thead><tbody id="matrixRows"></tbody></table></div>
+    <div class="explanation-grid">
+      <article class="plain-card"><h3>What this proves</h3><p>On this constructed system, static readings remove most of the dynamic-reading error. Drivers improve the remaining forecast and enable ordered pumping/rain scenarios. The same test exposes sensor drift.</p></article>
+      <article class="plain-card"><h3>What this does not prove</h3><p>It does not establish Bengaluru accuracy, sustainable yield, aquifer recharge rates, or six-month to five-year reliability. Synthetic data favour their generating assumptions. Future drivers remain uncertain and drift requires calibration evidence.</p></article>
+    </div>
+    <h3>Data-readiness path</h3><div class="readiness"><p><strong>M1 · Available now</strong><br>Screened pump sessions and a clear dynamic-level definition.</p><p><strong>M2 · Add public rainfall</strong><br>Well locations and longer overlapping observations for real lag testing.</p><p><strong>M3 · Company data contract</strong><br>Standard static readings, calibration, pumped volume, supply/demand, nearby activity and ≥6–12 months of history.</p></div>
+  </section>
+  <section class="compare-section" aria-labelledby="realTitle">
+    <p class="section-kicker">04 / Real Bengaluru wells</p><h2 id="realTitle">M1 vs M2 on the available real record</h2>
+    <p class="notice"><strong>Different data and targets — not directly comparable.</strong> Real errors measure pump/recovery session transitions. Synthetic errors measure daily static levels. These numbers must not be compared directly.</p>
+    <div class="table-wrap"><table><thead><tr><th>Real-data test</th><th>MAE</th></tr></thead><tbody><tr><td>Screened pump / recovery transitions</td><td>8.953 / 7.088 m</td></tr><tr><td>All-record pump / recovery transitions</td><td>33.997 / 29.691 m</td></tr><tr><td>Combined screened: before / after rain</td><td>8.134227 → 8.131628 m (0.03%)</td></tr></tbody></table></div>
+    <p><strong>M3 cannot yet run on real wells:</strong> it needs daily static levels, drivers and at least several months of history.</p>
+    <form id="realForm" class="compare-controls real-controls">
+      <div class="form-field"><label for="realWell">Real borewell</label><input id="realWell" list="realOptions" value="BW046"><datalist id="realOptions"></datalist></div>
+      <div class="form-field"><label for="realDays">Horizon (days)</label><input id="realDays" type="number" value="183" min="1" max="36525"></div>
+      <div class="form-field"><label for="realPump">Pumping</label><select id="realPump"><option value="typical">Similar to recent</option><option value="low">Lower</option><option value="high">Higher</option></select></div>
+      <div class="form-field"><label for="realRain">Rainfall</label><select id="realRain"><option value="typical">Typical</option><option value="dry">Dry</option><option value="wet">Wet</option></select></div>
+      <div class="form-field"><label for="realConfidence">Heuristic range</label><select id="realConfidence"><option value="80">80%</option><option value="95">95%</option></select></div>
+      <button type="submit">Compare real scenarios</button><p id="realError" class="form-error" role="alert"></p>
+    </form>
+    <div class="model-legend"><span style="--model-color:#d66635">M1</span><span style="--model-color:#8a55b5">M2</span></div>
+    <p id="realResult"></p><div class="chart-scroll"><svg id="realChart" class="main-chart" viewBox="0 0 1040 440" role="img" aria-labelledby="realChartTitle realChartDesc"></svg></div>
+    <p class="field-help">NASA POWER city-centre rainfall is shared by all wells because coordinates are unavailable. The projection uses 2001–2025 monthly rainfall quartiles, not a future weather forecast. <a href="https://power.larc.nasa.gov/docs/services/api/temporal/daily/">Source documentation</a>.</p>
+  </section>
+  <p class="closing-note">Page 3 validates M3; it is not a fourth model. Source data, feature definitions, split and rounding are documented in the updated mathematical handoff.</p>
+</main>
+<script src="./models.js"></script>
+</body></html>

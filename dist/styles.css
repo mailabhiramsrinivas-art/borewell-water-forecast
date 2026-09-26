@@ -137,3 +137,8 @@ button:focus-visible { outline: 3px solid rgba(10,167,162,.35); outline-offset: 
   .metric-card, .chart-card { animation: settle .35s ease both; }
   @keyframes settle { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: none; } }
 }
+
+.form-field { display:grid; gap:6px; min-width:0; }
+form > .field-help, form > .form-error { grid-column:1 / -1; }
+.topbar-nav { flex-wrap:wrap; }
+.workspace > *, .results > *, .controls { min-width:0; }

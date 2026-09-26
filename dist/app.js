@@ -90,7 +90,7 @@ function renderChart(well, result) {
   svg.replaceChildren(svgEl("title", { id: "chartTitle" }, `Water-level forecast for ${well.well_id}`), svgEl("desc", { id: "chartDesc" }, "Observed daily median levels followed by an uncertainty band and projected level."));
   const W = 980, H = 410, margin = { left: 70, right: 28, top: 25, bottom: 50 };
   const innerW = W - margin.left - margin.right, innerH = H - margin.top - margin.bottom;
-  const history = (well.history || []).map((p, index, array) => ({ day: index - (array.length - 1), level: Number(p.level), date: p.date }));
+  const history = (well.history || []).map((p, index, array) => ({ day: (Date.parse(p.date) - Date.parse(String(well.latest_start_time).slice(0,10))) / 86400000, level: Number(p.level), date: p.date }));
   const allValues = history.map(p => p.level).concat(result.forecast.flatMap(p => [p.low, p.high]));
   let minY = Math.max(0, Math.min(...allValues) - 6);
   let maxY = Math.min(500, Math.max(...allValues) + 6);
@@ -146,7 +146,7 @@ function interpretation(well, result, inputs) {
 }
 
 function renderResult(well, result, inputs) {
-  const latestDate = well.history?.at(-1)?.date || "2026-07-29";
+  const latestDate = String(well.latest_start_time).slice(0,10);
   const targetDate = addDays(latestDate, result.days);
   const halfWidth = (result.final.high - result.final.low) / 2;
   const change = result.finalMean - result.latest;
@@ -190,13 +190,23 @@ function readInputs() {
 
 function runForecast(event) {
   event?.preventDefault();
+  state.lastResult = null;
   const inputs = readInputs();
   const well = state.wells.get(inputs.wellId);
   const days = horizonInDays(inputs.value, inputs.unit);
   if (!well) return showError("Choose a well ID from the list.");
   if (!Number.isFinite(days) || days <= 0) return showError("Enter a forecast length greater than zero.");
   if (days > 36525) return showError("Use a horizon of 100 years or less for this proof of concept.");
-  if (!Number.isFinite(Number(well.latest_start_level_m_bgs))) return showError("This well has no usable starting level for a forecast.");
+  if (well.latest_start_level_m_bgs == null || !Number.isFinite(Number(well.latest_start_level_m_bgs)) || Number(well.sessions_screened_usable) === 0) {
+    const message = well.latest_start_level_m_bgs == null ? 'No readings for this well.' : 'No reading passed quality screening for this well.';
+    ['forecastLevel','forecastDate','forecastError','directionValue','changeValue','stabilityValue','sessionsValue','horizonStatus'].forEach(id => $(id).textContent='—');
+    $('currentLevel').textContent='No usable reading';
+    $('currentDate').textContent=well.latest_start_time ? `Latest rejected reading · ${formatDate(new Date(String(well.latest_start_time).slice(0,10)+'T00:00:00Z'))}` : 'No recorded date';
+    $('plainHeadline').textContent=message; $('plainText').textContent='A forecast requires at least one reading that passes quality screening.';
+    $('resultEyebrow').textContent=well.well_id; $('evidenceBadge').textContent='Unavailable';
+    $('forecastChart').replaceChildren(); $('warningText').textContent=message;
+    return showError(message);
+  }
   showError("");
   const result = createForecast(well, inputs);
   state.lastResult = { well, result, inputs };
@@ -262,7 +272,7 @@ async function init() {
     state.data = await response.json();
     state.data.wells.forEach(well => state.wells.set(well.well_id, well));
     const options = $("wellOptions");
-    state.data.wells.forEach(well => options.append(new Option(`${well.well_id} · ${titleCase(well.evidence_tier)} evidence`, well.well_id)));
+    state.data.wells.forEach(well => options.append(new Option(`${well.well_id} · ${well.latest_start_level_m_bgs == null ? "No readings" : Number(well.sessions_screened_usable) === 0 ? "No reading passed screening" : titleCase(well.evidence_tier) + " evidence"}`, well.well_id)));
     if (!state.wells.has($("wellInput").value)) {
       const preferred = state.data.wells.find(w => w.evidence_tier === "higher") || state.data.wells[0];
       $("wellInput").value = preferred.well_id;

@@ -16,13 +16,14 @@
       </div>
       <div>
         <h1>Borewell Water Forecast</h1>
-        <p>Dynamic level projection from the current 15-day dataset</p>
+        <p>M1 · Real-data trend model · 15-day record</p>
       </div>
     </div>
     <nav class="topbar-nav" aria-label="Project pages">
-      <a class="active" href="./" aria-current="page">01 · Existing</a>
-      <a href="./comparison/">02 · New data</a>
+      <a class="active" href="./" aria-current="page">01 · Real-data trend</a>
+      <a href="./comparison/">02 · 450-well forecast</a>
       <a href="./validation/">03 · Validation</a>
+    <a href="./models/">04 · Model comparison</a>
     </nav>
   </header>
 
@@ -34,46 +35,46 @@
       </div>
 
       <form id="forecastForm">
-        <label for="wellInput">Borewell</label>
-        <input id="wellInput" list="wellOptions" value="BW046" autocomplete="off" required aria-describedby="wellHelp">
+        <div class="form-field"><label for="wellInput">Borewell</label>
+        <input id="wellInput" list="wellOptions" value="BW046" autocomplete="off" required aria-describedby="wellHelp"></div>
         <datalist id="wellOptions"></datalist>
         <p class="field-help" id="wellHelp">Select one of the 579 monitored well IDs.</p>
 
         <div class="field-row">
           <div>
-            <label for="horizonValue">Forecast length</label>
-            <input id="horizonValue" type="number" min="1" step="1" value="30" required>
+            <div class="form-field"><label for="horizonValue">Forecast length</label>
+            <input id="horizonValue" type="number" min="1" step="1" value="30" required></div>
           </div>
           <div>
-            <label for="horizonUnit">Unit</label>
+            <div class="form-field"><label for="horizonUnit">Unit</label>
             <select id="horizonUnit">
               <option value="days">Days</option>
               <option value="weeks">Weeks</option>
               <option value="months">Months</option>
               <option value="years">Years</option>
-            </select>
+            </select></div>
           </div>
         </div>
 
-        <label for="pumpingScenario">Expected pumping</label>
+        <div class="form-field"><label for="pumpingScenario">Expected pumping</label>
         <select id="pumpingScenario">
           <option value="low">Lower than recent</option>
           <option value="typical" selected>Similar to recent</option>
           <option value="high">Higher than recent</option>
-        </select>
+        </select></div>
 
-        <label for="rainScenario">Rainfall and recharge</label>
+        <div class="form-field"><label for="rainScenario">Rainfall and recharge</label>
         <select id="rainScenario">
           <option value="dry">Drier / weaker recharge</option>
           <option value="typical" selected>Similar to recent</option>
           <option value="wet">Wetter / stronger recharge</option>
-        </select>
+        </select></div>
 
-        <label for="confidence">Uncertainty range</label>
+        <div class="form-field"><label for="confidence">Uncertainty range</label>
         <select id="confidence">
           <option value="80" selected>80% projection range</option>
           <option value="95">95% projection range</option>
-        </select>
+        </select></div>
 
         <button type="submit">Generate forecast</button>
         <p class="form-error" id="formError" role="alert"></p>
@@ -148,7 +149,7 @@
           <dl>
             <div><dt>Short-term pattern</dt><dd id="stabilityValue">—</dd></div>
             <div><dt>Usable sessions</dt><dd id="sessionsValue">—</dd></div>
-            <div><dt>Validated range</dt><dd>Later 4-day holdout</dd></div>
+            <div><dt>Validated range</dt><dd>Session transitions · 4-day holdout</dd></div>
             <div><dt>Selected horizon</dt><dd id="horizonStatus">—</dd></div>
           </dl>
         </article>
