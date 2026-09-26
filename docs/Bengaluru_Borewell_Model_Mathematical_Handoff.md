@@ -1,7 +1,7 @@
 # Mathematical and Technical Handoff for the Bengaluru Borewell Forecasting Proof of Concept
 
-**Complete data, model, validation, website, rainfall, and deployment specification**  
-**Prepared:** 25 September 2026; revised 26 September 2026  
+**Complete data, model, validation, website, rainfall, and deployment specification**
+**Prepared:** 25 September 2026; revised 26 September 2026
 **Purpose:** This document is a self-contained handoff. A person or another language model should be able to reconstruct what was supplied, what was calculated, what was validated, what the public website displays, and what remains scientifically unsupported.
 
 ## 1. Executive summary
