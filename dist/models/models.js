@@ -38,10 +38,14 @@ function calculateMetrics(wells,key) {
   return {mae_m:round(sum/n),rmse_m:round(Math.sqrt(sq/n)),bias_m:round(bias/n),coverage_80_pct:hasBand?round(inside/n*100):null,mean_halfwidth_m:hasBand?round(width/n):null,n};
 }
 window.calculateBorewellMetrics=calculateMetrics;
+const FRIENDLY={
+  M1:{name:'Trend from pump-start readings',rows:[['What it uses','The level recorded when each pump starts, as a daily median'],['What it predicts','Where the well\'s recent trend leads'],['How it was tested','On real wells for short-term changes (Stage 1), and here on the test system'],['Strength','Works today with the company\'s existing records, and is easy to explain'],['Weakness','Pump-start readings are affected by recent pumping, so they sit too deep'],['Best use','A quick fallback where little data exists']]},
+  M2:{name:'Trend plus rainfall',rows:[['What it uses','The same as M1, plus public rainfall records'],['What it predicts','The trend, nudged by how wet the season is'],['How it was tested','The same tests as M1'],['Strength','Uses free public data and shows seasonal what-ifs'],['Weakness','Adds little when the underlying readings are off'],['Best use','Seasonal what-if planning']]},
+  M3:{name:'Driver model',rows:[['What it uses','Resting-level readings, pumping volume, past rainfall, water supply and demand'],['What it predicts','Each day\'s change in the resting level'],['How it was tested','A 30-day hidden-truth test on the 450 simulated wells'],['Strength','Learns that rain arrives with a delay, and its pumping and rain settings behave sensibly'],['Weakness','Only tested on simulated data so far; cannot see a drifting sensor'],['Best use','The target system, once real long-term data is available']]}};
 function modelCards() {
-  $('modelCards').innerHTML=state.data.models.map(m=>`<article class="model-card" style="--model-color:${colors[m.id]}"><p class="section-kicker">${m.id}</p><h2>${m.name}</h2><dl>${[['Inputs',m.inputs],['Predicts',m.predicts],['Validation',m.id==='M3'?'30-day synthetic static-level test. Rain lag selected on inner validation.':'Associated real session-transition test + this synthetic static-target comparison; long paths are heuristic.'],['Specialty',m.specialty],['Main limitation',m.limitation],['Best use',m.best_use]].map(([a,b])=>`<dt>${a}</dt><dd>${b}</dd>`).join('')}</dl></article>`).join('');
+  $('modelCards').innerHTML=state.data.models.map(m=>{const f=FRIENDLY[m.id]||{name:m.name,rows:[]};return `<article class="model-card" style="--model-color:${colors[m.id]}"><p class="section-kicker">${m.id}</p><h2>${f.name}</h2><dl>${f.rows.map(([a,b])=>`<dt>${a}</dt><dd>${b}</dd>`).join('')}</dl></article>`;}).join('');
   const m=state.data.fleet_metrics.excluding_sensor_drift;
-  $('takeaway').textContent=`Most of the gain comes from static readings: ${fmt(m.M1.mae_m,2)} → ${fmt(m.M1_static.mae_m,2)} m MAE. Drivers reduce the remaining error to ${fmt(m.M3.mae_m,2)} m. (Excluding designed sensor drift.)`;
+  $('takeaway').textContent=`Most of the gain comes from better readings. Using resting levels instead of pump-start levels cut the average error from ${fmt(m.M1.mae_m,1)} m to ${fmt(m.M1_static.mae_m,1)} m. Adding pumping, rain and supply information cut it to ${fmt(m.M3.mae_m,1)} m. (These figures leave out the wells with deliberately faulty sensors.)`;
 }
 function populateWells() {
   const filter=$('scenarioSelect').value;
@@ -94,7 +98,7 @@ function renderReal(event) {
     allDays.push(d);vals1.push(p1);vals2.push(p2);low1.push(clamp(p1-wi,0,500));high1.push(clamp(p1+wi,0,500));low2.push(clamp(p2-wi2,0,500));high2.push(clamp(p2+wi2,0,500));
   }
  }
- $('realResult').textContent=`${w.well_id} · latest usable reading ${start.toLocaleDateString('en-IN',{timeZone:'UTC'})} · ${days}-day scenario: M1 ${fmt(vals1.at(-1),1)} m; M2 ${fmt(vals2.at(-1),1)} m bgs. Both ranges are heuristic.`;
+ $('realResult').textContent=`${w.well_id} · latest usable reading ${start.toLocaleDateString('en-IN',{timeZone:'UTC'})} · ${days}-day scenario: M1 ${fmt(vals1.at(-1),1)} m; M2 ${fmt(vals2.at(-1),1)} m below ground. Both ranges are rules of thumb, not tested guarantees.`;
  chart('realChart',[{id:'M1',values:vals1,days:allDays,low:low1,high:high1},{id:'M2',values:vals2,days:allDays,low:low2,high:high2}],{title:w.well_id+' real-data seasonal scenario comparison'});
 }
 async function init() {

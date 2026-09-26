@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Our journey · Borewell Forecast</title>
+  <meta name="description" content="How the borewell forecast was built, stage by stage, and what each stage proved.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230b3a52'/%3E%3Cpath d='M16 5C12 12 9 16 9 20.5a7 7 0 0 0 14 0C23 16 20 12 16 5Z' fill='%235fc4d8'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="../assets/site.css?v=cd22e42713">
+  <style>
+    .stage-head { display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: center; margin-bottom: 6px; }
+    .stage-head .when { font-size: .85rem; color: var(--muted); font-weight: 600; }
+    .q { font-size: 1.05rem; color: var(--brand-2); font-weight: 650; margin: 2px 0 10px; }
+    .found { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; margin: 12px 0 4px; }
+    .found div { background: var(--page); border-radius: 10px; padding: 10px 12px; }
+    .found b { display: block; font-size: 1.35rem; line-height: 1.2; }
+    .found span { font-size: .85rem; color: var(--ink-2); }
+    .lessons li { margin-bottom: 10px; }
+  </style>
+</head>
+<body data-page="journey">
+<!--SHELL:HEADER-->
+<a class="skip" href="#main">Skip to content</a>
+<header class="site-header"><div class="wrap"><a class="brand" href="../"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M16 3C11 11 7 16 7 21.5a9 9 0 0 0 18 0C25 16 21 11 16 3Z" fill="#5fc4d8"/><path d="M11.5 22c2.8 1.8 6.2 1.8 9 0" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round"/></svg><span>Borewell Forecast</span><span class="poc">Proof of concept</span></a><button class="menu-toggle" aria-expanded="false" aria-controls="site-nav">Menu</button><nav class="site-nav" id="site-nav" aria-label="Main"><ul><li><a href="../">Overview</a></li><li><a href="../forecast/">Try a forecast</a></li><li><a href="../accuracy/">How accurate</a></li><li><a href="../drivers/">What moves the water</a></li><li><a href="../network/">Wells affect each other</a></li><li><a href="../journey/" aria-current="page">Our journey</a></li><li><a href="../next/">What's next</a></li></ul></nav></div></header>
+<nav class="subnav" aria-label="Earlier-stage tools"><div class="wrap"><span>Earlier stages:</span><a href="../prototype/">Stage 1 · First prototype (real data)</a><a href="../comparison/">Stage 2 · Scenario explorer</a><a href="../validation/">Stage 2 · Hidden-truth test</a><a href="../models/">Stage 2 · Three models compared</a></div></nav>
+<!--/SHELL:HEADER-->
+<main id="main">
+  <div class="wrap">
+    <div class="page-hero">
+      <p class="kicker">Our journey</p>
+      <h1>How we got here, one question at a time</h1>
+      <p class="lede">We built this in stages. Each stage asked one question, tested the answer honestly, and showed what the next stage needed. The tools from every stage are still here to explore.</p>
+    </div>
+
+    <ol class="timeline">
+      <li>
+        <span class="dot">1</span>
+        <div class="card">
+          <div class="stage-head"><h2 style="margin:0">A first prototype on real pump data</h2><span class="source real"><svg viewBox="0 0 14 14" aria-hidden="true"><circle cx="7" cy="7" r="5" fill="currentColor"/></svg>Real pump data</span><span class="when">15–29 July 2026 · 579 wells</span></div>
+          <p class="q">Can routine pump records be turned into water-level forecasts at all?</p>
+          <p>We received 15 days of real records: about 490,000 pump readings and 12,355 pumping sessions, each with the water level when the pump started and stopped. We cleaned them, linked readings to sessions, and built models that predict the level at the end of each pump run and at the next start. We then tested those models on the last four days.</p>
+          <div class="found">
+            <div><b>Yes, it works</b><span>the pipeline from raw records to forecasts runs end to end</span></div>
+            <div><b>≈ 9 m</b><span>typical miss per pump run, because the raw readings are noisy</span></div>
+            <div><b>35%</b><span>of sessions had readings too odd to trust, and needed screening out</span></div>
+          </div>
+          <p class="note">Fifteen days could not show seasons or test rainfall: adding rain changed accuracy by just 0.03%. That told us we needed longer histories.</p>
+          <div class="link-row"><a class="btn secondary" href="../prototype/">Open the first prototype</a></div>
+        </div>
+      </li>
+      <li>
+        <span class="dot">2</span>
+        <div class="card">
+          <div class="stage-head"><h2 style="margin:0">A test system where we know the answer</h2><span class="source synthetic"><svg viewBox="0 0 14 14" aria-hidden="true"><rect x="2" y="2" width="10" height="10" rx="2" fill="none" stroke="currentColor" stroke-width="2"/></svg>Synthetic test system</span><span class="when">450 simulated wells · 6 months</span></div>
+          <p class="q">What matters more: better data, or a cleverer model?</p>
+          <p>We built a simulated system of 450 wells where the true groundwater level is always known, with deliberately hard cases such as faulty sensors and heavy pumping. Then we compared three approaches on it, each given only the kind of data a real system would have.</p>
+          <div class="found">
+            <div><b>4.2 m → 0.5 m</b><span>error cut simply by using resting-level readings instead of readings taken while pumping</span></div>
+            <div><b>→ 0.3 m</b><span>by also using pumping, rainfall and water-supply information</span></div>
+            <div><b>Sensor drift</b><span>no model can fix a sensor that slowly drifts: calibration records are essential</span></div>
+          </div>
+          <p class="note">The lesson: <strong>better data beats a bigger model</strong>. This shaped our request for resting-level readings and continuous logging.</p>
+          <div class="link-row">
+            <a class="btn secondary" href="../models/">Three approaches compared</a>
+            <a class="btn secondary" href="../validation/">The hidden-truth test</a>
+            <a class="btn secondary" href="../comparison/">Scenario explorer</a>
+          </div>
+        </div>
+      </li>
+      <li>
+        <span class="dot">3</span>
+        <div class="card">
+          <div class="stage-head"><h2 style="margin:0">A full year of monitoring</h2><span class="source twin"><svg viewBox="0 0 14 14" aria-hidden="true"><path d="M7 1l6 6-6 6-6-6z" fill="currentColor"/></svg>Digital twin</span><span class="when">Aug 2025 – Jul 2026 · 579 wells</span></div>
+          <p class="q">How far ahead can we forecast, and how sure can we be?</p>
+          <p>A digital twin (a physics-based simulation of the same 579 wells) gave us a full year of data in the company's format: 7.8 million pump readings, 268,000 sessions, and a complete monsoon. We forecast each well's resting level up to 12 weeks ahead and tested every forecast against what followed.</p>
+          <div class="found">
+            <div><b>0.3 m</b><span>typical error one week ahead</span></div>
+            <div><b>½</b><span>the error of "nothing changes", 12 weeks ahead</span></div>
+            <div><b>80%</b><span>of the time, the real level landed inside our "80% likely" range</span></div>
+            <div><b>−32%</b><span>error at 12 weeks from using rainfall</span></div>
+          </div>
+          <div class="link-row">
+            <a class="btn secondary" href="../forecast/">Try a forecast</a>
+            <a class="btn secondary" href="../accuracy/">How accurate</a>
+            <a class="btn secondary" href="../drivers/">What moves the water</a>
+          </div>
+        </div>
+      </li>
+      <li>
+        <span class="dot">4</span>
+        <div class="card">
+          <div class="stage-head"><h2 style="margin:0">How wells affect each other</h2><span class="source synthetic"><svg viewBox="0 0 14 14" aria-hidden="true"><rect x="2" y="2" width="10" height="10" rx="2" fill="none" stroke="currentColor" stroke-width="2"/></svg>Simulation</span><span class="when">450 simulated wells · realistic crack network</span></div>
+          <p class="q">Can a model learn which wells' pumping hurts their neighbours?</p>
+          <p>We simulated a city whose groundwater flows along cracks in hard rock. We gave our model data like the company's plus an imperfect geology map, and checked what it could recover. We confirmed the results on a second simulated city it had never seen.</p>
+          <div class="found">
+            <div><b>73–80%</b><span>of the true top-30 pressure-point wells found</span></div>
+            <div><b>Within 7%</b><span>of the true strength of the links, with continuous logging</span></div>
+            <div><b>Not yet</b><span>exact well-to-well links: that needs a short, minute-by-minute pumping test</span></div>
+          </div>
+          <div class="link-row"><a class="btn secondary" href="../network/">See the simulation</a></div>
+        </div>
+      </li>
+      <li>
+        <span class="dot">→</span>
+        <div class="card">
+          <div class="stage-head"><h2 style="margin:0">Next: prove it on real wells</h2></div>
+          <p>Every long-range result above comes from simulations. The next stage repeats these tests on real long-term records from the company's wells. We are also developing a 7-day early warning for wells about to run dry.</p>
+          <div class="link-row"><a class="btn" href="../next/">What we need next</a></div>
+        </div>
+      </li>
+    </ol>
+
+    <section>
+      <div class="callout plain">
+        <strong>Three lessons that run through every stage</strong>
+        <ol class="lessons" style="margin:8px 0 0; padding-left: 1.2em">
+          <li><strong>Better data beats a bigger model.</strong> The biggest gains came from the right readings (resting levels, continuous logging), not from complexity.</li>
+          <li><strong>Test as if it were real.</strong> Every forecast was made without seeing the future, and checked afterwards. An automatic test proves nothing leaked.</li>
+          <li><strong>Say how sure you are.</strong> Every forecast carries a range, and we check that the range holds as often as it claims.</li>
+        </ol>
+      </div>
+    </section>
+  </div>
+</main>
+<!--SHELL:FOOTER-->
+<footer class="site-footer"><div class="wrap"><div><strong>Borewell Forecast</strong> is a proof of concept for forecasting groundwater levels in Bengaluru borewells. Results are labelled by where the data came from: <span class="source real">real pump data</span> (15 days, July 2026), <span class="source synthetic">synthetic test system</span> (450 simulated wells with a known answer) or <span class="source twin">digital twin</span> (a physics-based simulation of the 579 wells over a year). Nothing here is yet a validated field forecast.</div><div><strong>Explore</strong><ul><li><a href="../">Overview</a></li><li><a href="../forecast/">Try a forecast</a></li><li><a href="../accuracy/">How accurate</a></li><li><a href="../drivers/">What moves the water</a></li><li><a href="../network/">Wells affect each other</a></li><li><a href="../journey/">Our journey</a></li><li><a href="../next/">What's next</a></li></ul></div><div><strong>More</strong><ul><li><a href="../glossary/">Glossary of terms</a></li><li><a href="../prototype/">Stage 1 · First prototype (real data)</a></li><li><a href="../comparison/">Stage 2 · Scenario explorer</a></li><li><a href="../validation/">Stage 2 · Hidden-truth test</a></li><li><a href="../models/">Stage 2 · Three models compared</a></li><li><a href="https://github.com/mailabhiramsrinivas-art/borewell-water-forecast">Source code</a></li></ul></div></div></footer>
+<!--/SHELL:FOOTER-->
+<script src="../assets/site.js?v=cd22e42713"></script>
+</body>
+</html>

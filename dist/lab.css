@@ -318,3 +318,65 @@ th { background: #e8e7df; font-size: .69rem; letter-spacing: .06em; text-transfo
  .real-controls {grid-template-columns:1fr;} .model-card {padding:18px;}
  .compare-section .table-wrap {max-width:100%;} .models-main {width:calc(100% - 24px);}
 }
+
+/* ===== Investor-site theme: brings the Stage 2 tools in line with assets/site.css ===== */
+:root { --ink: #0f1d26; --muted: #6f7a80; --paper: #f5f6f3; --panel: #ffffff; --line: #e1e4df; --shadow: 0 1px 2px rgba(15,29,38,.05), 0 8px 24px rgba(15,29,38,.06); }
+body { background: var(--page, #f5f6f3); font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; font-size: 16px; line-height: 1.6; }
+.lab-header, .page-nav { display: none; }
+.lab-main { width: min(1140px, calc(100% - 40px)); padding-top: 8px; }
+.models-main { max-width: 1140px; }
+.eyebrow, .section-kicker, .page-tag, .scenario-chip, .axis-label, .split-label, .scenario-label, .scenario-value { font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; letter-spacing: .02em; }
+.section-kicker, .eyebrow { color: var(--brand-2, #0e5575); font-size: .78rem; font-weight: 700; letter-spacing: .07em; }
+.control-panel, .results-panel, .chart-card, .plain-card, .evidence-card, .driver-card, .checkpoint-card, .validation-controls, .well-validation,
+.scenario-card, .diagnosis-card, .benchmark-chart-card, .benchmark-table-wrap, .closing-note, .compare-section, .model-card, .driver-grid > article {
+  border: 1px solid var(--line); border-radius: 14px; box-shadow: var(--shadow); }
+.chart-card, .plain-card, .checkpoint-card, .benchmark-chart-card, .benchmark-table-wrap, .driver-card, .driver-grid > article { box-shadow: none; }
+.model-card { border-top: 6px solid var(--model-color); }
+.model-strip, .fleet-strip { background: var(--brand, #0b3a52); border: 0; border-radius: 14px; box-shadow: var(--shadow); overflow: hidden; }
+.model-strip > *, .fleet-strip > * { border-color: rgba(255,255,255,.15); }
+main label { font-size: .95rem; font-weight: 640; letter-spacing: 0; text-transform: none; }
+main input, main select { border: 1px solid var(--line-strong, #c3c8c2); border-radius: 10px; min-height: 46px; }
+main input:focus, main select:focus { outline: 3px solid #2a78d6; outline-offset: 2px; }
+main button { background: var(--brand, #0b3a52); color: #fff; border: 0; border-radius: 10px; box-shadow: none; font-weight: 640; }
+main button:hover { background: var(--brand-2, #0e5575); transform: none; box-shadow: none; }
+main button.chip-btn, main .seg button { background: transparent; color: var(--ink-2, #46525a); }
+.metric-card { background: #fff; border: 1px solid var(--line); border-radius: 12px; }
+.metric-card span { text-transform: none; letter-spacing: 0; font-size: .82rem; font-weight: 600; color: var(--ink-2, #46525a); }
+.metric-card.primary { background: var(--brand, #0b3a52); color: #fff; border-color: var(--brand, #0b3a52); }
+.metric-card.primary span, .metric-card.primary small { color: #c9dde7; }
+.metric-card.accent { background: #eef5fc; }
+.scenario-chip { background: #eef5fc; border: 1px solid #cfe0f4; border-radius: 99px; }
+.page-tag { background: #eef5fc; border: 1px solid #cfe0f4; border-radius: 99px; }
+.takeaway { background: #eef5fc; border: 1px solid #cfe0f4; border-radius: 14px; font-weight: 600; }
+.notice { background: #fff8ea; border: 1px solid #f0dcae; border-left: 4px solid #d9a441; border-radius: 10px; }
+.closing-note { background: #fff8ea; border-color: #f0dcae; }
+.scenario-card { background: #eef5fc; }
+.diagnosis-card { background: #edf7f2; }
+.evidence-card { background: var(--brand, #0b3a52); }
+.evidence-card a, .forecast-jump { color: #9fd6e6; }
+.readiness p, .win-shares span { border-radius: 10px; background: #edf7f2; border-color: #cbe8da; }
+th { text-transform: none; letter-spacing: 0; font-size: .82rem; background: #f5f6f3; }
+th, td { border-bottom-color: var(--line); }
+.main-chart { background: #fcfcfb; border-radius: 8px; }
+.grid-line { stroke: #e1e0d9; }
+.axis-label { fill: #6f7a80; font-size: 12px; }
+.observed-line { stroke: #91a8b2; }
+.truth-line { stroke: #0f1d26; }
+.forecast-line { stroke: #2a78d6; }
+.uncertainty-area { fill: rgba(42,120,214,.14); }
+.forecast-dot { fill: #2a78d6; stroke: #fff; stroke-width: 2; }
+.truth-dot { fill: #0f1d26; }
+.split-line { stroke: #c3c8c2; stroke-dasharray: none; }
+.key, .legend i { background: #91a8b2; }
+.key.forecast, .key.predicted, .legend .forecast-key { background: #2a78d6; }
+.key.truth, .legend .truth-key { background: #0f1d26; }
+.key.band, .legend .range-key { background: rgba(42,120,214,.14); border-color: rgba(42,120,214,.4); }
+.legend { color: var(--ink-2, #46525a); font-weight: 560; font-size: .85rem; justify-content: flex-start; }
+.scenario-bar { fill: #1baf7a; stroke: none; }
+.scenario-bar.difficult { fill: #eb6834; }
+.stage-intro { padding: 40px 20px 8px; }
+.stage-intro .decoder { margin-top: 16px; }
+.decoder dl { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 12px 26px; margin: 10px 0 0; }
+.decoder summary { cursor: pointer; }
+.decoder dt { font-weight: 700; }
+.decoder dd { margin: 0 0 6px; color: var(--ink-2, #46525a); font-size: .92rem; }

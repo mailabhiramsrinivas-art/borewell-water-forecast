@@ -13,6 +13,19 @@ node tools/verify.js
 
 The folder contains the named synthetic XLSX and two companion CSVs. Metadata must cover the same 450 IDs. This builder deliberately never reads the private real Type A/B CSVs; the existing public well summary is unchanged. Reports are in `build_report.json`, `verification_report.json`, and `layout_report.json`.
 
+## Investor site pages and shared shell
+
+The site has a shared design system in `dist/assets/site.css` and `dist/assets/site.js` (navigation and a small SVG chart kit). Every page carries `<!--SHELL:HEADER-->` / `<!--SHELL:FOOTER-->` markers and a `data-page` attribute on `<body>`.
+
+```
+python3 tools/export_site_data.py   # rebuilds dist/data/monitoring.json, monitoring_summary.json, network.json
+python3 tools/shell.py              # stamps header/footer on every page and versions script/style links (?v=hash)
+```
+
+`export_site_data.py` reads the analysis folders that sit next to this repository in the project folder: `long_history_model/` (one year of digital-twin monitoring, weekly resting-level forecasts) and `well_interaction_model/` (synthetic well-interaction model). Run those analyses first. Re-run `shell.py` after editing any page, script or stylesheet, so the navigation stays identical everywhere and browsers fetch the new files.
+
+Pages: `/` overview · `/forecast/` · `/accuracy/` · `/drivers/` · `/network/` · `/journey/` · `/next/` · `/glossary/`. Earlier-stage tools: `/prototype/` (Stage 1, real 15-day data; formerly the site root), `/comparison/`, `/validation/`, `/models/` (Stage 2). Every result is labelled with its data source: real pump data, synthetic test system, or digital twin.
+
 ## Handoff
 
 Requirements: python-docx, MathJax (`mathjax-full`) and Sharp; LibreOffice and Poppler for PDF/PNG render verification. Use the Codex bundled document runtime when available.

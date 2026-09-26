@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Glossary · Borewell Forecast</title>
+  <meta name="description" content="Plain-language definitions of the terms used on the Borewell Forecast site.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230b3a52'/%3E%3Cpath d='M16 5C12 12 9 16 9 20.5a7 7 0 0 0 14 0C23 16 20 12 16 5Z' fill='%235fc4d8'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="../assets/site.css?v=cd22e42713">
+  <style>
+    dl.gloss { display: grid; gap: 12px; margin: 0; }
+    dl.gloss > div { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius-sm); padding: 14px 18px; }
+    dl.gloss dt { font-weight: 700; font-size: 1.05rem; }
+    dl.gloss dd { margin: 4px 0 0; color: var(--ink-2); }
+  </style>
+</head>
+<body data-page="glossary">
+<!--SHELL:HEADER-->
+<a class="skip" href="#main">Skip to content</a>
+<header class="site-header"><div class="wrap"><a class="brand" href="../"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M16 3C11 11 7 16 7 21.5a9 9 0 0 0 18 0C25 16 21 11 16 3Z" fill="#5fc4d8"/><path d="M11.5 22c2.8 1.8 6.2 1.8 9 0" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round"/></svg><span>Borewell Forecast</span><span class="poc">Proof of concept</span></a><button class="menu-toggle" aria-expanded="false" aria-controls="site-nav">Menu</button><nav class="site-nav" id="site-nav" aria-label="Main"><ul><li><a href="../">Overview</a></li><li><a href="../forecast/">Try a forecast</a></li><li><a href="../accuracy/">How accurate</a></li><li><a href="../drivers/">What moves the water</a></li><li><a href="../network/">Wells affect each other</a></li><li><a href="../journey/">Our journey</a></li><li><a href="../next/">What's next</a></li></ul></nav></div></header>
+<!--/SHELL:HEADER-->
+<main id="main">
+  <div class="wrap" style="max-width: 860px">
+    <div class="page-hero">
+      <p class="kicker">Glossary</p>
+      <h1>The words we use, in plain language</h1>
+    </div>
+    <dl class="gloss">
+      <div id="borewell"><dt>Borewell</dt><dd>A narrow, deep hole drilled into the ground with a pump that lifts groundwater to the surface. Many Bengaluru homes and businesses rely on one.</dd></div>
+      <div id="depth"><dt>Water level / metres below ground</dt><dd>How far below the ground surface the water sits. Every level on this site is a depth: a bigger number means the water is further down, which is worse.</dd></div>
+      <div id="resting"><dt>Resting level</dt><dd>The water level after the pump has been off for at least 12 hours: the closest we get to the true groundwater level. This is what the weekly forecasts predict.</dd></div>
+      <div id="dynamic"><dt>Pumping-affected level</dt><dd>A reading taken while or just after the pump runs. Pumping pulls the water down near the well, so these readings look deeper than the true groundwater level.</dd></div>
+      <div id="drawdown"><dt>Drawdown</dt><dd>How far the level drops during a pump run.</dd></div>
+      <div id="recharge"><dt>Recharge</dt><dd>Water soaking back into the ground, mostly from rain. It reaches borewells slowly, over one to four weeks.</dd></div>
+      <div id="session"><dt>Pump session</dt><dd>One run of a pump, from switch-on to switch-off. The data records the water level at the start and end of each session.</dd></div>
+      <div id="horizon"><dt>Forecast horizon</dt><dd>How far ahead a forecast looks: one week, four weeks, twelve weeks.</dd></div>
+      <div id="range"><dt>Likely range (80%)</dt><dd>The span in which we expect the real level to land. "80% likely" means that when we tested past forecasts, the real level landed inside ranges like this 8 times out of 10.</dd></div>
+      <div id="error"><dt>Average error / typical error</dt><dd>How far off forecasts were. Average error is the mean miss in metres. Typical error is the middle value: half of forecasts were closer than that.</dd></div>
+      <div id="baseline"><dt>"Assume nothing changes"</dt><dd>The simplest possible forecast: the level stays where it is now. A useful forecast must beat it.</dd></div>
+      <div id="backtest"><dt>Testing on the past</dt><dd>Pretending it is an earlier date, forecasting with only the data available then, and checking against what really happened. It is the honest way to measure accuracy.</dd></div>
+      <div id="real"><dt><span class="source real"><svg viewBox="0 0 14 14" aria-hidden="true"><circle cx="7" cy="7" r="5" fill="currentColor"/></svg>Real pump data</span></dt><dd>Actual records from 579 Bengaluru borewells, covering 15 days in July 2026.</dd></div>
+      <div id="synthetic"><dt><span class="source synthetic"><svg viewBox="0 0 14 14" aria-hidden="true"><rect x="2" y="2" width="10" height="10" rx="2" fill="none" stroke="currentColor" stroke-width="2"/></svg>Synthetic test system</span></dt><dd>A simulated set of 450 wells where the true groundwater level is known. It lets us check whether a method finds the right answer.</dd></div>
+      <div id="twin"><dt><span class="source twin"><svg viewBox="0 0 14 14" aria-hidden="true"><path d="M7 1l6 6-6 6-6-6z" fill="currentColor"/></svg>Digital twin</span></dt><dd>A physics-based simulation of the same 579 wells over a full year, producing data in the company's own format. It stands in for the long real history we are requesting.</dd></div>
+      <div id="pressure"><dt>Pressure-point well</dt><dd>A well whose pumping lowers the water across the whole area the most, including in its neighbours.</dd></div>
+      <div id="crack"><dt>Crack / fracture / lineament</dt><dd>Water under Bengaluru moves through cracks in hard rock. Wells on the same crack can affect each other even far apart. A lineament map is a geological map of likely cracks.</dd></div>
+      <div id="drift"><dt>Sensor drift</dt><dd>A sensor whose readings slowly go wrong over time. It looks exactly like a falling water table, so calibration records are needed to catch it.</dd></div>
+      <div id="pumptest"><dt>Pumping test</dt><dd>Switching one well off (or on) for a few hours while logging its neighbours minute by minute. It measures exactly how strongly and how fast they are connected.</dd></div>
+    </dl>
+  </div>
+</main>
+<!--SHELL:FOOTER-->
+<footer class="site-footer"><div class="wrap"><div><strong>Borewell Forecast</strong> is a proof of concept for forecasting groundwater levels in Bengaluru borewells. Results are labelled by where the data came from: <span class="source real">real pump data</span> (15 days, July 2026), <span class="source synthetic">synthetic test system</span> (450 simulated wells with a known answer) or <span class="source twin">digital twin</span> (a physics-based simulation of the 579 wells over a year). Nothing here is yet a validated field forecast.</div><div><strong>Explore</strong><ul><li><a href="../">Overview</a></li><li><a href="../forecast/">Try a forecast</a></li><li><a href="../accuracy/">How accurate</a></li><li><a href="../drivers/">What moves the water</a></li><li><a href="../network/">Wells affect each other</a></li><li><a href="../journey/">Our journey</a></li><li><a href="../next/">What's next</a></li></ul></div><div><strong>More</strong><ul><li><a href="../glossary/">Glossary of terms</a></li><li><a href="../prototype/">Stage 1 · First prototype (real data)</a></li><li><a href="../comparison/">Stage 2 · Scenario explorer</a></li><li><a href="../validation/">Stage 2 · Hidden-truth test</a></li><li><a href="../models/">Stage 2 · Three models compared</a></li><li><a href="https://github.com/mailabhiramsrinivas-art/borewell-water-forecast">Source code</a></li></ul></div></div></footer>
+<!--/SHELL:FOOTER-->
+<script src="../assets/site.js?v=cd22e42713"></script>
+</body>
+</html>

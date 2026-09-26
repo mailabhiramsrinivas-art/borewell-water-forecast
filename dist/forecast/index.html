@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Try a forecast · Borewell Forecast</title>
+  <meta name="description" content="Pick a borewell and see where its water level is heading over the next 4, 8 or 12 weeks, with an honest range.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230b3a52'/%3E%3Cpath d='M16 5C12 12 9 16 9 20.5a7 7 0 0 0 14 0C23 16 20 12 16 5Z' fill='%235fc4d8'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="../assets/site.css?v=cd22e42713">
+  <style>
+    .examples { display: flex; flex-wrap: wrap; gap: 8px; }
+    .chip-btn { font: inherit; font-size: .9rem; padding: 7px 12px; border-radius: 99px; border: 1px solid var(--line-strong); background: #fff; cursor: pointer; color: var(--ink-2); font-weight: 560; }
+    .chip-btn:hover { background: var(--page); color: var(--ink); }
+    .answer-card { background: var(--card); border: 1px solid var(--line); border-left: 5px solid var(--s-blue); border-radius: var(--radius); padding: 20px 22px; box-shadow: var(--shadow); }
+    .axis-note { font-size: .85rem; color: var(--ink-2); margin: 0 0 4px; }
+    .facts-grid .stat .value { font-size: 1.5rem; }
+    details.explain { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius-sm); padding: 14px 18px; }
+    details.explain + details.explain { margin-top: 10px; }
+    details.explain summary { cursor: pointer; font-weight: 650; }
+    details.explain p { margin: 10px 0 0; color: var(--ink-2); }
+    .stack { display: grid; gap: 16px; }
+    #tRange { font-size: clamp(1.25rem, 2.3vw, 1.7rem); }
+  </style>
+</head>
+<body data-page="forecast">
+<!--SHELL:HEADER-->
+<a class="skip" href="#main">Skip to content</a>
+<header class="site-header"><div class="wrap"><a class="brand" href="../"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M16 3C11 11 7 16 7 21.5a9 9 0 0 0 18 0C25 16 21 11 16 3Z" fill="#5fc4d8"/><path d="M11.5 22c2.8 1.8 6.2 1.8 9 0" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round"/></svg><span>Borewell Forecast</span><span class="poc">Proof of concept</span></a><button class="menu-toggle" aria-expanded="false" aria-controls="site-nav">Menu</button><nav class="site-nav" id="site-nav" aria-label="Main"><ul><li><a href="../">Overview</a></li><li><a href="../forecast/" aria-current="page">Try a forecast</a></li><li><a href="../accuracy/">How accurate</a></li><li><a href="../drivers/">What moves the water</a></li><li><a href="../network/">Wells affect each other</a></li><li><a href="../journey/">Our journey</a></li><li><a href="../next/">What's next</a></li></ul></nav></div></header>
+<!--/SHELL:HEADER-->
+<main id="main">
+  <div class="wrap">
+    <div class="page-hero">
+      <p class="kicker">Try a forecast · <span class="source twin"><svg viewBox="0 0 14 14" aria-hidden="true"><path d="M7 1l6 6-6 6-6-6z" fill="currentColor"/></svg>Digital twin: one year of monitoring</span></p>
+      <h1>Where is this well's water heading?</h1>
+      <p class="lede">Pick a well and choose how far ahead to look. You will see where its groundwater is now, where it is likely to be in 4, 8 or 12 weeks, and how sure we are.</p>
+    </div>
+
+    <ol class="steps" style="grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); display: grid; margin-bottom: 18px;">
+      <li><strong>Pick a well</strong><br><span class="note">Type an ID or tap an example.</span></li>
+      <li><strong>Choose how far ahead</strong><br><span class="note">4, 8 or 12 weeks.</span></li>
+      <li><strong>Read the answer and the range</strong><br><span class="note">The range matters as much as the number.</span></li>
+    </ol>
+
+    <div class="controls" role="group" aria-label="Forecast settings">
+      <div class="field" style="flex: 1 1 220px;">
+        <label for="wellInput">Borewell ID</label>
+        <input id="wellInput" type="search" list="wellList" autocomplete="off" aria-describedby="wellHelp" placeholder="e.g. BW120">
+        <datalist id="wellList"></datalist>
+        <p class="help" id="wellHelp">495 wells with at least half a year of readings.</p>
+      </div>
+      <div class="field">
+        <span class="label" id="hLabel">How far ahead</span>
+        <div class="seg" role="group" aria-labelledby="hLabel" id="horizonSeg">
+          <button type="button" data-h="4" aria-pressed="false">4 weeks</button>
+          <button type="button" data-h="8" aria-pressed="true">8 weeks</button>
+          <button type="button" data-h="12" aria-pressed="false">12 weeks</button>
+        </div>
+      </div>
+      <div class="field">
+        <span class="label">Check our track record</span>
+        <label class="toggle"><input type="checkbox" id="pastToggle"> Show how past forecasts turned out</label>
+      </div>
+      <div class="field" style="flex-basis: 100%;">
+        <span class="label">Or try an example</span>
+        <div class="examples" id="examples"></div>
+      </div>
+    </div>
+
+    <p id="formError" class="form-error" role="alert" style="color:#b3261e;margin:10px 0 0"></p>
+
+    <div class="stack" style="margin-top: 20px;" aria-live="polite">
+      <div class="answer-card"><p class="answer" id="answer">Loading the wells…</p></div>
+
+      <div class="grid-4" id="tiles">
+        <div class="stat"><span class="label">Water level now</span><span class="value" id="tNow">—</span><span class="sub" id="tNowSub">—</span></div>
+        <div class="stat lead"><span class="label" id="tFcLabel">In 8 weeks</span><span class="value" id="tFc">—</span><span class="sub" id="tFcSub">—</span></div>
+        <div class="stat"><span class="label">Likely range <button class="info" type="button" aria-label="What likely range means"><span aria-hidden="true">?</span><span class="tip">When we tested forecasts made on past dates, the real level landed inside ranges like this one 80% of the time.</span></button></span><span class="value" id="tRange">—</span><span class="sub">80% of past forecasts landed inside</span></div>
+        <div class="stat"><span class="label">Change from now</span><span class="value" id="tChange">—</span><span class="sub" id="tChangeSub">—</span></div>
+      </div>
+
+      <div class="chart-card">
+        <h3 id="chartTitle">Water depth over the past year, and the forecast</h3>
+        <p class="takeaway" id="chartTake">Each dot is one week's resting level. Lower on the chart means deeper water.</p>
+        <div class="legend" id="legend"></div>
+        <p class="axis-note">Metres below ground (deeper ↓)</p>
+        <div id="levelChart"></div>
+        <details class="table-view"><summary>Show the numbers as a table</summary><div class="table-wrap" id="levelTable"></div></details>
+      </div>
+
+      <div class="chart-card">
+        <h3>Water pumped from this well each week</h3>
+        <p class="takeaway">More pumping pulls the level down. The forecast assumes pumping carries on at its recent average.</p>
+        <p class="axis-note">Cubic metres per week (1 m³ = 1,000 litres)</p>
+        <div id="pumpChart"></div>
+      </div>
+
+      <div class="grid-4 facts-grid">
+        <div class="stat"><span class="label">Sensitivity to pumping <button class="info" type="button" aria-label="What sensitivity means"><span aria-hidden="true">?</span><span class="tip">How many metres deeper this well's water sits after pumping an extra 100 m³ (100,000 litres) in a week, as learned from its own history.</span></button></span><span class="value" id="fSens">—</span><span class="sub">metres per extra 100 m³ in a week</span></div>
+        <div class="stat"><span class="label">Recent trend</span><span class="value" id="fTrend">—</span><span class="sub">over the last 8 weeks</span></div>
+        <div class="stat"><span class="label">Typical weekly pumping</span><span class="value" id="fPump">—</span><span class="sub">m³ per week, year average</span></div>
+        <div class="stat"><span class="label">Weeks with a reading</span><span class="value" id="fWeeks">—</span><span class="sub">out of 52</span></div>
+      </div>
+
+      <section style="padding-top: 8px;">
+        <h2>How to read this</h2>
+        <details class="explain" open><summary>What is the "resting level"?</summary><p>While a pump runs, the water near the well is pulled down, so readings taken during pumping look deeper than the groundwater really is. We use the level recorded when a pump starts after at least 12 hours of rest. That is the closest we get to the true groundwater level, and it is what we forecast.</p></details>
+        <details class="explain"><summary>Why give a range instead of one number?</summary><p>Nobody can know next month's water level exactly. The range is built from how far off our past forecasts actually were: 80% of the time, the real level landed inside it. A wide range is honest, not a failure.</p></details>
+        <details class="explain"><summary>Where does the forecast come from?</summary><p>It blends two views. One is the well's recent trend. The other is a model of how this well responds to its own pumping and to Bengaluru rainfall over the past weeks. For future weeks we assume pumping continues at its recent average and rainfall is typical for the season. <a href="../drivers/">What moves the water →</a></p></details>
+        <details class="explain"><summary>How good is it, overall?</summary><p>Across 495 wells and 8 test dates, the typical error was about 0.3 m one week ahead and 1.3 m on average twelve weeks ahead, half the error of assuming nothing changes. <a href="../accuracy/">See the full accuracy check →</a></p></details>
+        <details class="explain"><summary>Is this real data?</summary><p>This page uses a digital twin: a physics-based simulation of the 579 wells over a full year (Aug 2025 – Jul 2026). The simulation's well IDs do not correspond to the real wells in <a href="../prototype/">Stage 1</a>. Repeating this on real long-term records is the next step. <a href="../next/">What we need →</a></p></details>
+      </section>
+    </div>
+  </div>
+</main>
+<!--SHELL:FOOTER-->
+<footer class="site-footer"><div class="wrap"><div><strong>Borewell Forecast</strong> is a proof of concept for forecasting groundwater levels in Bengaluru borewells. Results are labelled by where the data came from: <span class="source real">real pump data</span> (15 days, July 2026), <span class="source synthetic">synthetic test system</span> (450 simulated wells with a known answer) or <span class="source twin">digital twin</span> (a physics-based simulation of the 579 wells over a year). Nothing here is yet a validated field forecast.</div><div><strong>Explore</strong><ul><li><a href="../">Overview</a></li><li><a href="../forecast/">Try a forecast</a></li><li><a href="../accuracy/">How accurate</a></li><li><a href="../drivers/">What moves the water</a></li><li><a href="../network/">Wells affect each other</a></li><li><a href="../journey/">Our journey</a></li><li><a href="../next/">What's next</a></li></ul></div><div><strong>More</strong><ul><li><a href="../glossary/">Glossary of terms</a></li><li><a href="../prototype/">Stage 1 · First prototype (real data)</a></li><li><a href="../comparison/">Stage 2 · Scenario explorer</a></li><li><a href="../validation/">Stage 2 · Hidden-truth test</a></li><li><a href="../models/">Stage 2 · Three models compared</a></li><li><a href="https://github.com/mailabhiramsrinivas-art/borewell-water-forecast">Source code</a></li></ul></div></div></footer>
+<!--/SHELL:FOOTER-->
+<script src="../assets/site.js?v=cd22e42713"></script>
+<script src="./forecast.js?v=cd22e42713"></script>
+</body>
+</html>

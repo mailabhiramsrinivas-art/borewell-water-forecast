@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>How accurate is it? · Borewell Forecast</title>
+  <meta name="description" content="How we tested the borewell forecasts honestly, and how close they came.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230b3a52'/%3E%3Cpath d='M16 5C12 12 9 16 9 20.5a7 7 0 0 0 14 0C23 16 20 12 16 5Z' fill='%235fc4d8'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="../assets/site.css?v=cd22e42713">
+  <style>
+    .cover-grid { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 12px; }
+    @media (max-width: 820px) { .cover-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+    .cover-grid .stat .value { font-size: 1.6rem; }
+    .axis-note { font-size: .85rem; color: var(--ink-2); margin: 0 0 4px; }
+    ul.plain { padding-left: 1.2em; margin: 0; } ul.plain li { margin-bottom: 6px; }
+  </style>
+</head>
+<body data-page="accuracy">
+<!--SHELL:HEADER-->
+<a class="skip" href="#main">Skip to content</a>
+<header class="site-header"><div class="wrap"><a class="brand" href="../"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M16 3C11 11 7 16 7 21.5a9 9 0 0 0 18 0C25 16 21 11 16 3Z" fill="#5fc4d8"/><path d="M11.5 22c2.8 1.8 6.2 1.8 9 0" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round"/></svg><span>Borewell Forecast</span><span class="poc">Proof of concept</span></a><button class="menu-toggle" aria-expanded="false" aria-controls="site-nav">Menu</button><nav class="site-nav" id="site-nav" aria-label="Main"><ul><li><a href="../">Overview</a></li><li><a href="../forecast/">Try a forecast</a></li><li><a href="../accuracy/" aria-current="page">How accurate</a></li><li><a href="../drivers/">What moves the water</a></li><li><a href="../network/">Wells affect each other</a></li><li><a href="../journey/">Our journey</a></li><li><a href="../next/">What's next</a></li></ul></nav></div></header>
+<!--/SHELL:HEADER-->
+<main id="main">
+  <div class="wrap">
+    <div class="page-hero">
+      <p class="kicker">How accurate · <span class="source twin"><svg viewBox="0 0 14 14" aria-hidden="true"><path d="M7 1l6 6-6 6-6-6z" fill="currentColor"/></svg>Digital twin: one year, 495 wells</span></p>
+      <h1>How accurate is it?</h1>
+      <p class="lede">A forecast is only useful if it holds up when the answer isn't known yet. So we tested ours the honest way: pretend it is an earlier date, forecast from that point, then compare with what really happened.</p>
+    </div>
+
+    <section style="padding-top:0">
+      <h2>How we tested</h2>
+      <ol class="steps" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr))">
+        <li><strong>Go back in time.</strong> We picked 8 dates between December 2025 and July 2026.</li>
+        <li><strong>Hide the future.</strong> At each date, the model saw only the readings up to that day.</li>
+        <li><strong>Forecast every well</strong> 1, 2, 4, 8 and 12 weeks ahead, about 3,600 forecasts per horizon.</li>
+        <li><strong>Check against reality.</strong> Measure how far off each forecast was.</li>
+      </ol>
+      <p class="note" style="margin-top:10px">We also ran an automatic check that scrambles all data after each test date. The forecasts did not change at all, which proves they never peeked at the future.</p>
+    </section>
+
+    <section>
+      <div class="chart-card">
+        <h3>The further ahead, the harder: how far off the forecasts were</h3>
+        <p class="takeaway" id="errTake">Loading…</p>
+        <div class="legend">
+          <span><i style="--c:var(--s-blue);height:4px"></i>Our forecast</span>
+          <span><i style="--c:var(--s-aqua)"></i>Pumping + rain model alone</span>
+          <span><i style="--c:var(--s-orange)"></i>Recent trend alone</span>
+          <span><i style="--c:var(--s-neutral)"></i>Assume nothing changes</span>
+        </div>
+        <p class="axis-note">Average error in metres (lower is better)</p>
+        <div id="errChart"></div>
+        <details class="table-view"><summary>Show the numbers as a table</summary><div class="table-wrap" id="errTable"></div></details>
+      </div>
+      <p class="note" style="margin-top:10px">"Our forecast" blends the recent-trend view and the pumping + rain model. The mix was chosen at each test date using only earlier results.</p>
+    </section>
+
+    <section>
+      <div class="section-title"><h2>Are the ranges honest?</h2><p>Every forecast comes with an "80% likely" range. If that label is true, the real level should land inside the range about 8 times out of 10. It did.</p></div>
+      <div class="cover-grid" id="coverGrid"></div>
+    </section>
+
+    <section>
+      <div class="section-title"><h2>One week ahead</h2><p>Over a single week the water barely moves, so even "assume nothing changes" does well. Most of the remaining error is ordinary week-to-week wobble in the readings.</p></div>
+      <div class="grid-4" id="oneWeek"></div>
+    </section>
+
+    <section>
+      <div class="section-title"><h2>The very short term: each pumping session</h2><p>A separate set of models predicts what happens during and just after each pump run. They are useful for spotting a session that will pull the water unusually deep.</p></div>
+      <div class="grid-2">
+        <div class="stat"><span class="label">Level at the end of a pump run</span><span class="value" id="sPump">—</span><span class="sub" id="sPumpSub">—</span></div>
+        <div class="stat"><span class="label">Level when the pump next starts</span><span class="value" id="sRec">—</span><span class="sub" id="sRecSub">—</span></div>
+      </div>
+      <p class="note" style="margin-top:10px" id="sNote"></p>
+    </section>
+
+    <section>
+      <div class="grid-2">
+        <div class="callout proof"><strong>What this shows</strong><ul class="plain"><li>Forecasts up to 12 weeks ahead beat simple guesses, and the gap grows with time.</li><li>Rainfall matters: it is what separates our forecast from "the trend continues".</li><li>The ranges mean what they say.</li></ul></div>
+        <div class="callout caution"><strong>What is not proven yet</strong><ul class="plain"><li>All of this is on a digital twin (simulated wells), not yet on years of real records.</li><li>We could not yet test forecasting <em>through</em> a monsoon: the year's only monsoon was needed to learn from.</li><li>Nothing beyond 12 weeks has been tested.</li></ul><p style="margin-top:8px"><a href="../next/">What we need to prove it on real wells →</a></p></div>
+      </div>
+    </section>
+  </div>
+</main>
+<!--SHELL:FOOTER-->
+<footer class="site-footer"><div class="wrap"><div><strong>Borewell Forecast</strong> is a proof of concept for forecasting groundwater levels in Bengaluru borewells. Results are labelled by where the data came from: <span class="source real">real pump data</span> (15 days, July 2026), <span class="source synthetic">synthetic test system</span> (450 simulated wells with a known answer) or <span class="source twin">digital twin</span> (a physics-based simulation of the 579 wells over a year). Nothing here is yet a validated field forecast.</div><div><strong>Explore</strong><ul><li><a href="../">Overview</a></li><li><a href="../forecast/">Try a forecast</a></li><li><a href="../accuracy/">How accurate</a></li><li><a href="../drivers/">What moves the water</a></li><li><a href="../network/">Wells affect each other</a></li><li><a href="../journey/">Our journey</a></li><li><a href="../next/">What's next</a></li></ul></div><div><strong>More</strong><ul><li><a href="../glossary/">Glossary of terms</a></li><li><a href="../prototype/">Stage 1 · First prototype (real data)</a></li><li><a href="../comparison/">Stage 2 · Scenario explorer</a></li><li><a href="../validation/">Stage 2 · Hidden-truth test</a></li><li><a href="../models/">Stage 2 · Three models compared</a></li><li><a href="https://github.com/mailabhiramsrinivas-art/borewell-water-forecast">Source code</a></li></ul></div></div></footer>
+<!--/SHELL:FOOTER-->
+<script src="../assets/site.js?v=cd22e42713"></script>
+<script>
+(async () => {
+  const $ = id => document.getElementById(id);
+  const d = await fetch("../data/monitoring_summary.json").then(r => r.json());
+  const H = d.horizons_weeks, A = d.accuracy, f2 = v => Kit.fmt(v, 2), f1 = v => Kit.fmt(v, 1);
+  const models = [
+    ["persist", "Assume nothing changes", "var(--s-neutral)", 2],
+    ["trend", "Recent trend alone", "var(--s-orange)", 2],
+    ["driver_forecast", "Pumping + rain model alone", "var(--s-aqua)", 2],
+    ["blend", "Our forecast", "var(--s-blue)", 3.2],
+  ];
+  const b12 = A.blend["12"].mae_m, p12 = A.persist["12"].mae_m;
+  $("errTake").textContent = `Twelve weeks ahead, our forecasts were off by ${f1(b12)} m on average, against ${f1(p12)} m for assuming the level stays put: ${Math.round(100 * (1 - b12 / p12))}% less error.`;
+  const draw = () => Kit.line($("errChart"), {
+    label: "Average forecast error by weeks ahead", height: 320, rightPad: 150,
+    x: { min: 1, max: 12, ticks: H, format: v => `${v} wk` },
+    y: { min: 0, format: (v, tip) => tip ? `${f2(v)} m` : `${f1(v)} m` },
+    series: models.map(([k, name, color, w]) => ({ name, color, width: w, markers: true, r: k === "blend" ? 5 : 3.5,
+      points: H.map(h => ({ x: h, y: A[k][String(h)].mae_m })), endLabel: k === "blend" ? "Our forecast" : k === "persist" ? "Nothing changes" : undefined })),
+    tipTitle: x => `${x} week${x > 1 ? "s" : ""} ahead`,
+  });
+  draw(); Kit.onResize(draw);
+  Kit.table($("errTable"), ["Weeks ahead", ...models.map(m => m[1])], H.map(h => ({ cells: [`${h}`, ...models.map(([k]) => `${f2(A[k][String(h)].mae_m)} m`)] })));
+  const cg = $("coverGrid");
+  for (const h of H) {
+    const b = A.blend[String(h)];
+    const div = document.createElement("div"); div.className = "stat";
+    div.innerHTML = `<span class="label">${h} week${h > 1 ? "s" : ""} ahead</span><span class="value"></span><span class="sub"></span>`;
+    div.querySelector(".value").textContent = `${Math.round(100 * b.calibrated_80pct_coverage)}% held`;
+    div.querySelector(".sub").textContent = `range about ±${f1(b.mean_80pct_halfwidth_m)} m`;
+    cg.appendChild(div);
+  }
+  const o = d.one_week, ow = $("oneWeek");
+  const tiles = [
+    ["Typical error, one week ahead", `${f2(o.typical_error_m)} m`, "half of forecasts were closer than this"],
+    ["Within half a metre", `${Math.round(100 * o.within_0_5m)}%`, "of one-week forecasts"],
+    ["Within one metre", `${Math.round(100 * o.within_1m)}%`, "of one-week forecasts"],
+    ["Assume nothing changes", `${f2(A.persist["1"].median_ae_m)} m`, "typical error: nearly as good at one week"],
+  ];
+  for (const [l, v, s] of tiles) { const div = document.createElement("div"); div.className = "stat"; div.innerHTML = `<span class="label"></span><span class="value"></span><span class="sub"></span>`; div.querySelector(".label").textContent = l; div.querySelector(".value").textContent = v; div.querySelector(".sub").textContent = s; ow.appendChild(div); }
+  const s = d.sessions;
+  $("sPump").textContent = `${f1(s.pump.long_history)} m`; $("sPumpSub").textContent = `average error; ${f1(s.pump.persistence)} m if you assume no change`;
+  $("sRec").textContent = `${f1(s.recovery.long_history)} m`; $("sRecSub").textContent = `average error; ${f1(s.recovery.persistence)} m if you assume no change`;
+  $("sNote").textContent = `Tested month by month from November 2025. Trained on only the last 15 days, the same models scored ${f2(s.pump.last_15_days_only)} m and ${f2(s.recovery.last_15_days_only)} m: for these very short-term questions, recent data matters most.`;
+})();
+</script>
+</body>
+</html>

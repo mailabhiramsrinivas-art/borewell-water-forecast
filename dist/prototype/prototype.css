@@ -1,0 +1,31 @@
+/* Stage 1 prototype page: layout + the chart classes drawn by app.js */
+.proto-workspace { display: grid; grid-template-columns: minmax(270px, 330px) minmax(0, 1fr); gap: 22px; margin-top: 26px; align-items: start; }
+@media (max-width: 960px) { .proto-workspace { grid-template-columns: 1fr; } }
+.proto-controls { position: sticky; top: 84px; }
+@media (max-width: 960px) { .proto-controls { position: static; } }
+.proto-controls h2 { font-size: 1.25rem; }
+.proto-controls form { display: grid; gap: 16px; }
+.field-pair { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.form-error { color: #b3261e; font-size: .9rem; min-height: 1em; margin: 0; }
+.proto-results { display: grid; gap: 16px; min-width: 0; }
+.proto-result-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; }
+.proto-result-head .kicker { margin: 0; font-size: .85rem; letter-spacing: .06em; text-transform: uppercase; font-weight: 700; color: var(--brand-2); }
+.evidence-badge { font-size: .84rem; font-weight: 650; padding: 5px 12px; border-radius: 99px; background: var(--chip-twin); border: 1px solid #c9e7d9; }
+.evidence-badge.medium { background: #fff5dc; border-color: #eedaa2; }
+.evidence-badge.low { background: #f6ecec; border-color: #e6cccc; }
+.proto-units { margin: -4px 0 0; }
+.proto-chart { overflow-x: auto; }
+#forecastChart { display: block; width: 100%; min-width: 620px; height: auto; }
+#forecastChart .grid-line { stroke: var(--grid); stroke-width: 1; }
+#forecastChart .axis-label { fill: var(--muted); font-size: 13px; }
+#forecastChart .history-line { fill: none; stroke: #91a8b2; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+#forecastChart .forecast-line { fill: none; stroke: var(--s-blue); stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+#forecastChart .uncertainty-area { fill: var(--wash-blue); stroke: none; }
+#forecastChart .forecast-dot { fill: var(--s-blue); stroke: #fff; stroke-width: 3; }
+#forecastChart .split-line { stroke: var(--line-strong); stroke-width: 1; }
+#forecastChart .split-label { fill: var(--ink-2); font-size: 12px; font-weight: 650; }
+.facts { margin: 0; display: grid; gap: 0; }
+.facts div { display: flex; justify-content: space-between; gap: 14px; padding: 9px 0; border-top: 1px solid var(--line); font-size: .93rem; }
+.facts dt { color: var(--ink-2); }
+.facts dd { margin: 0; font-weight: 650; text-align: right; }
+.proto-lower .card h3 { font-size: 1.1rem; }

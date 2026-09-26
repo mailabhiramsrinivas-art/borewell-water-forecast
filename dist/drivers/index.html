@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>What moves the water · Borewell Forecast</title>
+  <meta name="description" content="How the monsoon, rainfall and pumping move groundwater levels in borewells.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230b3a52'/%3E%3Cpath d='M16 5C12 12 9 16 9 20.5a7 7 0 0 0 14 0C23 16 20 12 16 5Z' fill='%235fc4d8'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="../assets/site.css?v=cd22e42713">
+  <style>
+    .axis-note { font-size: .85rem; color: var(--ink-2); margin: 10px 0 4px; }
+    .effect { display: grid; grid-template-columns: auto 1fr; gap: 16px; align-items: start; }
+    .effect .big { font-size: 2.2rem; font-weight: 750; line-height: 1; color: var(--brand); white-space: nowrap; }
+    ul.plain { padding-left: 1.2em; margin: 0; } ul.plain li { margin-bottom: 6px; }
+  </style>
+</head>
+<body data-page="drivers">
+<!--SHELL:HEADER-->
+<a class="skip" href="#main">Skip to content</a>
+<header class="site-header"><div class="wrap"><a class="brand" href="../"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M16 3C11 11 7 16 7 21.5a9 9 0 0 0 18 0C25 16 21 11 16 3Z" fill="#5fc4d8"/><path d="M11.5 22c2.8 1.8 6.2 1.8 9 0" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round"/></svg><span>Borewell Forecast</span><span class="poc">Proof of concept</span></a><button class="menu-toggle" aria-expanded="false" aria-controls="site-nav">Menu</button><nav class="site-nav" id="site-nav" aria-label="Main"><ul><li><a href="../">Overview</a></li><li><a href="../forecast/">Try a forecast</a></li><li><a href="../accuracy/">How accurate</a></li><li><a href="../drivers/" aria-current="page">What moves the water</a></li><li><a href="../network/">Wells affect each other</a></li><li><a href="../journey/">Our journey</a></li><li><a href="../next/">What's next</a></li></ul></nav></div></header>
+<!--/SHELL:HEADER-->
+<main id="main">
+  <div class="wrap">
+    <div class="page-hero">
+      <p class="kicker">What moves the water · <span class="source twin"><svg viewBox="0 0 14 14" aria-hidden="true"><path d="M7 1l6 6-6 6-6-6z" fill="currentColor"/></svg>Digital twin: one year, 495 wells</span></p>
+      <h1>What moves the water?</h1>
+      <p class="lede">Two forces drive a borewell's water level: rain slowly refilling the ground, and pumping drawing it down. Over a year the model learned how strong each one is, and how long rain takes to arrive.</p>
+    </div>
+
+    <section style="padding-top:0">
+      <div class="chart-card">
+        <h3>The year at a glance: the typical well, and the rain</h3>
+        <p class="takeaway" id="seasonTake">Loading…</p>
+        <p class="axis-note">Water level compared with the well's own yearly average, in metres (deeper ↓)</p>
+        <div id="levelChart"></div>
+        <p class="axis-note">Rainfall in Bengaluru, millimetres per week</p>
+        <div id="rainChart"></div>
+        <details class="table-view"><summary>Show the numbers as a table</summary><div class="table-wrap" id="seasonTable"></div></details>
+      </div>
+      <p class="note" style="margin-top:10px">Rainfall: NASA POWER daily record for central Bengaluru. The same series is used for every well because well locations are not yet available.</p>
+    </section>
+
+    <section>
+      <div class="section-title"><h2>How strong is each force?</h2><p>Average effects learned across all monitored wells.</p></div>
+      <div class="grid-2">
+        <div class="card effect"><div class="big" id="rainBig">—</div><div><h3>Rain lifts the water, with a delay</h3><p id="rainText">—</p></div></div>
+        <div class="card effect"><div class="big" id="pumpBig">—</div><div><h3>Pumping pulls it down</h3><p id="pumpText">—</p></div></div>
+      </div>
+    </section>
+
+    <section>
+      <div class="chart-card">
+        <h3>Knowing the rainfall makes forecasts better, and more so further ahead</h3>
+        <p class="takeaway" id="rainValueTake">—</p>
+        <div id="rainValueChart"></div>
+        <details class="table-view"><summary>Show the numbers as a table</summary><div class="table-wrap" id="rainValueTable"></div></details>
+      </div>
+    </section>
+
+    <section>
+      <div class="chart-card">
+        <h3>Wells differ: some are far more sensitive to pumping</h3>
+        <p class="takeaway" id="sensTake">—</p>
+        <p class="axis-note">Number of wells</p>
+        <div id="sensChart"></div>
+        <p class="axis-note" style="text-align:center">Metres deeper per extra 100 m³ pumped in a week (a typical well pumps about 90 m³ a week)</p>
+      </div>
+    </section>
+
+    <section>
+      <div class="grid-2">
+        <div class="callout proof"><strong>Why this matters</strong><ul class="plain"><li>Knowing that rain takes 1–4 weeks to arrive lets a forecast use rain that has already fallen, so there's no need for a weather forecast.</li><li>Knowing which wells are most sensitive to pumping shows where cutting back helps most.</li></ul></div>
+        <div class="callout caution"><strong>Limits</strong><ul class="plain"><li>The model treats all rain alike. Early showers before the monsoon mostly soak into dry soil, so it tends to over-credit them.</li><li>One rainfall series is used for the whole city. Local rain gauges and well locations would sharpen this.</li></ul></div>
+      </div>
+    </section>
+  </div>
+</main>
+<!--SHELL:FOOTER-->
+<footer class="site-footer"><div class="wrap"><div><strong>Borewell Forecast</strong> is a proof of concept for forecasting groundwater levels in Bengaluru borewells. Results are labelled by where the data came from: <span class="source real">real pump data</span> (15 days, July 2026), <span class="source synthetic">synthetic test system</span> (450 simulated wells with a known answer) or <span class="source twin">digital twin</span> (a physics-based simulation of the 579 wells over a year). Nothing here is yet a validated field forecast.</div><div><strong>Explore</strong><ul><li><a href="../">Overview</a></li><li><a href="../forecast/">Try a forecast</a></li><li><a href="../accuracy/">How accurate</a></li><li><a href="../drivers/">What moves the water</a></li><li><a href="../network/">Wells affect each other</a></li><li><a href="../journey/">Our journey</a></li><li><a href="../next/">What's next</a></li></ul></div><div><strong>More</strong><ul><li><a href="../glossary/">Glossary of terms</a></li><li><a href="../prototype/">Stage 1 · First prototype (real data)</a></li><li><a href="../comparison/">Stage 2 · Scenario explorer</a></li><li><a href="../validation/">Stage 2 · Hidden-truth test</a></li><li><a href="../models/">Stage 2 · Three models compared</a></li><li><a href="https://github.com/mailabhiramsrinivas-art/borewell-water-forecast">Source code</a></li></ul></div></div></footer>
+<!--/SHELL:FOOTER-->
+<script src="../assets/site.js?v=cd22e42713"></script>
+<script>
+(async () => {
+  const $ = id => document.getElementById(id);
+  const d = await fetch("../data/monitoring_summary.json").then(r => r.json());
+  const f1 = v => Kit.fmt(v, 1), f2 = v => Kit.fmt(v, 2);
+  const weeks = d.season.weeks.map(Kit.day), lvl = d.season.typical_well_vs_own_mean_m, rain = d.season.rain_mm_week;
+  const k0 = lvl.indexOf(Math.min(...lvl.filter(v => v !== null))), k1 = lvl.indexOf(Math.max(...lvl.filter(v => v !== null)));
+  const rise = lvl[0] - lvl[k0], fall = lvl[k1] - lvl[k0];
+  const dt = ms => Kit.dateFmt.format(new Date(ms));
+  $("seasonTake").textContent = `The typical well rose about ${f1(rise)} m through the monsoon, peaking in the week of ${dt(weeks[k0])}. It then sank about ${f1(fall)} m through the dry months, to its deepest point in late July 2026.`;
+  const xmin = weeks[0] - 4 * 864e5, xmax = weeks[weeks.length - 1] + 10 * 864e5;
+  const ticks = w => { const out = []; const dd = new Date(xmin); dd.setUTCDate(1); dd.setUTCMonth(dd.getUTCMonth() + 1); const step = w < 560 ? 3 : w < 820 ? 2 : 1; for (let k = 0; dd.getTime() <= xmax; k++) { if (k % step === 0) out.push(dd.getTime()); dd.setUTCMonth(dd.getUTCMonth() + 1); } return out; };
+  const mlabel = ms => { const x = new Date(ms); return x.getUTCMonth() === 0 ? Kit.monthYearFmt.format(x) : Kit.monthFmt.format(x); };
+  const draw = () => {
+    const box = $("levelChart");
+    Kit.line(box, { label: "Typical well's water level through the year", height: 260, rightPad: 24, margin: { left: 84 },
+      x: { min: xmin, max: xmax, ticks: ticks(box.clientWidth), format: mlabel },
+      y: { invert: true, format: (v, tip) => tip ? (Math.abs(v) < 0.005 ? "at its yearly average" : `${f2(Math.abs(v))} m ${v > 0 ? "deeper than" : "higher than"} average`) : (Math.abs(v) < 1e-9 ? "average" : `${Math.round(Math.abs(v) * 10) / 10} m ${v > 0 ? "deeper" : "higher"}`) },
+      series: [{ name: "Typical well vs its yearly average", color: "var(--s-blue)", points: weeks.map((x, k) => ({ x, y: lvl[k] })), width: 2.4 }],
+      tipTitle: x => `Week of ${dt(x)}` });
+    const rb = $("rainChart");
+    Kit.columns(rb, { label: "Weekly rainfall", height: 140, color: "var(--s-aqua)", seriesName: "rain", margin: { left: 84 },
+      items: weeks.map((x, k) => ({ x: x + 3.5 * 864e5, value: rain[k] })), barWidth: 8,
+      x: { min: xmin, max: xmax, ticks: ticks(rb.clientWidth), format: mlabel },
+      tipTitle: x => `Week of ${dt(x - 3.5 * 864e5)}`, valueFormat: v => `${f1(v)} mm` });
+    const rv = d.rain_value;
+    Kit.hbars($("rainValueChart"), { label: "Error reduction from using rainfall", labelWidth: 150, max: 40,
+      items: [4, 8, 12].map(h => ({ label: `${h} weeks ahead`, value: rv[`forecast_h${h}`].pct, valueText: `${Math.round(rv[`forecast_h${h}`].pct)}% less error`, color: "var(--s-aqua)" })) });
+    const sens = d.effects.pump_sensitivity_by_well.filter(v => v !== null).map(v => v / 10);
+    const bw = 0.05, maxb = 1.2;
+    const bins = []; for (let a = 0; a < maxb - 1e-9; a += bw) bins.push({ x: a + bw / 2, value: sens.filter(v => v >= a && (v < a + bw || (a + bw >= maxb - 1e-9))).length });
+    const sb = $("sensChart");
+    Kit.columns(sb, { label: "Distribution of pumping sensitivity across wells", height: 190, color: "var(--s-blue)", seriesName: "wells",
+      items: bins, barWidth: Math.max(8, sb.clientWidth / bins.length - 6),
+      x: { min: 0, max: maxb, ticks: Kit.niceTicks(0, maxb, 6), format: v => f1(v) },
+      tipTitle: x => x + bw / 2 >= maxb - 1e-9 ? `${f2(x - bw / 2)} m or more per 100 m³` : `${f2(x - bw / 2)}–${f2(x + bw / 2)} m per 100 m³`, valueFormat: v => `${v} wells` });
+  };
+  draw(); Kit.onResize(draw);
+  Kit.table($("seasonTable"), ["Week of", "Typical well vs its average", "Rain that week"], weeks.map((x, k) => [dt(x), lvl[k] === null ? "—" : `${lvl[k] > 0 ? "+" : ""}${f2(lvl[k])} m`, `${f1(rain[k])} mm`]));
+  const e = d.effects.rain_m_per_100mm;
+  $("rainBig").textContent = `+${f1(e.previous_week + e.weeks_2_to_4)} m`;
+  $("rainText").textContent = `100 mm of rain raises the typical well by about ${f1(e.previous_week)} m the following week, and about ${f1(e.weeks_2_to_4)} m more over the next 2–4 weeks as it soaks down. Rain from more than 8 weeks earlier has almost no further effect.`;
+  const sAll = d.effects.pump_sensitivity_by_well.filter(v => v !== null).map(v => v / 10).sort((a, b) => a - b);
+  const sMed = sAll[Math.floor(sAll.length / 2)];
+  $("pumpBig").textContent = `−${f1(sMed)} m`;
+  $("pumpText").textContent = `Pumping an extra 100 m³ (100,000 litres, about a week's pumping for a typical well) in a week leaves the typical well about ${f1(sMed)} m deeper. Wells differ a lot, as shown below.`;
+  const rv = d.rain_value;
+  $("rainValueTake").textContent = `Compared with the same model without rainfall, forecast error fell by ${Math.round(rv.forecast_h4.pct)}% at 4 weeks and ${Math.round(rv.forecast_h12.pct)}% at 12 weeks. These gains are statistically clear, not luck.`;
+  Kit.table($("rainValueTable"), ["Weeks ahead", "Error reduction", "In metres", "95% confidence"], [4, 8, 12].map(h => { const r = rv[`forecast_h${h}`]; return [`${h}`, `${Math.round(r.pct)}%`, `${f2(r.reduction_m)} m`, `${f2(r.ci95_m[0])}–${f2(r.ci95_m[1])} m`]; }));
+  const q = p => sAll[Math.floor(p * (sAll.length - 1))];
+  $("sensTake").textContent = `Half of the wells sink less than ${f2(q(0.5))} m per extra 100 m³ pumped in a week. The most sensitive tenth sink more than ${f1(q(0.9))} m, and those are the wells where easing pumping helps most.`;
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>What's next · Borewell Forecast</title>
+  <meta name="description" content="What the borewell forecast needs next to become a proven field tool, and what each step unlocks.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230b3a52'/%3E%3Cpath d='M16 5C12 12 9 16 9 20.5a7 7 0 0 0 14 0C23 16 20 12 16 5Z' fill='%235fc4d8'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="../assets/site.css?v=cd22e42713">
+  <style>
+    .need { display: grid; grid-template-columns: 44px 1fr; gap: 14px; }
+    .need .n { width: 40px; height: 40px; border-radius: 12px; background: var(--brand); color: #fff; font-weight: 750; display: grid; place-items: center; }
+    .need h3 { margin: 4px 0 6px; }
+    .need .unlock { margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--line); font-size: .93rem; color: var(--ink-2); }
+    .need .unlock b { color: var(--ink); }
+    .road { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 16px; }
+    @media (max-width: 860px) { .road { grid-template-columns: 1fr; } }
+    .road .card h3 { margin-top: 6px; }
+    .road .when { font-size: .8rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--brand-2); }
+  </style>
+</head>
+<body data-page="next">
+<!--SHELL:HEADER-->
+<a class="skip" href="#main">Skip to content</a>
+<header class="site-header"><div class="wrap"><a class="brand" href="../"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M16 3C11 11 7 16 7 21.5a9 9 0 0 0 18 0C25 16 21 11 16 3Z" fill="#5fc4d8"/><path d="M11.5 22c2.8 1.8 6.2 1.8 9 0" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round"/></svg><span>Borewell Forecast</span><span class="poc">Proof of concept</span></a><button class="menu-toggle" aria-expanded="false" aria-controls="site-nav">Menu</button><nav class="site-nav" id="site-nav" aria-label="Main"><ul><li><a href="../">Overview</a></li><li><a href="../forecast/">Try a forecast</a></li><li><a href="../accuracy/">How accurate</a></li><li><a href="../drivers/">What moves the water</a></li><li><a href="../network/">Wells affect each other</a></li><li><a href="../journey/">Our journey</a></li><li><a href="../next/" aria-current="page">What's next</a></li></ul></nav></div></header>
+<!--/SHELL:HEADER-->
+<main id="main">
+  <div class="wrap">
+    <div class="page-hero">
+      <p class="kicker">What's next</p>
+      <h1>From proof of concept to a proven field tool</h1>
+      <p class="lede">The methods work on simulations and hold up under honest testing. To prove them on real wells, we need a few specific kinds of data. Each item below is backed by what our tests showed it would unlock.</p>
+    </div>
+
+    <section style="padding-top:0">
+      <h2>The data that would make the difference</h2>
+      <div class="grid-2">
+        <div class="card need"><span class="n">1</span><div><h3>A long real history</h3><p>At least one full year of the company's real records, ideally two or more, so it spans several monsoons.</p><p class="unlock"><b>Unlocks:</b> proof on real wells of the 12-week accuracy we saw on the digital twin, and the first test of forecasting through a monsoon.</p></div></div>
+        <div class="card need"><span class="n">2</span><div><h3>Where each well is</h3><p>Coordinates, or a coarse grid if exact locations are sensitive.</p><p class="unlock"><b>Unlocks:</b> the well-to-well network model on real wells, plus local rainfall. Without locations, our tests showed finding neighbours is no better than chance.</p></div></div>
+        <div class="card need"><span class="n">3</span><div><h3>Continuous water-level logging</h3><p>A reading every few minutes, including while the pump is off, not only when a pump starts and stops.</p><p class="unlock"><b>Unlocks:</b> link strengths within about 10% instead of about 30% too high. In tests, it also sharply improved spotting wells exposed to their neighbours.</p></div></div>
+        <div class="card need"><span class="n">4</span><div><h3>Sensor calibration records</h3><p>When each sensor was installed, checked, reset or replaced.</p><p class="unlock"><b>Unlocks:</b> catching drifting sensors. In our tests, a sensor drifting 4–5 m fooled every model, because it looks exactly like a falling water table.</p></div></div>
+        <div class="card need"><span class="n">5</span><div><h3>A geology map of cracks</h3><p>Mapped lineaments (fracture zones) for the well fields, and drilling logs showing where water was struck.</p><p class="unlock"><b>Unlocks:</b> knowing <em>who</em> is connected. Without it, the network model underestimated interference by about a third.</p></div></div>
+        <div class="card need"><span class="n">6</span><div><h3>One short pumping test</h3><p>Stop one busy well for 12 hours and log the wells around it minute by minute.</p><p class="unlock"><b>Unlocks:</b> the exact link and delay between specific wells, which daily data cannot reveal, and a real-world check before any pumping advice is given.</p></div></div>
+      </div>
+    </section>
+
+    <section>
+      <h2>The road ahead</h2>
+      <div class="road">
+        <div class="card"><span class="when">Now</span><h3>Real long-term data</h3><p>Run the full test suite on real records: forecasts, ranges, rainfall and pumping effects. Report real accuracy side by side with the simulations.</p></div>
+        <div class="card"><span class="when">Next</span><h3>Early warning of dry wells</h3><p>A 7-day warning for wells at risk of running dry, so operators can act before a pump runs empty. This is in development.</p></div>
+        <div class="card"><span class="when">Then</span><h3>Area-wide planning</h3><p>With locations and a pumping test: map pressure-point wells, show how easing pumping in one place helps the neighbours, and assess new borewells before they are drilled.</p></div>
+      </div>
+    </section>
+
+    <section>
+      <div class="callout caution"><strong>What we will not claim until then</strong><p>Real-world accuracy of months-ahead forecasts, the true strength of well-to-well links in Bengaluru, or anything beyond 12 weeks ahead. The simulations show the methods can work. Real records will show how well.</p></div>
+    </section>
+  </div>
+</main>
+<!--SHELL:FOOTER-->
+<footer class="site-footer"><div class="wrap"><div><strong>Borewell Forecast</strong> is a proof of concept for forecasting groundwater levels in Bengaluru borewells. Results are labelled by where the data came from: <span class="source real">real pump data</span> (15 days, July 2026), <span class="source synthetic">synthetic test system</span> (450 simulated wells with a known answer) or <span class="source twin">digital twin</span> (a physics-based simulation of the 579 wells over a year). Nothing here is yet a validated field forecast.</div><div><strong>Explore</strong><ul><li><a href="../">Overview</a></li><li><a href="../forecast/">Try a forecast</a></li><li><a href="../accuracy/">How accurate</a></li><li><a href="../drivers/">What moves the water</a></li><li><a href="../network/">Wells affect each other</a></li><li><a href="../journey/">Our journey</a></li><li><a href="../next/">What's next</a></li></ul></div><div><strong>More</strong><ul><li><a href="../glossary/">Glossary of terms</a></li><li><a href="../prototype/">Stage 1 · First prototype (real data)</a></li><li><a href="../comparison/">Stage 2 · Scenario explorer</a></li><li><a href="../validation/">Stage 2 · Hidden-truth test</a></li><li><a href="../models/">Stage 2 · Three models compared</a></li><li><a href="https://github.com/mailabhiramsrinivas-art/borewell-water-forecast">Source code</a></li></ul></div></div></footer>
+<!--/SHELL:FOOTER-->
+<script src="../assets/site.js?v=cd22e42713"></script>
+</body>
+</html>

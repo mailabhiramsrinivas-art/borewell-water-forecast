@@ -3,165 +3,138 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Borewell Water Forecast</title>
-  <meta name="description" content="Explore dynamic water-level forecasts and uncertainty for monitored borewells.">
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230a3047'/%3E%3Cpath d='M32 10C24 23 17 30 17 40a15 15 0 0 0 30 0c0-10-7-17-15-30Z' fill='%2328c7c2'/%3E%3Cpath d='M23 41c5 3 13 3 18 0' fill='none' stroke='%23e9fbfa' stroke-width='4' stroke-linecap='round'/%3E%3C/svg%3E">
-  <link rel="stylesheet" href="./styles.css">
+  <title>Borewell Forecast · Knowing when a well will run low</title>
+  <meta name="description" content="A proof of concept that forecasts groundwater levels in Bengaluru borewells weeks ahead, with honest ranges.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230b3a52'/%3E%3Cpath d='M16 5C12 12 9 16 9 20.5a7 7 0 0 0 14 0C23 16 20 12 16 5Z' fill='%235fc4d8'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="./assets/site.css?v=cd22e42713">
+  <style>
+    .home-hero { background: linear-gradient(180deg, #0b3a52 0%, #0e5575 100%); color: #fff; padding: 56px 0 48px; }
+    .home-hero .wrap { display: grid; grid-template-columns: 1.15fr .85fr; gap: 40px; align-items: center; }
+    .home-hero h1 { color: #fff; }
+    .home-hero .lede { color: #d4e6ee; }
+    .home-hero .kicker { color: #9fd6e6; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; font-size: .8rem; }
+    .home-hero .btn { background: #fff; color: #0b3a52; }
+    .home-hero .btn:hover { background: #e8f3f7; }
+    .home-hero .btn.secondary { background: transparent; color: #fff; border-color: rgba(255,255,255,.5); }
+    .home-hero .btn.secondary:hover { background: rgba(255,255,255,.1); }
+    .cta { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 22px; }
+    .diagram { background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.18); border-radius: 18px; padding: 14px; }
+    .diagram svg { display: block; width: 100%; height: auto; }
+    .diagram p { color: #cfe2ea; font-size: .88rem; margin: 8px 4px 2px; }
+    @media (max-width: 880px) { .home-hero .wrap { grid-template-columns: 1fr; } }
+    .results-strip { margin-top: -26px; }
+    .stat .source { margin-top: 10px; }
+    .journey-mini { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 14px; }
+    @media (max-width: 900px) { .journey-mini { grid-template-columns: 1fr 1fr; } }
+    @media (max-width: 560px) { .journey-mini { grid-template-columns: 1fr; } }
+    .journey-mini .num { font-weight: 800; color: var(--brand-2); font-size: .85rem; letter-spacing: .06em; }
+  </style>
 </head>
-<body>
-  <header class="topbar">
-    <div class="brand">
-      <div class="brand-mark" aria-hidden="true">
-        <svg viewBox="0 0 36 36"><path d="M18 3C13 12 8 17 8 24a10 10 0 0 0 20 0c0-7-5-12-10-21Z"/><path class="wave" d="M12 24c4 2 8 2 12 0"/></svg>
-      </div>
+<body data-page="overview">
+<!--SHELL:HEADER-->
+<a class="skip" href="#main">Skip to content</a>
+<header class="site-header"><div class="wrap"><a class="brand" href="./"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M16 3C11 11 7 16 7 21.5a9 9 0 0 0 18 0C25 16 21 11 16 3Z" fill="#5fc4d8"/><path d="M11.5 22c2.8 1.8 6.2 1.8 9 0" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round"/></svg><span>Borewell Forecast</span><span class="poc">Proof of concept</span></a><button class="menu-toggle" aria-expanded="false" aria-controls="site-nav">Menu</button><nav class="site-nav" id="site-nav" aria-label="Main"><ul><li><a href="./" aria-current="page">Overview</a></li><li><a href="./forecast/">Try a forecast</a></li><li><a href="./accuracy/">How accurate</a></li><li><a href="./drivers/">What moves the water</a></li><li><a href="./network/">Wells affect each other</a></li><li><a href="./journey/">Our journey</a></li><li><a href="./next/">What's next</a></li></ul></nav></div></header>
+<!--/SHELL:HEADER-->
+<main id="main">
+  <section class="home-hero">
+    <div class="wrap">
       <div>
-        <h1>Borewell Water Forecast</h1>
-        <p>M1 · Real-data trend model · 15-day record</p>
+        <p class="kicker">Groundwater forecasting · Bengaluru</p>
+        <h1>Know how deep a well's water will be, weeks before it gets there.</h1>
+        <p class="lede">Many homes and businesses in Bengaluru depend on borewells. Their water level rises with the monsoon, falls with pumping, and a well can run low with little warning. We built a proof of concept that turns routine pump records into forecasts for each well, with an honest range around every forecast.</p>
+        <div class="cta">
+          <a class="btn" href="./forecast/">Try a forecast for a well →</a>
+          <a class="btn secondary" href="./journey/">See how we built it</a>
+        </div>
       </div>
+      <figure class="diagram" aria-labelledby="diagramCaption">
+        <svg viewBox="0 0 420 300" role="img" aria-labelledby="diagramTitle diagramDesc">
+          <title id="diagramTitle">How a borewell's water level is measured</title>
+          <desc id="diagramDesc">A cross-section of the ground. A borewell reaches down to groundwater. The water level is measured as a depth in metres below the ground surface; rain slowly recharges the ground and pumping pulls the level down.</desc>
+          <defs><linearGradient id="soil" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#c9b28a"/><stop offset="1" stop-color="#8f7a5c"/></linearGradient></defs>
+          <g fill="#e3f1f7" opacity=".95"><ellipse cx="300" cy="34" rx="44" ry="17"/><ellipse cx="330" cy="28" rx="30" ry="15"/><ellipse cx="272" cy="30" rx="26" ry="13"/></g>
+          <g stroke="#9fd6e6" stroke-width="2" stroke-linecap="round"><line x1="282" y1="56" x2="276" y2="70"/><line x1="300" y1="56" x2="294" y2="70"/><line x1="318" y1="56" x2="312" y2="70"/></g>
+          <rect x="0" y="86" width="420" height="214" fill="url(#soil)" rx="6"/>
+          <rect x="0" y="80" width="420" height="10" fill="#7fb069" rx="3"/>
+          <rect x="0" y="196" width="420" height="104" fill="#3d86b8" opacity=".55"/>
+          <path d="M0 196 C 60 190 110 202 150 214 C 170 220 190 220 205 214 C 230 204 300 192 420 196" fill="none" stroke="#ffffff" stroke-width="2.5"/>
+          <rect x="150" y="58" width="40" height="30" rx="5" fill="#f4f7f9"/><text x="170" y="78" text-anchor="middle" font-size="11" font-weight="700" fill="#0b3a52">PUMP</text>
+          <rect x="164" y="88" width="12" height="190" fill="#e9eef1" stroke="#b9c4cb"/>
+          <g stroke="#fff" stroke-width="2" fill="none"><line x1="112" y1="90" x2="112" y2="210"/><path d="M106 98 L112 90 L118 98"/><path d="M106 202 L112 210 L118 202"/></g>
+          <text x="104" y="150" text-anchor="end" font-size="13" font-weight="700" fill="#fff">metres</text>
+          <text x="104" y="166" text-anchor="end" font-size="13" font-weight="700" fill="#fff">below ground</text>
+          <g stroke="#e3f1f7" stroke-width="2" stroke-dasharray="4 5"><line x1="300" y1="92" x2="300" y2="186"/></g>
+          <path d="M294 180 L300 190 L306 180" fill="none" stroke="#e3f1f7" stroke-width="2"/>
+          <text x="310" y="140" font-size="12" fill="#fff" font-weight="650">rain soaks in</text><text x="310" y="155" font-size="12" fill="#fff" font-weight="650">over weeks</text>
+          <text x="210" y="250" font-size="12.5" fill="#fff" font-weight="700">groundwater</text>
+          <text x="20" y="286" font-size="11.5" fill="#e3f1f7">Pumping pulls the level down near the well; the monsoon lifts it.</text>
+        </svg>
+        <p id="diagramCaption">Every number on this site is a <strong>depth in metres below the ground</strong>. Bigger means the water is further down, which is worse.</p>
+      </figure>
     </div>
-    <nav class="topbar-nav" aria-label="Project pages">
-      <a class="active" href="./" aria-current="page">01 · Real-data trend</a>
-      <a href="./comparison/">02 · 450-well forecast</a>
-      <a href="./validation/">03 · Validation</a>
-    <a href="./models/">04 · Model comparison</a>
-    </nav>
-  </header>
+  </section>
 
-  <main class="workspace">
-    <aside class="controls" aria-label="Forecast settings">
-      <div class="panel-heading">
-        <p class="eyebrow">Forecast settings</p>
-        <h2>Choose a well and horizon</h2>
-      </div>
+  <div class="wrap results-strip">
+    <div class="grid-4">
+      <div class="stat"><span class="label">Typical error, one week ahead</span><span class="value">0.3 m</span><span class="sub">71% of forecasts land within 0.5 m</span><span class="source twin"><svg viewBox="0 0 14 14" aria-hidden="true"><path d="M7 1l6 6-6 6-6-6z" fill="currentColor"/></svg>Digital twin</span></div>
+      <div class="stat"><span class="label">Average error, twelve weeks ahead</span><span class="value">1.3 m</span><span class="sub">Half the 2.8 m error of assuming nothing changes</span><span class="source twin"><svg viewBox="0 0 14 14" aria-hidden="true"><path d="M7 1l6 6-6 6-6-6z" fill="currentColor"/></svg>Digital twin</span></div>
+      <div class="stat"><span class="label">Our "80% likely" ranges held</span><span class="value">80%</span><span class="sub">of the time, tested before the answer was known</span><span class="source twin"><svg viewBox="0 0 14 14" aria-hidden="true"><path d="M7 1l6 6-6 6-6-6z" fill="currentColor"/></svg>Digital twin</span></div>
+      <div class="stat"><span class="label">Rainfall cuts 12-week error by</span><span class="value">32%</span><span class="sub">Rain reaches the groundwater over 1–4 weeks</span><span class="source twin"><svg viewBox="0 0 14 14" aria-hidden="true"><path d="M7 1l6 6-6 6-6-6z" fill="currentColor"/></svg>Digital twin</span></div>
+  </div>
 
-      <form id="forecastForm">
-        <div class="form-field"><label for="wellInput">Borewell</label>
-        <input id="wellInput" list="wellOptions" value="BW046" autocomplete="off" required aria-describedby="wellHelp"></div>
-        <datalist id="wellOptions"></datalist>
-        <p class="field-help" id="wellHelp">Select one of the 579 monitored well IDs.</p>
-
-        <div class="field-row">
-          <div>
-            <div class="form-field"><label for="horizonValue">Forecast length</label>
-            <input id="horizonValue" type="number" min="1" step="1" value="30" required></div>
-          </div>
-          <div>
-            <div class="form-field"><label for="horizonUnit">Unit</label>
-            <select id="horizonUnit">
-              <option value="days">Days</option>
-              <option value="weeks">Weeks</option>
-              <option value="months">Months</option>
-              <option value="years">Years</option>
-            </select></div>
-          </div>
-        </div>
-
-        <div class="form-field"><label for="pumpingScenario">Expected pumping</label>
-        <select id="pumpingScenario">
-          <option value="low">Lower than recent</option>
-          <option value="typical" selected>Similar to recent</option>
-          <option value="high">Higher than recent</option>
-        </select></div>
-
-        <div class="form-field"><label for="rainScenario">Rainfall and recharge</label>
-        <select id="rainScenario">
-          <option value="dry">Drier / weaker recharge</option>
-          <option value="typical" selected>Similar to recent</option>
-          <option value="wet">Wetter / stronger recharge</option>
-        </select></div>
-
-        <div class="form-field"><label for="confidence">Uncertainty range</label>
-        <select id="confidence">
-          <option value="80" selected>80% projection range</option>
-          <option value="95">95% projection range</option>
-        </select></div>
-
-        <button type="submit">Generate forecast</button>
-        <p class="form-error" id="formError" role="alert"></p>
-      </form>
-
-      <div class="method-note">
-        <strong>How scenarios work</strong>
-        <p>Pumping and recharge choices shift the recent well trend using that well’s observed pumping and recovery changes. They are sensitivity assumptions because rainfall was not supplied.</p>
-      </div>
-    </aside>
-
-    <section class="results" aria-live="polite">
-      <div class="result-header">
-        <div>
-          <p class="eyebrow" id="resultEyebrow">BW046 · 30-day projection</p>
-          <h2 id="resultTitle">Water-level forecast</h2>
-        </div>
-        <div class="evidence-badge" id="evidenceBadge">Higher evidence</div>
-      </div>
-
-      <div class="metric-grid">
-        <article class="metric-card primary">
-          <span>Projected dynamic level</span>
-          <strong id="forecastLevel">—</strong>
-          <small id="forecastDate">—</small>
-        </article>
-        <article class="metric-card">
-          <span>Current observed level</span>
-          <strong id="currentLevel">—</strong>
-          <small id="currentDate">—</small>
-        </article>
-        <article class="metric-card">
-          <span>Approximate error</span>
-          <strong id="forecastError">—</strong>
-          <small id="confidenceLabel">80% projection range</small>
-        </article>
-        <article class="metric-card">
-          <span>Expected direction</span>
-          <strong id="directionValue">—</strong>
-          <small id="changeValue">—</small>
-        </article>
-      </div>
-
-      <article class="chart-card">
-        <div class="chart-topline">
-          <div>
-            <h3>Depth below ground surface</h3>
-            <p>Lower on this chart means the water is deeper.</p>
-          </div>
-          <div class="legend" aria-label="Chart legend">
-            <span><i class="history-key"></i>Observed daily median</span>
-            <span><i class="forecast-key"></i>Projection</span>
-            <span><i class="range-key"></i>Uncertainty</span>
-          </div>
-        </div>
-        <div class="chart-wrap" id="chartWrap">
-          <svg id="forecastChart" viewBox="0 0 980 410" role="img" aria-labelledby="chartTitle chartDesc">
-            <title id="chartTitle">Borewell water-level forecast</title>
-            <desc id="chartDesc">Observed daily median levels followed by a projected water-level path and uncertainty range.</desc>
-          </svg>
-        </div>
-      </article>
-
-      <div class="interpretation-grid">
-        <article class="plain-result">
-          <p class="eyebrow">Plain-language result</p>
-          <h3 id="plainHeadline">Select settings to generate a forecast.</h3>
-          <p id="plainText"></p>
-        </article>
-        <article class="model-status">
-          <p class="eyebrow">Model status</p>
-          <dl>
-            <div><dt>Short-term pattern</dt><dd id="stabilityValue">—</dd></div>
-            <div><dt>Usable sessions</dt><dd id="sessionsValue">—</dd></div>
-            <div><dt>Validated range</dt><dd>Session transitions · 4-day holdout</dd></div>
-            <div><dt>Selected horizon</dt><dd id="horizonStatus">—</dd></div>
-          </dl>
-        </article>
-      </div>
-
-      <div class="warning" id="forecastWarning">
-        <strong>Exploratory forecast</strong>
-        <p id="warningText">The source contains 15 days of observations. Longer forecasts are extrapolations and their uncertainty expands rapidly.</p>
+  <div class="wrap">
+    <section>
+      <div class="section-title"><h2>What we built</h2><p>Three capabilities, each tested against answers the model was not allowed to see in advance.</p></div>
+      <div class="grid-3">
+        <a class="card" href="./forecast/">
+          <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 17l5-5 4 3 8-8"/><path d="M15 7h5v5"/></svg></div>
+          <h3>A forecast for every well</h3>
+          <p>For each of the ~500 wells we monitor: where its water is now, and where it is likely to be in 4, 8 and 12 weeks, with a range.</p>
+          <span class="go">Try it →</span>
+        </a>
+        <a class="card" href="./drivers/">
+          <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M7 16a4 4 0 1 1 1-7.9A5 5 0 0 1 18 9a3.5 3.5 0 0 1 0 7"/><path d="M9 19l-1 2M13 19l-1 2M17 19l-1 2"/></svg></div>
+          <h3>What moves the water</h3>
+          <p>How much the monsoon lifts a well, how much pumping pulls it down, and how long rain takes to reach the groundwater.</p>
+          <span class="go">Explore →</span>
+        </a>
+        <a class="card" href="./network/">
+          <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="5" cy="6" r="2.5"/><circle cx="19" cy="7" r="2.5"/><circle cx="12" cy="18" r="2.5"/><path d="M7.3 7.1l9.3.6M6.3 8.2l4.4 7.6M17.7 9.2l-4.4 6.6"/></svg></div>
+          <h3>How wells affect each other</h3>
+          <p>A simulation showing which wells' pumping hurts their neighbours most, and what it would take to measure that for real.</p>
+          <span class="go">See the simulation →</span>
+        </a>
       </div>
     </section>
-  </main>
 
-  <script src="./app.js" defer></script>
+    <section>
+      <div class="section-title"><h2>Where the data comes from</h2><p>We are careful to say which results come from real wells and which come from simulations. Each result on this site carries one of these labels.</p></div>
+      <div class="grid-3">
+        <div class="card"><span class="source real"><svg viewBox="0 0 14 14" aria-hidden="true"><circle cx="7" cy="7" r="5" fill="currentColor"/></svg>Real pump data</span><h3 style="margin-top:12px">15 days, 579 real wells</h3><p>A real export of pump sessions and water levels from July 2026. Enough to build and check the method, too short to forecast months ahead.</p></div>
+        <div class="card"><span class="source synthetic"><svg viewBox="0 0 14 14" aria-hidden="true"><rect x="2" y="2" width="10" height="10" rx="2" fill="none" stroke="currentColor" stroke-width="2"/></svg>Synthetic test system</span><h3 style="margin-top:12px">450 simulated wells, known answers</h3><p>A test system where the true water level is known, so we could check which methods recover it and what data they need.</p></div>
+        <div class="card"><span class="source twin"><svg viewBox="0 0 14 14" aria-hidden="true"><path d="M7 1l6 6-6 6-6-6z" fill="currentColor"/></svg>Digital twin</span><h3 style="margin-top:12px">A full year for all 579 wells</h3><p>A physics-based simulation of the same wells over a year, including the monsoon. It stands in for the long real history we are requesting.</p></div>
+      </div>
+    </section>
+
+    <section>
+      <div class="section-title"><h2>How we got here</h2><p>Each stage answered one question and set up the next.</p></div>
+      <div class="journey-mini">
+        <a class="card" href="./prototype/"><span class="num">STAGE 1</span><h3>Can pump records become forecasts?</h3><p>Yes: 15 days of real data were cleaned, linked and modelled.</p></a>
+        <a class="card" href="./models/"><span class="num">STAGE 2</span><h3>What matters most: data or model?</h3><p>Data. Resting-level readings cut error from 4.2 m to 0.5 m on a test system.</p></a>
+        <a class="card" href="./accuracy/"><span class="num">STAGE 3</span><h3>How far ahead can we see?</h3><p>Twelve weeks, at half the error of guessing, with honest ranges.</p></a>
+        <a class="card" href="./network/"><span class="num">STAGE 4</span><h3>Do wells affect each other?</h3><p>In simulation, yes. We know what data would measure it.</p></a>
+      </div>
+      <p style="margin-top:18px"><a class="btn secondary" href="./journey/">Read the full journey</a> <a class="btn secondary" href="./next/">What we need next</a></p>
+    </section>
+
+    <section>
+      <div class="callout caution"><strong>Honest status</strong><p>This is a proof of concept. The long-range results come from a digital twin and a synthetic test system, not yet from years of real field records. The next step is to repeat these tests on real long-term data. <a href="./next/">Here is what that needs</a>.</p></div>
+    </section>
+  </div>
+</main>
+<!--SHELL:FOOTER-->
+<footer class="site-footer"><div class="wrap"><div><strong>Borewell Forecast</strong> is a proof of concept for forecasting groundwater levels in Bengaluru borewells. Results are labelled by where the data came from: <span class="source real">real pump data</span> (15 days, July 2026), <span class="source synthetic">synthetic test system</span> (450 simulated wells with a known answer) or <span class="source twin">digital twin</span> (a physics-based simulation of the 579 wells over a year). Nothing here is yet a validated field forecast.</div><div><strong>Explore</strong><ul><li><a href="./">Overview</a></li><li><a href="./forecast/">Try a forecast</a></li><li><a href="./accuracy/">How accurate</a></li><li><a href="./drivers/">What moves the water</a></li><li><a href="./network/">Wells affect each other</a></li><li><a href="./journey/">Our journey</a></li><li><a href="./next/">What's next</a></li></ul></div><div><strong>More</strong><ul><li><a href="./glossary/">Glossary of terms</a></li><li><a href="./prototype/">Stage 1 · First prototype (real data)</a></li><li><a href="./comparison/">Stage 2 · Scenario explorer</a></li><li><a href="./validation/">Stage 2 · Hidden-truth test</a></li><li><a href="./models/">Stage 2 · Three models compared</a></li><li><a href="https://github.com/mailabhiramsrinivas-art/borewell-water-forecast">Source code</a></li></ul></div></div></footer>
+<!--/SHELL:FOOTER-->
+<script src="./assets/site.js?v=cd22e42713"></script>
 </body>
 </html>

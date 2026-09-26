@@ -2,19 +2,25 @@
 <html lang="en">
 <head>
   <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Model comparison · Borewell Water Forecast</title>
+  <title>Three approaches compared · Borewell Forecast</title>
   <meta name="description" content="Three transparent borewell models compared on the same 450 synthetic wells, with predictions, errors and data requirements.">
-  <link rel="stylesheet" href="../lab.css">
+  <link rel="stylesheet" href="../assets/site.css?v=cd22e42713">
+  <link rel="stylesheet" href="../lab.css?v=cd22e42713">
 </head>
-<body>
-<header class="lab-header">
-  <nav class="page-nav" aria-label="Project pages">
-    <a href="../">01 · Real-data trend</a><a href="../comparison/">02 · 450-well forecast</a>
-    <a href="../validation/">03 · Validation lab</a><a class="active" aria-current="page" href="./">04 · Model comparison</a>
-  </nav>
-  <div class="header-title"><p class="eyebrow">Bengaluru borewell project · Page 04</p><h1>Better readings.<br>Then better predictions.</h1><p>Compare three models on the same wells, dates and hidden static-level truth.</p></div>
-  <span class="page-tag">Proof of concept</span>
-</header>
+<body data-page="models">
+<!--SHELL:HEADER-->
+<a class="skip" href="#main">Skip to content</a>
+<header class="site-header"><div class="wrap"><a class="brand" href="../"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M16 3C11 11 7 16 7 21.5a9 9 0 0 0 18 0C25 16 21 11 16 3Z" fill="#5fc4d8"/><path d="M11.5 22c2.8 1.8 6.2 1.8 9 0" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round"/></svg><span>Borewell Forecast</span><span class="poc">Proof of concept</span></a><button class="menu-toggle" aria-expanded="false" aria-controls="site-nav">Menu</button><nav class="site-nav" id="site-nav" aria-label="Main"><ul><li><a href="../">Overview</a></li><li><a href="../forecast/">Try a forecast</a></li><li><a href="../accuracy/">How accurate</a></li><li><a href="../drivers/">What moves the water</a></li><li><a href="../network/">Wells affect each other</a></li><li><a href="../journey/" class="section-active">Our journey</a></li><li><a href="../next/">What's next</a></li></ul></nav></div></header>
+<nav class="subnav" aria-label="Earlier-stage tools"><div class="wrap"><span>Earlier stages:</span><a href="../prototype/">Stage 1 · First prototype (real data)</a><a href="../comparison/">Stage 2 · Scenario explorer</a><a href="../validation/">Stage 2 · Hidden-truth test</a><a href="../models/" aria-current="page">Stage 2 · Three models compared</a></div></nav>
+<!--/SHELL:HEADER-->
+<div class="wrap stage-intro" id="main"><p class="kicker" style="font-size:.8rem;letter-spacing:.08em;text-transform:uppercase;font-weight:700;color:var(--brand-2);margin-bottom:10px">Stage 2 of our journey · <span class="source synthetic"><svg viewBox="0 0 14 14" aria-hidden="true"><rect x="2" y="2" width="10" height="10" rx="2" fill="none" stroke="currentColor" stroke-width="2"/></svg>Synthetic test system: 450 wells</span></p><h1>Better data, or a better model? Three approaches on the same wells</h1><p class="lede">We gave three forecasting approaches the same 450 simulated wells and the same test: learn from 150 days, then forecast the next 30 against the hidden truth. The comparison separates the value of better readings from the value of a smarter model.</p><div class="grid-3"><div class="callout proof"><strong>The headline</strong><p>Switching from pump-start readings to resting-level readings cut the error from about 4.2 m to 0.5 m. Adding pumping, rain and supply information cut it to about 0.3 m. Better data mattered most.</p></div><div class="callout plain"><strong>How to use this page</strong><p>Pick a well to compare the three approaches on it. Scroll down for the error tables, the side-by-side matrix, and the Stage 1 real-data panel.</p></div><div class="callout caution"><strong>Keep in mind</strong><p>The test system is simulated and follows its own assumptions. Real-well accuracy has to be measured on real long-term records.</p></div></div><details class="callout decoder" open><summary><strong>Decoder: what the labels on this page mean</strong></summary><dl><div><dt>M1: trend from pump-start readings</dt><dd>The Stage 1 method: follow each well's recent trend, using the level recorded when a pump starts.</dd></div>
+<div><dt>M2: M1 plus rainfall</dt><dd>The same trend, adjusted for typical rainfall.</dd></div>
+<div><dt>M3: the driver model</dt><dd>Uses resting-level readings plus pumping, rain, water supply and demand to predict each day's change.</dd></div>
+<div><dt>M1 static</dt><dd>M1 fed resting-level readings instead, which shows what better data alone achieves.</dd></div>
+<div><dt>Persistence / 60-day trend</dt><dd>Simple yardsticks: "nothing changes", and "extend the last 60 days' line".</dd></div><div><dt>Average error (MAE)</dt><dd>How far off the forecasts were, on average, in metres. Lower is better.</dd></div>
+<div><dt>RMSE</dt><dd>Another error measure that punishes big misses more heavily.</dd></div>
+<div><dt>Bias</dt><dd>A lean in one direction: + means forecasts were too deep on average, − too shallow.</dd></div>
+<div><dt>80% coverage</dt><dd>How often the true level landed inside the shaded range. For an honest "80%" range it should be about 80%.</dd></div></dl></details></div>
 <main class="lab-main models-main">
   <p class="takeaway" id="takeaway">Loading the comparison…</p>
   <div class="model-cards" id="modelCards"></div>
@@ -75,7 +81,11 @@
     <p id="realResult"></p><div class="chart-scroll"><svg id="realChart" class="main-chart" viewBox="0 0 1040 440" role="img" aria-labelledby="realChartTitle realChartDesc"></svg></div>
     <p class="field-help">NASA POWER city-centre rainfall is shared by all wells because coordinates are unavailable. The projection uses 2001–2025 monthly rainfall quartiles, not a future weather forecast. <a href="https://power.larc.nasa.gov/docs/services/api/temporal/daily/">Source documentation</a>.</p>
   </section>
-  <p class="closing-note">Page 3 validates M3; it is not a fourth model. Source data, feature definitions, split and rounding are documented in the updated mathematical handoff.</p>
+  <p class="closing-note">The hidden-truth test page checks M3; it is not a fourth model. Full technical details are in the project's mathematical handoff document.</p>
 </main>
-<script src="./models.js"></script>
+<script src="./models.js?v=cd22e42713"></script>
+<!--SHELL:FOOTER-->
+<footer class="site-footer"><div class="wrap"><div><strong>Borewell Forecast</strong> is a proof of concept for forecasting groundwater levels in Bengaluru borewells. Results are labelled by where the data came from: <span class="source real">real pump data</span> (15 days, July 2026), <span class="source synthetic">synthetic test system</span> (450 simulated wells with a known answer) or <span class="source twin">digital twin</span> (a physics-based simulation of the 579 wells over a year). Nothing here is yet a validated field forecast.</div><div><strong>Explore</strong><ul><li><a href="../">Overview</a></li><li><a href="../forecast/">Try a forecast</a></li><li><a href="../accuracy/">How accurate</a></li><li><a href="../drivers/">What moves the water</a></li><li><a href="../network/">Wells affect each other</a></li><li><a href="../journey/">Our journey</a></li><li><a href="../next/">What's next</a></li></ul></div><div><strong>More</strong><ul><li><a href="../glossary/">Glossary of terms</a></li><li><a href="../prototype/">Stage 1 · First prototype (real data)</a></li><li><a href="../comparison/">Stage 2 · Scenario explorer</a></li><li><a href="../validation/">Stage 2 · Hidden-truth test</a></li><li><a href="../models/">Stage 2 · Three models compared</a></li><li><a href="https://github.com/mailabhiramsrinivas-art/borewell-water-forecast">Source code</a></li></ul></div></div></footer>
+<!--/SHELL:FOOTER-->
+<script src="../assets/site.js?v=cd22e42713"></script>
 </body></html>

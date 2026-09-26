@@ -4,24 +4,18 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="Forecast synthetic borewell water levels using a 450-well, 180-day groundwater test system.">
-  <title>450-Well Forecast Lab</title>
+  <title>Scenario explorer · Borewell Forecast</title>
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%2317171c'/%3E%3Cpath d='M32 10C24 23 17 30 17 40a15 15 0 0 0 30 0c0-10-7-17-15-30Z' fill='%23e7ff56'/%3E%3Cpath d='M23 41c5 3 13 3 18 0' fill='none' stroke='%2317171c' stroke-width='4' stroke-linecap='round'/%3E%3C/svg%3E">
-  <link rel="stylesheet" href="../lab.css">
+  <link rel="stylesheet" href="../assets/site.css?v=cd22e42713">
+  <link rel="stylesheet" href="../lab.css?v=cd22e42713">
 </head>
-<body>
-  <header class="lab-header">
-    <nav class="page-nav" aria-label="Project pages">
-      <a href="../">01 · Real-data trend</a>
-      <a class="active" href="./" aria-current="page">02 · 450-well forecast</a>
-      <a href="../validation/">03 · Validation lab</a>
-    <a href="../models/">04 · Model comparison</a>
-    </nav>
-    <div class="header-title">
-      <p class="eyebrow">M3 · 450-well driver model · Page 02</p>
-      <h1>Forecast one well from the new 450-well system</h1>
-    </div>
-    <span class="page-tag">180 days of data</span>
-  </header>
+<body data-page="comparison">
+  <!--SHELL:HEADER-->
+<a class="skip" href="#main">Skip to content</a>
+<header class="site-header"><div class="wrap"><a class="brand" href="../"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M16 3C11 11 7 16 7 21.5a9 9 0 0 0 18 0C25 16 21 11 16 3Z" fill="#5fc4d8"/><path d="M11.5 22c2.8 1.8 6.2 1.8 9 0" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round"/></svg><span>Borewell Forecast</span><span class="poc">Proof of concept</span></a><button class="menu-toggle" aria-expanded="false" aria-controls="site-nav">Menu</button><nav class="site-nav" id="site-nav" aria-label="Main"><ul><li><a href="../">Overview</a></li><li><a href="../forecast/">Try a forecast</a></li><li><a href="../accuracy/">How accurate</a></li><li><a href="../drivers/">What moves the water</a></li><li><a href="../network/">Wells affect each other</a></li><li><a href="../journey/" class="section-active">Our journey</a></li><li><a href="../next/">What's next</a></li></ul></nav></div></header>
+<nav class="subnav" aria-label="Earlier-stage tools"><div class="wrap"><span>Earlier stages:</span><a href="../prototype/">Stage 1 · First prototype (real data)</a><a href="../comparison/" aria-current="page">Stage 2 · Scenario explorer</a><a href="../validation/">Stage 2 · Hidden-truth test</a><a href="../models/">Stage 2 · Three models compared</a></div></nav>
+<!--/SHELL:HEADER-->
+<div class="wrap stage-intro" id="main"><p class="kicker" style="font-size:.8rem;letter-spacing:.08em;text-transform:uppercase;font-weight:700;color:var(--brand-2);margin-bottom:10px">Stage 2 of our journey · <span class="source synthetic"><svg viewBox="0 0 14 14" aria-hidden="true"><rect x="2" y="2" width="10" height="10" rx="2" fill="none" stroke="currentColor" stroke-width="2"/></svg>Synthetic test system: 450 wells</span></p><h1>Scenario explorer: what if pumping or rain changes?</h1><p class="lede">This tool runs on our 450-well test system. Pick a simulated well, choose how much it pumps and how wet the season is, and see how its water level responds, based on what the model learned from six months of simulated data.</p><div class="grid-3"><div class="callout plain"><strong>What you can do here</strong><p>Choose a well, how far ahead to look, and "what-if" settings for pumping and rain. The page shows the projected level and how much each choice moves it.</p></div><div class="callout caution"><strong>Keep in mind</strong><p>This is a simulated system. Future weather follows an assumed seasonal calendar, not a weather forecast. Beyond 30 days the shaded range is an extrapolation, and in testing it proved somewhat too narrow.</p></div><div class="callout proof"><strong>Why it matters</strong><p>It shows the kind of "what if we pump less?" question a well operator could ask once real long-term data is available. <a href="../journey/">See where this fits</a>.</p></div></div></div>
 
   <main class="lab-main prediction-main">
     <section class="model-strip" aria-label="Model data summary">
@@ -145,12 +139,12 @@
           <article class="evidence-card">
             <p class="section-kicker">Known performance</p>
             <dl>
-              <div><dt>30-day holdout MAE</dt><dd id="wellMae">—</dd></div>
-              <div><dt>Holdout RMSE</dt><dd id="wellRmse">—</dd></div>
-              <div><dt>Scenario</dt><dd id="wellScenario">—</dd></div>
-              <div><dt>Cluster</dt><dd id="wellCluster">—</dd></div>
+              <div><dt>Average error in the 30-day test</dt><dd id="wellMae">—</dd></div>
+              <div><dt>Error where big misses count more</dt><dd id="wellRmse">—</dd></div>
+              <div><dt>Type of well</dt><dd id="wellScenario">—</dd></div>
+              <div><dt>Area group</dt><dd id="wellCluster">—</dd></div>
             </dl>
-            <a href="../validation/" id="validationLink">Open this well in Page 3 →</a>
+            <a href="../validation/" id="validationLink">See this well's hidden-truth test →</a>
           </article>
         </section>
 
@@ -176,8 +170,12 @@
     </section>
   <p class="closing-note">Rainfall delay is learned from raw rain using days 121–150. Future drivers follow a synthetic 365-day calendar including monsoon assumptions; they are not weather forecasts. Bands target 80% on inner validation but cover 63.0% on the final fleet test; beyond 30 days their square-root growth is extrapolated.</p></main>
 
-  <script src="../data/synthetic_model_loader.js"></script>
-  <script src="../model-core.js"></script>
-  <script src="./comparison.js"></script>
+  <script src="../data/synthetic_model_loader.js?v=cd22e42713"></script>
+  <script src="../model-core.js?v=cd22e42713"></script>
+  <script src="./comparison.js?v=cd22e42713"></script>
+<!--SHELL:FOOTER-->
+<footer class="site-footer"><div class="wrap"><div><strong>Borewell Forecast</strong> is a proof of concept for forecasting groundwater levels in Bengaluru borewells. Results are labelled by where the data came from: <span class="source real">real pump data</span> (15 days, July 2026), <span class="source synthetic">synthetic test system</span> (450 simulated wells with a known answer) or <span class="source twin">digital twin</span> (a physics-based simulation of the 579 wells over a year). Nothing here is yet a validated field forecast.</div><div><strong>Explore</strong><ul><li><a href="../">Overview</a></li><li><a href="../forecast/">Try a forecast</a></li><li><a href="../accuracy/">How accurate</a></li><li><a href="../drivers/">What moves the water</a></li><li><a href="../network/">Wells affect each other</a></li><li><a href="../journey/">Our journey</a></li><li><a href="../next/">What's next</a></li></ul></div><div><strong>More</strong><ul><li><a href="../glossary/">Glossary of terms</a></li><li><a href="../prototype/">Stage 1 · First prototype (real data)</a></li><li><a href="../comparison/">Stage 2 · Scenario explorer</a></li><li><a href="../validation/">Stage 2 · Hidden-truth test</a></li><li><a href="../models/">Stage 2 · Three models compared</a></li><li><a href="https://github.com/mailabhiramsrinivas-art/borewell-water-forecast">Source code</a></li></ul></div></div></footer>
+<!--/SHELL:FOOTER-->
+<script src="../assets/site.js?v=cd22e42713"></script>
 </body>
 </html>

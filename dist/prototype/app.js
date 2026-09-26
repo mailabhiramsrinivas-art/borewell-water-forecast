@@ -141,7 +141,7 @@ function interpretation(well, result, inputs) {
   const long = result.days > 15;
   return {
     headline: `${well.well_id} is projected to ${direction}.`,
-    text: `The model projects approximately ${fmt(result.finalMean)} m below ground after ${horizonLabel(inputs.value, inputs.unit)}, ${scenario}. The ${result.confidence}% range is ${fmt(result.final.low)}–${fmt(result.final.high)} m. ${long ? "This horizon extends beyond the observed history, so the range is driven mainly by extrapolation uncertainty." : "This horizon remains close to the available observation window."}`
+    text: `Best estimate: about ${fmt(result.finalMean)} m below ground after ${horizonLabel(inputs.value, inputs.unit)}, ${scenario}. The cautious range is ${fmt(result.final.low)}–${fmt(result.final.high)} m. ${long ? "This reaches well beyond the 15 days we observed, so the range is wide on purpose — treat it as a what-if, not a prediction." : "This stays close to the 15 days we actually observed."}`
   };
 }
 
@@ -154,22 +154,22 @@ function renderResult(well, result, inputs) {
   const interpretationText = interpretation(well, result, inputs);
 
   $("resultEyebrow").textContent = `${well.well_id} · ${horizonLabel(inputs.value, inputs.unit)} projection`;
-  $("forecastLevel").textContent = `${fmt(result.finalMean)} m bgs`;
+  $("forecastLevel").textContent = `${fmt(result.finalMean)} m`;
   $("forecastDate").textContent = `Around ${formatDate(targetDate)}`;
-  $("currentLevel").textContent = `${fmt(result.latest)} m bgs`;
-  $("currentDate").textContent = `Latest usable reading · ${formatDate(new Date(`${latestDate}T00:00:00Z`))}`;
+  $("currentLevel").textContent = `${fmt(result.latest)} m`;
+  $("currentDate").textContent = `Last reliable reading · ${formatDate(new Date(`${latestDate}T00:00:00Z`))}`;
   $("forecastError").textContent = `±${fmt(halfWidth)} m`;
-  $("confidenceLabel").textContent = `${result.confidence}% projection range`;
+  $("confidenceLabel").textContent = `${result.confidence}% cautious range`;
   $("directionValue").textContent = direction;
-  $("changeValue").textContent = `${change >= 0 ? "+" : ""}${fmt(change)} m from current`;
+  $("changeValue").textContent = Math.abs(change) < .05 ? "About the same as now" : `${fmt(Math.abs(change))} m ${change > 0 ? "deeper" : "shallower"} than now`;
   $("plainHeadline").textContent = interpretationText.headline;
   $("plainText").textContent = interpretationText.text;
-  $("stabilityValue").textContent = titleCase(well.short_term_category);
+  $("stabilityValue").textContent = ({ stable_or_recovering_poc: "Stable or recovering", declining_poc: "Getting deeper", mixed_signal_poc: "Mixed signals", insufficient_evidence: "Not enough data" })[well.short_term_category] || titleCase(well.short_term_category);
   $("sessionsValue").textContent = `${well.sessions_screened_usable} of ${well.sessions_total}`;
-  $("horizonStatus").textContent = result.days <= 15 ? "Within observed span" : "Extrapolation";
+  $("horizonStatus").textContent = result.days <= 15 ? "Within the 15 days observed" : "Beyond the data (what-if)";
 
   const badge = $("evidenceBadge");
-  badge.textContent = `${titleCase(well.evidence_tier)} evidence`;
+  badge.textContent = ({ higher: "Plenty of data", medium: "Some data", low: "Little data" })[well.evidence_tier] || `${titleCase(well.evidence_tier)} evidence`;
   badge.className = `evidence-badge ${well.evidence_tier}`;
   $("warningText").textContent = result.days <= 15
     ? "The horizon is close to the 15-day observation window. The uncertainty still includes measurement noise and well-to-well variation."
@@ -196,7 +196,7 @@ function runForecast(event) {
   const days = horizonInDays(inputs.value, inputs.unit);
   if (!well) return showError("Choose a well ID from the list.");
   if (!Number.isFinite(days) || days <= 0) return showError("Enter a forecast length greater than zero.");
-  if (days > 36525) return showError("Use a horizon of 100 years or less for this proof of concept.");
+  if (days > 36525) return showError("Please choose 100 years or less.");
   if (well.latest_start_level_m_bgs == null || !Number.isFinite(Number(well.latest_start_level_m_bgs)) || Number(well.sessions_screened_usable) === 0) {
     const message = well.latest_start_level_m_bgs == null ? 'No readings for this well.' : 'No reading passed quality screening for this well.';
     ['forecastLevel','forecastDate','forecastError','directionValue','changeValue','stabilityValue','sessionsValue','horizonStatus'].forEach(id => $(id).textContent='—');
@@ -267,12 +267,12 @@ function registerForecastTool() {
 
 async function init() {
   try {
-    const response = await fetch("./data/wells.json");
+    const response = await fetch("../data/wells.json");
     if (!response.ok) throw new Error("Data could not be loaded");
     state.data = await response.json();
     state.data.wells.forEach(well => state.wells.set(well.well_id, well));
     const options = $("wellOptions");
-    state.data.wells.forEach(well => options.append(new Option(`${well.well_id} · ${well.latest_start_level_m_bgs == null ? "No readings" : Number(well.sessions_screened_usable) === 0 ? "No reading passed screening" : titleCase(well.evidence_tier) + " evidence"}`, well.well_id)));
+    state.data.wells.forEach(well => options.append(new Option(`${well.well_id} · ${well.latest_start_level_m_bgs == null ? "no readings" : Number(well.sessions_screened_usable) === 0 ? "no reliable readings" : ({ higher: "plenty of data", medium: "some data", low: "little data" })[well.evidence_tier] || well.evidence_tier}`, well.well_id)));
     if (!state.wells.has($("wellInput").value)) {
       const preferred = state.data.wells.find(w => w.evidence_tier === "higher") || state.data.wells[0];
       $("wellInput").value = preferred.well_id;

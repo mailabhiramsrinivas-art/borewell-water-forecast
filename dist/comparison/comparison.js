@@ -135,9 +135,9 @@ function renderResult(well, result, inputs) {
 
   $("resultEyebrow").textContent = `${well.id} · ${scenario.label}`;
   $("scenarioChip").textContent = scenario.label;
-  $("projectedLevel").textContent = `${fmt(result.final.mean)} m bgs`;
+  $("projectedLevel").textContent = `${fmt(result.final.mean)} m below ground`;
   $("projectedDate").textContent = formatDate(targetDate);
-  $("currentLevel").textContent = `${fmt(current)} m bgs`;
+  $("currentLevel").textContent = `${fmt(current)} m below ground`;
   $("errorRange").textContent = `±${fmt(halfWidth)} m`;
   $("confidenceLabel").textContent = `Nominal ${inputs.confidence}% range`;
   $("directionValue").textContent = direction;
