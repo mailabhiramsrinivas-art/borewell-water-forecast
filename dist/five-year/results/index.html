@@ -1,0 +1,221 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Five-year results · Borewell Forecast</title>
+  <meta name="description" content="What the physics-informed forecaster achieved on a five-year twin of 579 Bengaluru borewells: accuracy by day ahead, honest ranges, safe volume and the dry-run flag.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230b3a52'/%3E%3Cpath d='M16 5C12 12 9 16 9 20.5a7 7 0 0 0 14 0C23 16 20 12 16 5Z' fill='%235fc4d8'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="../../assets/site.css?v=cd22e42713">
+  <style>
+    ul.plain { padding-left: 1.2em; margin: 0; } ul.plain li { margin-bottom: 6px; }
+    .axis-note { font-size: .85rem; color: var(--ink-2); margin: 0 0 4px; }
+    .results-strip .stat .value { font-size: 1.9rem; }
+    .fig { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 16px; box-shadow: var(--shadow); }
+    .fig img { display: block; width: 100%; height: auto; border-radius: 8px; }
+    .fig p { font-size: .9rem; color: var(--ink-2); margin: 10px 4px 0; }
+    .pass { color: #1b6b45; font-weight: 700; } .miss { color: #b5561d; font-weight: 700; }
+    .risk-grid .stat .value { font-size: 1.9rem; }
+  </style>
+</head>
+<body data-page="five-year-results">
+<!--SHELL:HEADER-->
+<a class="skip" href="#main">Skip to content</a>
+<header class="site-header"><div class="wrap"><a class="brand" href="../../"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M16 3C11 11 7 16 7 21.5a9 9 0 0 0 18 0C25 16 21 11 16 3Z" fill="#5fc4d8"/><path d="M11.5 22c2.8 1.8 6.2 1.8 9 0" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round"/></svg><span>Borewell Forecast</span><span class="poc">Proof of concept</span></a><button class="menu-toggle" aria-expanded="false" aria-controls="site-nav">Menu</button><nav class="site-nav" id="site-nav" aria-label="Main"><ul><li><a href="../../">Overview</a></li><li><a href="../../forecast/">Try a forecast</a></li><li><a href="../../accuracy/">How accurate</a></li><li><a href="../../drivers/">What moves the water</a></li><li><a href="../../network/">Wells affect each other</a></li><li><a href="../../journey/">Our journey</a></li><li><a href="../../next/">What's next</a></li></ul></nav></div></header>
+<!--/SHELL:HEADER-->
+<main id="main">
+  <div class="wrap">
+    <div class="page-hero">
+      <p class="kicker">Stage 5 results · <span class="source twin"><svg viewBox="0 0 14 14" aria-hidden="true"><path d="M7 1l6 6-6 6-6-6z" fill="currentColor"/></svg>Digital twin: five years, 579 wells</span></p>
+      <h1>What the five-year twin showed.</h1>
+      <p class="lede">Every number below is on the test year, August 2025 to July 2026, forecast every week for 579 wells from data up to that day, and scored on the twin's observed levels (sensor noise ±0.2 m). <a href="../">How the twin and the forecaster were built</a>.</p>
+    </div>
+
+    <div class="grid-4 results-strip">
+      <div class="stat lead"><span class="label">Error one week ahead</span><span class="value">0.82 m</span><span class="sub">against 2.07 m for assuming nothing changes: 61 % less</span></div>
+      <div class="stat"><span class="label">Error one week ahead, median well</span><span class="value">0.48 m</span><span class="sub">half the wells do better than this</span></div>
+      <div class="stat"><span class="label">Our "80 % likely" ranges held</span><span class="value">81–85 %</span><span class="sub">of the time across the seven days ahead</span></div>
+      <div class="stat"><span class="label">Dry-run episodes caught a week ahead</span><span class="value">63 %</span><span class="sub">with 0.72 false alarms per well per year</span></div>
+    </div>
+
+    <section>
+      <div class="chart-card">
+        <h3>Error by day ahead: the physics core gets halfway, the learning layer gets the rest</h3>
+        <p class="takeaway">Seven days ahead the forecast is 0.82 m off on average, against 1.33 m for the physics core alone and 2.07 m for assuming the level stays where it is today.</p>
+        <div class="legend">
+          <span><i style="--c:var(--s-blue);height:4px"></i>Our forecast: physics core corrected by the learning layer</span>
+          <span><i style="--c:var(--s-orange)"></i>Physics core alone</span>
+          <span><i style="--c:var(--s-neutral)"></i>Assume nothing changes</span>
+        </div>
+        <p class="axis-note">Average error in metres (lower is better)</p>
+        <div id="errChart"></div>
+        <details class="table-view"><summary>Show the numbers as a table</summary><div class="table-wrap" id="errTable"></div></details>
+      </div>
+      <p class="note" style="margin-top:10px">Pooled over every forecast. A minority of deep, erratic wells pull the average up: for the median well the error is 0.38 m at day 1 and 0.48 m at day 7, against 0.84 m for assuming nothing changes. The monsoon is the hardest season at day 7 (0.93 m), as recharge arrives on a per-well delay the model must infer.</p>
+    </section>
+
+    <section>
+      <div class="section-title"><h2>Wells the model had never seen</h2><p>116 wells were held out of training entirely. The method transfers: their day-7 skill sits within 0.02 of the wells it trained on.</p></div>
+      <div class="grid-4">
+        <div class="stat"><span class="label">Unseen wells, error at day 7</span><span class="value">0.93 m</span><span class="sub">2.25 m for assuming nothing changes</span></div>
+        <div class="stat"><span class="label">Unseen wells, median well</span><span class="value">0.46 m</span><span class="sub">at day 7</span></div>
+        <div class="stat"><span class="label">Skill, unseen vs seen wells</span><span class="value">0.59 vs 0.61</span><span class="sub">1 − error ÷ do-nothing error</span></div>
+        <div class="stat"><span class="label">Short history: six months only</span><span class="value">0.43</span><span class="sub">day-7 skill with the physics core; −0.04 without it</span></div>
+      </div>
+      <p class="note" style="margin-top:10px">The last tile is the case for the physics. Trained on six months of history, the learning layer alone is worse than doing nothing (2.16 m against 2.07 m); with the physics core underneath it reaches 1.18 m. Real deployments start with months of data, not years: the physics carries the forecast at the start, the learning layer takes over as history accumulates.</p>
+    </section>
+
+    <section>
+      <div class="chart-card">
+        <h3>Are the ranges honest?</h3>
+        <p class="takeaway">The 80 % band held 81–85 % of readings and the 90 % band 92–94 %, across the seven days ahead: within one to five points of the label, and on the safe side.</p>
+        <div class="legend">
+          <span><i style="--c:var(--brand)"></i>90 % band, calibrated</span>
+          <span><i style="--c:var(--s-blue)"></i>80 % band, calibrated</span>
+          <span><i style="--c:var(--s-neutral)"></i>80 % band before calibration</span>
+        </div>
+        <p class="axis-note">Share of readings that fell inside the band (%)</p>
+        <div id="covChart"></div>
+        <details class="table-view"><summary>Show the numbers as a table</summary><div class="table-wrap" id="covTable"></div></details>
+      </div>
+    </section>
+
+    <section>
+      <div class="section-title"><h2>One well, two weeks</h2><p>What the operator sees. Well BW048 in a monsoon week and a dry week: the forecast, its ranges, and what the sensor then recorded.</p></div>
+      <div class="fig">
+        <img src="../assets/bw048_fans.png" alt="Two panels for well BW048: forecast median line with 80 % and 90 % bands, observed rested levels as black squares and the noise-free truth as orange crosses, for a monsoon week from 20 October 2025 and a dry week from 30 March 2026.">
+        <p>Blue line: the forecast. Shaded: the 80 % and 90 % ranges. Black squares: what the sensor then recorded. Orange crosses: the twin's noise-free truth. Depth grows downward, so lower on the chart is deeper. On the demo week the median 10–90 range is 0.9 m wide on day 1 and 1.1 m on day 7.</p>
+      </div>
+    </section>
+
+    <section>
+      <div class="section-title"><h2>The dry-run flag</h2><p>A dry-run episode is a run of dry-run events at most seven days apart. The flag is scored a week ahead: an episode counts as caught if an origin one to seven days before its start was flagged. Twelve wells that ran dry six or more times in the calibration year are chronic and are scored separately: a maintenance case, not a forecasting one.</p></div>
+      <div class="grid-4 risk-grid">
+        <div class="stat"><span class="label">Episodes caught a week ahead</span><span class="value">63 %</span><span class="sub">target 80 %: not yet met</span></div>
+        <div class="stat"><span class="label">Flags that were right</span><span class="value">86 %</span><span class="sub">precision</span></div>
+        <div class="stat"><span class="label">False alarms per well per year</span><span class="value">0.72</span><span class="sub">threshold set on the previous year for 0.8, applied unchanged</span></div>
+        <div class="stat"><span class="label">Warning before the dry run</span><span class="value">4 days</span><span class="sub">median lead time</span></div>
+      </div>
+      <div class="chart-card" style="margin-top:14px">
+        <h3>The operator's dial: more warnings, more alarms</h3>
+        <p class="takeaway">Allowing one false alarm per well-year instead of 0.8 raises the catch rate to 65 %; allowing 1.5 raises it to 67 %. The operator chooses the point; the model reports what each point costs.</p>
+        <p class="axis-note">Episodes caught (%) against false alarms per well per year, test year</p>
+        <div id="dialChart"></div>
+        <details class="table-view"><summary>Show the numbers as a table</summary><div class="table-wrap" id="dialTable"></div></details>
+      </div>
+      <p class="note" style="margin-top:10px">Part of the gap to 80 % is structural: some dry runs follow a same-day shock, a long session in a heat spell, that no week-ahead forecast can see, and the ±0.2 m noise blurs the last half-metre before the intake. Chronic wells: 57 % of episodes caught.</p>
+    </section>
+
+    <section>
+      <div class="section-title"><h2>The weekly table</h2><p>Every Monday the pipeline writes one row per well: the 10th, 50th and 90th percentile level for each of the seven days, the calibrated 80 % band, the safe pumping volume per day and for the week, the chance of a dry-run day, the flag, and the date of the well's last session, so a stale row says so. Four wells from the week of 27 July 2026:</p></div>
+      <div class="card"><div class="table-wrap" id="weekTable"></div></div>
+      <p class="note" style="margin-top:10px">All 579 wells have a row; 578 carry a forecast. The one that doesn't has been silent since January 2024, and its row admits it has nothing current to say. The weekly safe volume is the one output that missed its target clearly: 34.9 % median error against 10 %, over-estimated in 74 % of well-weeks. The cause is the recovery-pace fit, and a sharper fit is the next item.</p>
+    </section>
+
+    <section>
+      <div class="section-title"><h2>Thirteen thresholds, fixed before training</h2><p>Six met, seven missed. None has been moved; each miss has a named cause and a planned fix.</p></div>
+      <div class="card"><div class="table-wrap"><table>
+        <thead><tr><th>Check</th><th class="num">Result</th><th class="num">Target</th><th class="num">Status</th></tr></thead>
+        <tbody>
+          <tr><td>Day-1 error, wells resting above 100 m</td><td class="num">0.61 m</td><td class="num">≤ 0.4 m</td><td class="num"><span class="miss">Missed</span></td></tr>
+          <tr><td>Day-7 error, wells resting above 100 m</td><td class="num">0.77 m</td><td class="num">≤ 1.5 m</td><td class="num"><span class="pass">Met</span></td></tr>
+          <tr><td>Day-7 skill, pooled</td><td class="num">0.61</td><td class="num">≥ 0.40</td><td class="num"><span class="pass">Met</span></td></tr>
+          <tr><td>Day-7 skill, median well</td><td class="num">0.35</td><td class="num">≥ 0.25</td><td class="num"><span class="pass">Met</span></td></tr>
+          <tr><td>Weekly safe-volume error, median well</td><td class="num">35 %</td><td class="num">≤ 10 %</td><td class="num"><span class="miss">Missed</span></td></tr>
+          <tr><td>80 % band, largest deviation over day × season</td><td class="num">6.4 pts</td><td class="num">≤ 5 pts</td><td class="num"><span class="miss">Missed</span></td></tr>
+          <tr><td>90 % band, largest deviation over day × season</td><td class="num">6.6 pts</td><td class="num">≤ 5 pts</td><td class="num"><span class="miss">Missed</span></td></tr>
+          <tr><td>Dry-run flag, episodes caught</td><td class="num">0.63</td><td class="num">≥ 0.80</td><td class="num"><span class="miss">Missed</span></td></tr>
+          <tr><td>False alarms per well-year</td><td class="num">0.72</td><td class="num">≤ 1</td><td class="num"><span class="pass">Met</span></td></tr>
+          <tr><td>Dry-run flag, lead time</td><td class="num">4.0 d</td><td class="num">≥ 3 d</td><td class="num"><span class="pass">Met</span></td></tr>
+          <tr><td>Unseen wells vs seen wells, day-7 skill</td><td class="num">Δ 0.02</td><td class="num">≤ 0.10</td><td class="num"><span class="pass">Met</span></td></tr>
+          <tr><td>Worth of rainfall (monsoon, day 7)</td><td class="num">0.02</td><td class="num">≥ 0.10</td><td class="num"><span class="miss">Missed</span></td></tr>
+          <tr><td>Worth of the physics core (five years, day 7)</td><td class="num">−0.04</td><td class="num">≥ 0.10</td><td class="num"><span class="miss">Missed</span></td></tr>
+        </tbody>
+      </table></div></div>
+      <p class="note" style="margin-top:10px">The day-1 miss has a floor: overnight recovery varies from day to day by more than the target allows, and the median well already meets it at 0.38 m. The two "worth" misses are interpretation rather than failure: with five years of history the learning layer has learned what the physics and the rainfall told it, so removing them costs little; with six months, removing the physics costs everything (see above).</p>
+    </section>
+
+    <section>
+      <div class="grid-2">
+        <div class="callout proof"><strong>What this shows</strong><ul class="plain"><li>From the sensor files alone, the pipeline reads each well's behaviour and forecasts it a week ahead at 61 % less error than doing nothing.</li><li>The ranges mean what they say, and hold on wells the model never saw.</li><li>The physics layer is what makes the method usable from the first months of real data.</li><li>The dry-run flag gives four days' warning with fewer than one false alarm per well per year.</li></ul></div>
+        <div class="callout caution"><strong>What is not proven yet</strong><ul class="plain"><li>All of this is on a twin with ±0.2 m level noise; no real level measurement was used.</li><li>The safe-volume estimate is too optimistic and the flag catches 63 % of episodes, not the 80 % aimed for.</li><li>The twin's recharge was too generous in this iteration and is being corrected; results will be re-earned on the corrected twin.</li></ul><p style="margin-top:8px"><a href="../../next/">What real data would change →</a></p></div>
+      </div>
+    </section>
+  </div>
+</main>
+<!--SHELL:FOOTER-->
+<footer class="site-footer"><div class="wrap"><div><strong>Borewell Forecast</strong> is a proof of concept for forecasting groundwater levels in Bengaluru borewells. Results are labelled by where the data came from: <span class="source real">real pump data</span> (15 days, July 2026), <span class="source synthetic">synthetic test system</span> (450 simulated wells with a known answer) or <span class="source twin">digital twin</span> (a physics-based simulation of the 579 wells over a year). Nothing here is yet a validated field forecast.</div><div><strong>Explore</strong><ul><li><a href="../../">Overview</a></li><li><a href="../../forecast/">Try a forecast</a></li><li><a href="../../accuracy/">How accurate</a></li><li><a href="../../drivers/">What moves the water</a></li><li><a href="../../network/">Wells affect each other</a></li><li><a href="../../journey/">Our journey</a></li><li><a href="../../next/">What's next</a></li></ul></div><div><strong>More</strong><ul><li><a href="../../glossary/">Glossary of terms</a></li><li><a href="../../prototype/">Stage 1 · First prototype (real data)</a></li><li><a href="../../comparison/">Stage 2 · Scenario explorer</a></li><li><a href="../../validation/">Stage 2 · Hidden-truth test</a></li><li><a href="../../models/">Stage 2 · Three models compared</a></li><li><a href="https://github.com/mailabhiramsrinivas-art/borewell-water-forecast">Source code</a></li></ul></div></div></footer>
+<!--/SHELL:FOOTER-->
+<script src="../../assets/site.js?v=cd22e42713"></script>
+<script>
+(() => {
+  const $ = id => document.getElementById(id);
+  const f2 = v => Kit.fmt(v, 2), f1 = v => Kit.fmt(v, 1);
+  const days = [1, 2, 3, 4, 5, 6, 7];
+  const err = {
+    persist: [1.972, 2.054, 1.980, 1.967, 2.056, 2.041, 2.073],
+    core:    [0.936, 1.066, 1.102, 1.278, 1.304, 1.315, 1.329],
+    model:   [0.638, 0.690, 0.722, 0.807, 0.818, 0.811, 0.815],
+  };
+  const drawErr = () => Kit.line($("errChart"), {
+    label: "Average forecast error by day ahead", height: 320, rightPad: 150,
+    x: { min: 1, max: 7, ticks: days, format: v => `Day ${v}` },
+    y: { min: 0, format: (v, tip) => tip ? `${f2(v)} m` : `${f1(v)} m` },
+    series: [
+      { name: "Assume nothing changes", color: "var(--s-neutral)", width: 2, markers: true, r: 3.5, points: days.map((d, i) => ({ x: d, y: err.persist[i] })), endLabel: "Nothing changes" },
+      { name: "Physics core alone", color: "var(--s-orange)", width: 2, markers: true, r: 3.5, points: days.map((d, i) => ({ x: d, y: err.core[i] })), endLabel: "Physics core" },
+      { name: "Our forecast", color: "var(--s-blue)", width: 3.2, markers: true, r: 5, points: days.map((d, i) => ({ x: d, y: err.model[i] })), endLabel: "Our forecast" },
+    ],
+    tipTitle: x => `${x} day${x > 1 ? "s" : ""} ahead`,
+  });
+  Kit.table($("errTable"), ["Day ahead", "Assume nothing changes", "Physics core alone", "Our forecast", "Skill vs doing nothing"],
+    days.map((d, i) => ({ cells: [`${d}`, `${f2(err.persist[i])} m`, `${f2(err.core[i])} m`, `${f2(err.model[i])} m`, f2(1 - err.model[i] / err.persist[i])] })));
+
+  const cov = {
+    raw80: [73.3, 73.6, 70.7, 71.8, 71.4, 70.9, 70.8],
+    cal80: [81.1, 82.0, 82.9, 83.8, 83.4, 84.4, 84.6],
+    cal90: [91.9, 92.5, 92.9, 93.3, 93.2, 93.6, 93.9],
+  };
+  const drawCov = () => Kit.line($("covChart"), {
+    label: "Band coverage by day ahead", height: 300, rightPad: 150,
+    x: { min: 1, max: 7, ticks: days, format: v => `Day ${v}` },
+    y: { min: 60, max: 100, format: (v, tip) => tip ? `${f1(v)} %` : `${Kit.fmt(v, 0)} %` },
+    series: [
+      { name: "90 % band, calibrated", color: "var(--brand)", width: 2.6, markers: true, r: 4, points: days.map((d, i) => ({ x: d, y: cov.cal90[i] })), endLabel: "90 % band" },
+      { name: "80 % band, calibrated", color: "var(--s-blue)", width: 2.6, markers: true, r: 4, points: days.map((d, i) => ({ x: d, y: cov.cal80[i] })), endLabel: "80 % band" },
+      { name: "80 % band before calibration", color: "var(--s-neutral)", width: 2, dash: "5 5", markers: true, r: 3.5, points: days.map((d, i) => ({ x: d, y: cov.raw80[i] })), endLabel: "before calibration" },
+    ],
+    tipTitle: x => `${x} day${x > 1 ? "s" : ""} ahead`,
+  });
+  Kit.table($("covTable"), ["Day ahead", "80 % band before calibration", "80 % band, calibrated", "90 % band, calibrated"],
+    days.map((d, i) => ({ cells: [`${d}`, `${f1(cov.raw80[i])} %`, `${f1(cov.cal80[i])} %`, `${f1(cov.cal90[i])} %`] })));
+
+  const dial = [
+    { budget: 0.5, fa: 0.45, recall: 60.0 },
+    { budget: 0.8, fa: 0.72, recall: 62.7 },
+    { budget: 1.0, fa: 0.92, recall: 65.3 },
+    { budget: 1.5, fa: 1.21, recall: 66.7 },
+  ];
+  const drawDial = () => Kit.line($("dialChart"), {
+    label: "Episodes caught against false alarms per well-year", height: 260, rightPad: 40,
+    x: { min: 0.3, max: 1.5, ticks: [0.4, 0.6, 0.8, 1.0, 1.2, 1.4], format: v => f1(v) },
+    y: { min: 50, max: 75, format: (v, tip) => `${Kit.fmt(v, 0)} %` },
+    series: [{ name: "Episodes caught", color: "var(--s-blue)", width: 3, markers: true, r: 5.5, points: dial.map(p => ({ x: p.fa, y: p.recall })) }],
+    tipTitle: x => { const p = dial.find(q => q.fa === x); return `Budget ${p.budget} false alarms per well-year`; },
+  });
+  Kit.table($("dialTable"), ["False-alarm budget (set on the calibration year)", "False alarms on the test year", "Episodes caught"],
+    dial.map(p => ({ cells: [f1(p.budget), f2(p.fa), `${f1(p.recall)} %`], highlight: p.budget === 0.8 })));
+
+  Kit.table($("weekTable"), ["Well", "Day 1 level (m)", "Day 7 range, 10–90 % (m)", "Week volume (m³)", "Chance of a dry-run day", "Flag"], [
+    { cells: ["BW001", "16.3", "15.9 – 16.6", "315", "0.00", "no"] },
+    { cells: ["BW005", "70.2", "68.6 – 72.5", "133", "0.00", "no"] },
+    { cells: ["BW402", "96.2", "93.5 – 95.4", "414", "1.00", "yes"], highlight: true },
+    { cells: ["BW557", "48.1", "46.9 – 48.4", "154", "1.00", "yes"], highlight: true },
+  ]);
+
+  const drawAll = () => { drawErr(); drawCov(); drawDial(); };
+  drawAll(); Kit.onResize(drawAll);
+})();
+</script>
+</body>
+</html>
