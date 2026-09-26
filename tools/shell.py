@@ -12,6 +12,7 @@ DIST = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
 
 NAV = [("overview", "", "Overview"), ("forecast", "forecast/", "Try a forecast"), ("accuracy", "accuracy/", "How accurate"),
        ("drivers", "drivers/", "What moves the water"), ("network", "network/", "Wells affect each other"),
+       ("five-year", "five-year/", "ML‑Forecaster"),
        ("journey", "journey/", "Our journey"), ("next", "next/", "What's next")]
 # earlier-stage tools live under "Our journey"
 JOURNEY_TOOLS = [("prototype", "prototype/", "Stage 1 · First prototype (vendor export)"),
@@ -19,6 +20,7 @@ JOURNEY_TOOLS = [("prototype", "prototype/", "Stage 1 · First prototype (vendor
                  ("validation", "validation/", "Stage 2 · Hidden-truth test"),
                  ("models", "models/", "Stage 2 · Three models compared")]
 SECTION = {k: "journey" for k, _, _ in JOURNEY_TOOLS}
+SECTION["five-year-results"] = "five-year"
 DROP = ('<svg viewBox="0 0 32 32" aria-hidden="true"><path d="M16 3C11 11 7 16 7 21.5a9 9 0 0 0 18 0C25 16 21 11 16 3Z" fill="#5fc4d8"/>'
         '<path d="M11.5 22c2.8 1.8 6.2 1.8 9 0" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round"/></svg>')
 
@@ -32,7 +34,7 @@ def header(page, p):
             f'<a class="brand" href="{p}">{DROP}<span>Borewell Forecast</span><span class="poc">Proof of concept</span></a>'
             f'<button class="menu-toggle" aria-expanded="false" aria-controls="site-nav">Menu</button>'
             f'<nav class="site-nav" id="site-nav" aria-label="Main"><ul>{"".join(items)}</ul></nav></div></header>')
-    if page in SECTION or page == "journey":
+    if SECTION.get(page) == "journey" or page == "journey":
         cur = ' aria-current="page"'
         tools = "".join(f'<a href="{p}{href}"{cur if key == page else ""}>{label}</a>' for key, href, label in JOURNEY_TOOLS)
         html += f'\n<nav class="subnav" aria-label="Earlier-stage tools"><div class="wrap"><span>Earlier stages:</span>{tools}</div></nav>'
