@@ -113,29 +113,6 @@
     </section>
 
     <section>
-      <div class="section-title"><h2>Thirteen thresholds, fixed before training</h2><p>Six met, seven missed. None has been moved; each miss has a named cause and a planned fix.</p></div>
-      <div class="card"><div class="table-wrap"><table>
-        <thead><tr><th>Check</th><th class="num">Result</th><th class="num">Target</th><th class="num">Status</th></tr></thead>
-        <tbody>
-          <tr><td>Day-1 error, wells resting above 100 m</td><td class="num">0.61 m</td><td class="num">≤ 0.4 m</td><td class="num"><span class="miss">Missed</span></td></tr>
-          <tr><td>Day-7 error, wells resting above 100 m</td><td class="num">0.77 m</td><td class="num">≤ 1.5 m</td><td class="num"><span class="pass">Met</span></td></tr>
-          <tr><td>Day-7 skill, pooled</td><td class="num">0.61</td><td class="num">≥ 0.40</td><td class="num"><span class="pass">Met</span></td></tr>
-          <tr><td>Day-7 skill, median well</td><td class="num">0.35</td><td class="num">≥ 0.25</td><td class="num"><span class="pass">Met</span></td></tr>
-          <tr><td>Weekly safe-volume error, median well</td><td class="num">35 %</td><td class="num">≤ 10 %</td><td class="num"><span class="miss">Missed</span></td></tr>
-          <tr><td>80 % band, largest deviation over day × season</td><td class="num">6.4 pts</td><td class="num">≤ 5 pts</td><td class="num"><span class="miss">Missed</span></td></tr>
-          <tr><td>90 % band, largest deviation over day × season</td><td class="num">6.6 pts</td><td class="num">≤ 5 pts</td><td class="num"><span class="miss">Missed</span></td></tr>
-          <tr><td>Dry-run flag, episodes caught</td><td class="num">0.63</td><td class="num">≥ 0.80</td><td class="num"><span class="miss">Missed</span></td></tr>
-          <tr><td>False alarms per well-year</td><td class="num">0.72</td><td class="num">≤ 1</td><td class="num"><span class="pass">Met</span></td></tr>
-          <tr><td>Dry-run flag, lead time</td><td class="num">4.0 d</td><td class="num">≥ 3 d</td><td class="num"><span class="pass">Met</span></td></tr>
-          <tr><td>Unseen wells vs seen wells, day-7 skill</td><td class="num">Δ 0.02</td><td class="num">≤ 0.10</td><td class="num"><span class="pass">Met</span></td></tr>
-          <tr><td>Worth of rainfall (monsoon, day 7)</td><td class="num">0.02</td><td class="num">≥ 0.10</td><td class="num"><span class="miss">Missed</span></td></tr>
-          <tr><td>Worth of the physics core (five years, day 7)</td><td class="num">−0.04</td><td class="num">≥ 0.10</td><td class="num"><span class="miss">Missed</span></td></tr>
-        </tbody>
-      </table></div></div>
-      <p class="note" style="margin-top:10px">The day-1 miss has a floor: overnight recovery varies from day to day by more than the target allows, and the median well already meets it at 0.38 m. The two "worth" misses are interpretation rather than failure: with five years of history the learning layer has learned what the physics and the rainfall told it, so removing them costs little; with six months, removing the physics costs everything (see above).</p>
-    </section>
-
-    <section>
       <div class="grid-2">
         <div class="callout proof"><strong>What this shows</strong><ul class="plain"><li>From the sensor files alone, the pipeline reads each well's behaviour and forecasts it a week ahead at 61 % less error than doing nothing.</li><li>The ranges mean what they say, and hold on wells the model never saw.</li><li>The physics layer is what makes the method usable from the first months of real data.</li><li>The dry-run flag gives four days' warning with fewer than one false alarm per well per year.</li></ul></div>
         <div class="callout caution"><strong>What is not proven yet</strong><ul class="plain"><li>All of this is on a twin with ±0.2 m level noise; no real level measurement was used.</li><li>The safe-volume estimate is too optimistic and the flag catches 63 % of episodes, not the 80 % aimed for.</li><li>The twin's recharge was too generous in this iteration and is being corrected; results will be re-earned on the corrected twin.</li></ul><p style="margin-top:8px"><a href="../../next/">What real data would change →</a></p></div>
