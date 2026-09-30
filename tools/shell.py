@@ -27,6 +27,7 @@ STAGE6 = [("physics-sensors", "physics-sensors/", "The model"), ("physics-sensor
           ("physics-sensors-sensors", "physics-sensors/sensors/", "Sensor faults"),
           ("physics-sensors-terrain", "physics-sensors/terrain/", "Terrain and maps"),
           ("physics-sensors-map", "physics-sensors/map/", "City map"),
+          ("physics-sensors-bengaluru", "physics-sensors/bengaluru/", "Bengaluru map"),
           ("physics-sensors-explorer", "physics-sensors/explorer/", "Explore a well")]
 SECTION.update({k: "physics-sensors" for k, _, _ in STAGE6[1:]})
 DROP = ('<svg viewBox="0 0 32 32" aria-hidden="true"><path d="M16 3C11 11 7 16 7 21.5a9 9 0 0 0 18 0C25 16 21 11 16 3Z" fill="#5fc4d8"/>'

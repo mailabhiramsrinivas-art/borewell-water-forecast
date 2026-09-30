@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Stage 2 · Bengaluru terrain map · Borewell Forecast</title>
+  <meta name="description" content="Bengaluru's ground classified as valley or ridge from free satellite elevation data, with its lakes and five city corporations. Click anywhere for the terrain values a well there would give the model.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230b3a52'/%3E%3Cpath d='M16 5C12 12 9 16 9 20.5a7 7 0 0 0 14 0C23 16 20 12 16 5Z' fill='%235fc4d8'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="../../assets/site.css?v=bab9b867a8">
+  <link rel="stylesheet" href="../stage6.css?v=bab9b867a8">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" crossorigin="anonymous">
+  <style>
+    .source.public { background: #e8f4ec; border-color: #c4e3cf; }
+    .mapwrap { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(280px, 1fr); gap: 16px; align-items: start; }
+    @media (max-width: 960px) { .mapwrap { grid-template-columns: 1fr; } }
+    #blrMap { height: 620px; border-radius: 12px; border: 1px solid var(--line); background: #eef1ec; }
+    @media (max-width: 960px) { #blrMap { height: 70vh; min-height: 380px; } }
+    .leaflet-container { font: inherit; }
+    .map-tools { display: flex; flex-wrap: wrap; gap: 8px 18px; align-items: center; margin: 10px 0 0; font-size: .92rem; }
+    .map-tools input[type="range"] { width: 140px; accent-color: var(--brand); vertical-align: middle; }
+    .panel h3 { margin: 0 0 4px; }
+    .facts { display: grid; grid-template-columns: 150px 1fr; gap: 7px 12px; font-size: .94rem; margin: 10px 0 0; }
+    .facts dt { color: var(--ink-2); } .facts dd { margin: 0; font-weight: 600; }
+    .cls { display: inline-flex; align-items: center; gap: 8px; font-weight: 700; }
+    .cls i { width: 14px; height: 14px; border-radius: 4px; display: inline-block; }
+    .key { display: flex; flex-wrap: wrap; gap: 8px 18px; font-size: .88rem; color: var(--ink-2); margin: 10px 0 0; }
+    .key span { display: inline-flex; align-items: center; gap: 7px; }
+    .key i { width: 22px; height: 14px; border-radius: 4px; display: inline-block; }
+    .attr { font-size: .8rem; color: var(--muted); margin-top: 10px; }
+  </style>
+</head>
+<body data-page="physics-sensors-bengaluru">
+<!--SHELL:HEADER-->
+<a class="skip" href="#main">Skip to content</a>
+<header class="site-header"><div class="wrap"><a class="brand" href="../../"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M16 3C11 11 7 16 7 21.5a9 9 0 0 0 18 0C25 16 21 11 16 3Z" fill="#5fc4d8"/><path d="M11.5 22c2.8 1.8 6.2 1.8 9 0" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round"/></svg><span>Borewell Forecast</span><span class="poc">Proof of concept</span></a><button class="menu-toggle" aria-expanded="false" aria-controls="site-nav">Menu</button><nav class="site-nav" id="site-nav" aria-label="Main"><ul><li><a href="../../">Overview</a></li><li><a href="../../forecast/">Try a forecast</a></li><li><a href="../../accuracy/">How accurate</a></li><li><a href="../../drivers/">What moves the water</a></li><li><a href="../../network/">Wells affect each other</a></li><li><a href="../../five-year/">ML‑Forecaster</a></li><li><a href="../../physics-sensors/" class="section-active">Stage 2</a></li><li><a href="../../journey/">Our journey</a></li><li><a href="../../next/">What's next</a></li></ul></nav></div></header>
+<nav class="subnav" aria-label="Stage 2 pages"><div class="wrap"><span>Stage 2:</span><a href="../../physics-sensors/">The model</a><a href="../../physics-sensors/results/">Results</a><a href="../../physics-sensors/sensors/">Sensor faults</a><a href="../../physics-sensors/terrain/">Terrain and maps</a><a href="../../physics-sensors/map/">City map</a><a href="../../physics-sensors/bengaluru/" aria-current="page">Bengaluru map</a><a href="../../physics-sensors/explorer/">Explore a well</a></div></nav>
+<!--/SHELL:HEADER-->
+<main id="main">
+  <div class="wrap">
+    <div class="page-hero">
+      <p class="kicker">Stage 2 · Bengaluru terrain map · <span class="source public"><svg viewBox="0 0 14 14" aria-hidden="true"><circle cx="7" cy="7" r="5" fill="none" stroke="currentColor" stroke-width="2"/></svg>Real public data: satellite elevation and OpenStreetMap</span></p>
+      <h1>Bengaluru's ground: valley and ridge.</h1>
+      <p class="lede">The real city, classified with the same rule as the simulated one: a spot is valley ground if it sits lower than the average within 1.5 km, ridge ground if higher. There are no wells on this map yet: the real wells' locations are not available. Click anywhere to see the terrain values a well at that spot would give the model.</p>
+    </div>
+
+    <div class="grid-4 stat-row">
+      <div class="stat lead"><span class="label">City area classified</span><span class="value" id="stArea">—</span><span class="sub">inside the city boundary, lakes excluded</span></div>
+      <div class="stat"><span class="label">Valley ground</span><span class="value" id="stValley">—</span><span class="sub">the rest is ridge; a relative measure, so near half by design</span></div>
+      <div class="stat"><span class="label">Lakes of 1 hectare or more</span><span class="value" id="stLakes">—</span><span class="sub" id="stLakesSub"></span></div>
+      <div class="stat"><span class="label">Ground height</span><span class="value" id="stElev">—</span><span class="sub">above sea level, 1st to 99th percentile</span></div>
+    </div>
+
+    <section>
+      <div class="mapwrap">
+        <div class="chart-card" style="padding:14px">
+          <div id="blrMap" role="application" aria-label="Map of Bengaluru coloured by valley and ridge ground"></div>
+          <div class="map-tools">
+            <label>Terrain layer <input type="range" id="opacity" min="0" max="100" value="70" aria-label="Terrain layer opacity"></label>
+            <label class="toggle"><input type="checkbox" id="showCorps" checked>City corporations</label>
+            <label class="toggle"><input type="checkbox" id="showLakes" checked>Lakes</label>
+          </div>
+          <div class="key">
+            <span><i style="background:rgb(37,110,196)"></i>Valley ground</span>
+            <span><i style="background:rgb(214,104,52)"></i>Ridge ground</span>
+            <span><i style="background:rgb(95,196,216)"></i>Lake</span>
+            <span class="muted">Stronger colour: more clearly low or high</span>
+          </div>
+        </div>
+        <div class="card panel" id="panel" aria-live="polite">
+          <h3>Click anywhere in the city</h3>
+          <p class="muted" style="margin:0">The panel shows the ground at that spot: valley or ridge, height, how far it sits above or below its surroundings, slope, and the distance to the nearest lake. These are the terrain values the model would use as a starting guess for a well there.</p>
+        </div>
+      </div>
+      <p class="attr">Elevation: Copernicus DEM (GLO-30), © DLR e.V. 2010–2014 and © Airbus Defence and Space GmbH 2014–2018, provided under COPERNICUS by the European Union and ESA. Street map, city boundaries and lakes: © <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, available under the ODbL. Map viewer: Leaflet.</p>
+    </section>
+
+    <section>
+      <div class="section-title"><h2>By city corporation</h2><p>Bengaluru has been run by five city corporations since 2025. Each has a similar mix of valley and ridge ground, because the measure compares every spot with its own surroundings.</p></div>
+      <div class="card"><div class="table-wrap" id="corpTable"></div></div>
+    </section>
+
+    <section>
+      <div class="grid-2">
+        <div class="callout caution"><strong>What this map is not</strong><ul class="plain">
+          <li><strong>Not a prediction for any real well.</strong> "Valley wells recover fast, ridge wells slowly" is how our simulator was built, not something yet checked for Bengaluru.</li>
+          <li><strong>Fractured rock is missing.</strong> No open fracture-line map was available; the Geological Survey's maps can be viewed online but not downloaded as data.</li>
+          <li><strong>Roofs are in the elevation.</strong> The satellite model measures the top surface, buildings and trees included. It was smoothed over about 150 m, which removes single buildings but not whole dense districts.</li>
+          <li><strong>No wells.</strong> The 579 real wells have no locations yet.</li></ul></div>
+        <div class="callout plain"><strong>What would make it a real tool</strong><ul class="plain">
+          <li><strong>Well locations</strong>, or the data holder running our script to return each well's terrain values. The model then gets a real starting guess for every well.</li>
+          <li><strong>A fracture-line map</strong> from the Geological Survey of India, or a pumping test on a few wells.</li>
+          <li><strong>Bare-earth elevation</strong> (for example FABDEM, which removes buildings and trees) and a paved-share map (ESA WorldCover), both public.</li>
+          <li><strong>Checking the valley/ridge link</strong> against the first real water levels. <a href="../map/">See the simulated city it came from →</a></li></ul></div>
+      </div>
+    </section>
+  </div>
+</main>
+<!--SHELL:FOOTER-->
+<footer class="site-footer"><div class="wrap"><div><strong>Borewell Forecast</strong> is a proof of concept for forecasting groundwater levels in Bengaluru borewells. Results are labelled by where the data came from: <span class="source real">vendor export</span> (15 days, July 2026, in the vendor's real format but with demonstration water-level values), <span class="source synthetic">synthetic test system</span> (450 simulated wells with a known answer) or <span class="source twin">digital twin</span> (a physics-based simulation of the 579 wells over a year). No real water-level measurement has been used yet, and nothing here is yet a validated field forecast.</div><div><strong>Explore</strong><ul><li><a href="../../">Overview</a></li><li><a href="../../forecast/">Try a forecast</a></li><li><a href="../../accuracy/">How accurate</a></li><li><a href="../../drivers/">What moves the water</a></li><li><a href="../../network/">Wells affect each other</a></li><li><a href="../../five-year/">ML‑Forecaster</a></li><li><a href="../../physics-sensors/">Stage 2</a></li><li><a href="../../journey/">Our journey</a></li><li><a href="../../next/">What's next</a></li></ul></div><div><strong>More</strong><ul><li><a href="../../glossary/">Glossary of terms</a></li><li><a href="../../prototype/">Stage 1 · First prototype (vendor export)</a></li><li><a href="../../comparison/">Stage 2 · Scenario explorer</a></li><li><a href="../../validation/">Stage 2 · Hidden-truth test</a></li><li><a href="../../models/">Stage 2 · Three models compared</a></li><li><a href="https://github.com/mailabhiramsrinivas-art/borewell-water-forecast">Source code</a></li></ul></div></div></footer>
+<!--/SHELL:FOOTER-->
+<script src="../../assets/site.js?v=bab9b867a8"></script>
+<script>const Stage6Base = "../";</script>
+<script src="../stage6.js?v=bab9b867a8"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js" crossorigin="anonymous"></script>
+<script>
+(() => {
+  const $ = id => document.getElementById(id);
+  const f1 = v => Kit.fmt(v, 1);
+  let D, G = null, map, overlay, corpLayer, lakeLayer, marker;
+
+  function strength(tpi) {
+    const a = Math.abs(tpi);
+    return a < 1.5 ? "only slightly" : a < 5 ? "clearly" : "strongly";
+  }
+
+  function lookup(lat, lon) {
+    if (!G) return null;
+    const r = Math.round((G.origin[0] - lat) / G.step_deg[0]), c = Math.round((lon - G.origin[1]) / G.step_deg[1]);
+    if (r < 0 || c < 0 || r >= G.shape[0] || c >= G.shape[1]) return null;
+    const k = r * G.shape[1] + c;
+    if (G.elev_m[k] === -9999) return null;
+    return { elev: G.elev_m[k], t05: G.tpi05_dm[k] / 10, t15: G.tpi15_dm[k] / 10, t30: G.tpi30_dm[k] / 10, slope: G.slope_ddeg[k] / 10,
+      dlake: G.dlake_hm[k] / 10, corp: G.corp[k] ? G.corp_names[G.corp[k] - 1] : "—" };
+  }
+
+  async function onClick(e) {
+    const { lat, lng } = e.latlng;
+    try { G = G || await Stage6.load("bengaluru_grid"); } catch (err) { Stage6.fail($("panel"), err); return; }
+    const v = lookup(lat, lng);
+    if (marker) marker.remove();
+    marker = L.circleMarker(e.latlng, { radius: 7, color: "#0b3a52", weight: 3, fillColor: "#fff", fillOpacity: 1 }).addTo(map);
+    if (!v) { $("panel").innerHTML = `<h3>Outside the city</h3><p class="muted">This spot is outside the Bengaluru city boundary used here. Click inside the coloured area.</p>`; return; }
+    const valley = v.t15 < 0;
+    const col = valley ? "rgb(37,110,196)" : "rgb(214,104,52)";
+    const what = valley
+      ? "In the simulated city, wells on valley ground usually recover from pumping within a few hours, feel rain within one to two weeks, and rarely run dry."
+      : "In the simulated city, wells on ridge ground recover more slowly (hours to days), feel rain after three to five weeks, and are the ones that run dry, most of all in fractured rock.";
+    $("panel").innerHTML = `
+      <h3>${lat.toFixed(4)}° N, ${lng.toFixed(4)}° E</h3>
+      <p style="margin:6px 0 0"><span class="cls"><i style="background:${col}"></i>${valley ? "Valley ground" : "Ridge ground"}</span>: ${strength(v.t15)} ${valley ? "below" : "above"} its surroundings</p>
+      <dl class="facts">
+        <dt>City corporation</dt><dd>${v.corp.replace(" City Corporation", "")}</dd>
+        <dt>Ground height</dt><dd>${v.elev} m above sea level</dd>
+        <dt>Above / below surroundings</dt><dd>${v.t05 > 0 ? "+" : ""}${f1(v.t05)} m within 0.5 km · ${v.t15 > 0 ? "+" : ""}${f1(v.t15)} m within 1.5 km · ${v.t30 > 0 ? "+" : ""}${f1(v.t30)} m within 3 km</dd>
+        <dt>Slope</dt><dd>${f1(v.slope)}°</dd>
+        <dt>Nearest lake</dt><dd>${v.dlake < 0.05 ? "in a lake" : `${f1(v.dlake)} km`}</dd>
+        <dt>Fractured rock</dt><dd class="muted" style="font-weight:500">not known: no open fracture-line map</dd>
+      </dl>
+      <div class="callout caution" style="margin-top:12px;padding:12px 14px"><strong>What it would mean for a well (illustrative)</strong><p style="font-size:.92rem">${what} This is the simulator's assumption, not yet checked on real Bengaluru wells.</p></div>
+      <p class="note" style="margin-top:8px">Values are read from a 300 m grid built from the smoothed elevation.</p>`;
+  }
+
+  function init() {
+    const s = D.stats;
+    $("stArea").textContent = `${s.area_km2} km²`; $("stValley").textContent = `${Math.round(100 * s.valley_share)} %`;
+    $("stLakes").textContent = `${s.lakes}`; $("stLakesSub").textContent = `${s.lake_ha.toLocaleString("en-GB")} hectares of water, mostly in the valleys`;
+    $("stElev").textContent = `${s.elev_min}–${s.elev_max} m`;
+    Kit.table($("corpTable"), ["City corporation", "Area", "Valley ground", "Ridge ground"],
+      s.corporations.map(c => ({ cells: [c.name, `${c.area_km2} km²`, `${Math.round(100 * c.valley_share)} %`, `${Math.round(100 * (1 - c.valley_share))} %`] })));
+    map = L.map("blrMap", { scrollWheelZoom: false, zoomSnap: 0.5 });
+    L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", { maxZoom: 18,
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors' }).addTo(map);
+    overlay = L.imageOverlay("../assets/bengaluru_terrain.png", D.bounds, { opacity: 0.7, interactive: false }).addTo(map);
+    L.geoJSON(D.city, { style: { color: "#0b3a52", weight: 2.5, fill: false } }).addTo(map);
+    corpLayer = L.geoJSON({ type: "FeatureCollection", features: D.corporations.map(c => ({ type: "Feature", properties: { name: c.name }, geometry: c.geometry })) },
+      { style: { color: "#0b3a52", weight: 1.2, dashArray: "5 5", fill: false }, interactive: false }).addTo(map);
+    lakeLayer = L.geoJSON({ type: "FeatureCollection", features: D.lakes.map(l => ({ type: "Feature", properties: { name: l.name, ha: l.ha }, geometry: l.geometry })) },
+      { style: { color: "#1f8fa6", weight: 1, fillColor: "#5fc4d8", fillOpacity: 0.55 },
+        onEachFeature: (f, layer) => layer.bindTooltip(`${f.properties.name || "Unnamed lake"} · ${f.properties.ha} ha`, { sticky: true }) }).addTo(map);
+    map.fitBounds(L.geoJSON(D.city).getBounds(), { padding: [10, 10] });
+    map.on("click", onClick);
+    lakeLayer.on("click", e => onClick(e));
+    $("opacity").addEventListener("input", e => overlay.setOpacity(e.target.value / 100));
+    $("showCorps").addEventListener("input", e => e.target.checked ? corpLayer.addTo(map) : corpLayer.remove());
+    $("showLakes").addEventListener("input", e => e.target.checked ? lakeLayer.addTo(map) : lakeLayer.remove());
+    map.on("focus", () => map.scrollWheelZoom.enable()); map.on("blur", () => map.scrollWheelZoom.disable());
+  }
+
+  if (!window.L) { $("blrMap").innerHTML = '<p class="note" style="padding:16px">The map library could not be loaded. Check your connection.</p>'; return; }
+  Stage6.load("bengaluru").then(d => { D = d; init(); }).catch(e => Stage6.fail($("blrMap"), e));
+})();
+</script>
+</body>
+</html>
