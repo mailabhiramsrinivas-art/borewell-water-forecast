@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Stage 6 · Sensor faults · Borewell Forecast</title>
+  <meta name="description" content="How the Stage 6 model uses pump power as a second depth gauge to find level sensors that drift, jump or freeze, with examples and detection rates on 579 simulated wells.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230b3a52'/%3E%3Cpath d='M16 5C12 12 9 16 9 20.5a7 7 0 0 0 14 0C23 16 20 12 16 5Z' fill='%235fc4d8'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="../../assets/site.css?v=4267d9489b">
+  <link rel="stylesheet" href="../stage6.css?v=4267d9489b">
+</head>
+<body data-page="physics-sensors-sensors">
+<!--SHELL:HEADER-->
+<a class="skip" href="#main">Skip to content</a>
+<header class="site-header"><div class="wrap"><a class="brand" href="../../"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M16 3C11 11 7 16 7 21.5a9 9 0 0 0 18 0C25 16 21 11 16 3Z" fill="#5fc4d8"/><path d="M11.5 22c2.8 1.8 6.2 1.8 9 0" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round"/></svg><span>Borewell Forecast</span><span class="poc">Proof of concept</span></a><button class="menu-toggle" aria-expanded="false" aria-controls="site-nav">Menu</button><nav class="site-nav" id="site-nav" aria-label="Main"><ul><li><a href="../../">Overview</a></li><li><a href="../../forecast/">Try a forecast</a></li><li><a href="../../accuracy/">How accurate</a></li><li><a href="../../drivers/">What moves the water</a></li><li><a href="../../network/">Wells affect each other</a></li><li><a href="../../five-year/">ML‑Forecaster</a></li><li><a href="../../physics-sensors/" class="section-active">Stage 6 · Physics + sensors</a></li><li><a href="../../journey/">Our journey</a></li><li><a href="../../next/">What's next</a></li></ul></nav></div></header>
+<nav class="subnav" aria-label="Stage 6 pages"><div class="wrap"><span>Stage 6:</span><a href="../../physics-sensors/">The model</a><a href="../../physics-sensors/results/">Results</a><a href="../../physics-sensors/sensors/" aria-current="page">Sensor faults</a><a href="../../physics-sensors/terrain/">Terrain and maps</a><a href="../../physics-sensors/explorer/">Explore a well</a></div></nav>
+<!--/SHELL:HEADER-->
+<main id="main">
+  <div class="wrap">
+    <div class="page-hero">
+      <p class="kicker">Stage 6 · Sensor faults · <span class="source sim"><svg viewBox="0 0 14 14" aria-hidden="true"><rect x="2" y="2" width="10" height="10" rx="2" fill="currentColor"/></svg>Simulated test world: 579 wells, two datasets</span></p>
+      <h1>The pump is a second depth gauge.</h1>
+      <p class="lede">A pump that lifts water from deeper needs more power for the same flow. So every pumping session carries a depth measurement that does not depend on the level sensor at all. When the two disagree for weeks, the level sensor is the one that has gone wrong.</p>
+    </div>
+
+    <div class="grid-4 stat-row">
+      <div class="stat lead"><span class="label">Faulty level sensors found, dataset A</span><span class="value">88 %</span><span class="sub">52 of 59; dataset B: 80 % (43 of 54)</span></div>
+      <div class="stat"><span class="label">Healthy wells wrongly flagged</span><span class="value">6 of 520</span><span class="sub">dataset B: 10 of 525</span></div>
+      <div class="stat"><span class="label">Sudden offsets: found / typical delay</span><span class="value">95 % · 5 wk</span><span class="sub">dataset B: 84 % · 5 weeks</span></div>
+      <div class="stat"><span class="label">Error on faulty-sensor wells, now</span><span class="value">1.11 m</span><span class="sub">2.68 m without this layer; 3.01 m for the gauge</span></div>
+    </div>
+
+    <section>
+      <div class="section-title"><h2>How the check works</h2></div>
+      <div class="two-col">
+        <div class="card">
+          <h3>Depth from the pump</h3>
+          <div class="eq-block"><div class="eq"><i>x</i> = (<i>P</i> − <i>P</i><sub>standby</sub>) ÷ <i>Q</i> &nbsp;≈&nbsp; α + κ · depth</div><p class="cap">power drawn above standby, per unit of flow, grows in a straight line with the depth the water is lifted from</p></div>
+          <p>For each well, α and κ are fitted from its first readings: κ across the training years, α over the first 30 days, when the sensor is taken to be freshly installed and correct. Each start-of-session reading is then compared with the depth the pump implies.</p>
+          <div class="eq-block"><div class="eq">residual = reading − (<i>x</i> − α) ÷ κ</div><p class="cap">a healthy sensor's weekly residual wanders around zero; a faulty one walks away</p></div>
+        </div>
+        <div class="card">
+          <h3>From residual to correction</h3>
+          <ol class="plain" style="padding-left:1.2em">
+            <li style="margin-bottom:6px">Take the median residual of each week.</li>
+            <li style="margin-bottom:6px">Compare the median of the last four weeks with the well's own week-to-week scatter.</li>
+            <li style="margin-bottom:6px">If it sits outside 0.6 m and four standard errors for <strong>three weeks in a row</strong>, start correcting the readings by that amount. Stop when it falls back below half the threshold.</li>
+            <li style="margin-bottom:6px">Separately: drop readings that are impossible (below ground level or deeper than 300 m), far from the last 15 readings, or frozen (a stop reading identical to the start reading).</li>
+          </ol>
+          <p class="note">Every step uses only earlier weeks, so a forecast never benefits from knowing what comes after it.</p>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="section-title"><h2>Three faults from the run</h2><p>One well of each kind, chosen as a typical case: caught after the fault began, with no false correction before it. Grey dots: the weekly residual. Blue line: the correction the model applied.</p></div>
+      <div class="chart-card">
+        <h3 id="offTitle">A sudden offset</h3><p class="takeaway" id="offTake"></p>
+        <p class="axis-note">Weekly residual (reading minus depth from the pump), metres</p>
+        <div id="offChart"></div>
+      </div>
+      <div class="chart-card" style="margin-top:16px">
+        <h3 id="driftTitle">A slow drift</h3><p class="takeaway" id="driftTake"></p>
+        <p class="axis-note">Weekly residual (reading minus depth from the pump), metres</p>
+        <div id="driftChart"></div>
+      </div>
+      <div class="chart-card" style="margin-top:16px">
+        <h3 id="stuckTitle">A frozen sensor</h3><p class="takeaway" id="stuckTake"></p>
+        <div class="legend"><span><i style="--c:var(--s-neutral)"></i>Weekly reading as logged</span><span><i style="--c:var(--s-orange)"></i>True level (simulated)</span></div>
+        <p class="axis-note">Depth below ground, metres (deeper is lower)</p>
+        <div id="stuckChart"></div>
+      </div>
+    </section>
+
+    <section>
+      <div class="section-title"><h2>Detection, fault by fault</h2><p>A well counts as flagged after four corrected weeks or three frozen sessions. Delay is from the fault's start to the first flag.</p></div>
+      <div class="card"><div class="table-wrap"><table>
+        <thead><tr><th>Fault</th><th class="num">A: found</th><th class="num">A: typical delay</th><th class="num">B: found</th><th class="num">B: typical delay</th></tr></thead>
+        <tbody>
+          <tr><td>Sudden offset (2–8 m jump)</td><td class="num">21 of 22 (95 %)</td><td class="num">5 weeks</td><td class="num">21 of 25 (84 %)</td><td class="num">5 weeks</td></tr>
+          <tr><td>Frozen sensor (20–60 days)</td><td class="num">17 of 17 (100 %)</td><td class="num">same day</td><td class="num">11 of 11 (100 %)</td><td class="num">same day</td></tr>
+          <tr><td>Slow drift (0.5–3 m a year)</td><td class="num">14 of 20 (70 %)</td><td class="num">34 weeks</td><td class="num">11 of 18 (61 %)</td><td class="num">56 weeks</td></tr>
+          <tr class="highlight"><td>All faults</td><td class="num">52 of 59 (88 %)</td><td class="num">4 weeks</td><td class="num">43 of 54 (80 %)</td><td class="num">5 weeks</td></tr>
+          <tr><td>Healthy wells wrongly flagged</td><td class="num">6 of 520</td><td class="num"></td><td class="num">10 of 525</td><td class="num"></td></tr>
+        </tbody>
+      </table></div></div>
+      <p class="note" style="margin-top:10px">Slow drifts are the hard case: for months they look like a real change in the water table. A drift of 0.5 m a year takes over a year to clear the threshold.</p>
+    </section>
+
+    <section>
+      <div class="section-title"><h2>What building it taught us</h2></div>
+      <div class="grid-3">
+        <div class="card"><h3>Use the first five-minute record, not the last</h3><p>The pump's last record comes one five-minute step before the stop reading. In short sessions where the water falls fast, the level drops up to about 1 m in that step, enough to bend the calibration by 5–12 %. The first record and the start reading describe the same moment.</p></div>
+        <div class="card"><h3>Calibrate across years, not weeks</h3><p>Over a few weeks the start readings barely move, and the sensor's own noise then flattens the fitted line by up to 10 %. In the first version that looked like drift in over a hundred wells. Fitting across the training years, with fault-affected months set aside, removed it.</p></div>
+        <div class="card"><h3>Ask for three weeks in a row</h3><p>A single odd week is usually noise, and low-flow wells are noisier than most. Scaling the threshold to each well's own scatter and requiring three weeks in a row, together with the two fixes before it, cut the wells flagged from 263 to 58, close to the 59 that really had faulty sensors.</p></div>
+      </div>
+      <div class="callout caution" style="margin-top:14px"><strong>How far this will carry to the field</strong><p>In the simulator the meters are clean (power ±2 %, flow ±3 %) and nothing changes the pump's efficiency: no pipe friction, no wear, no replaced pump. Real pumps will be noisier, and a pump replacement will look like a sensor fault until it is recorded. The vendor's real exports already carry power and flow every five minutes, so this check can be tried on real wells as soon as matching real levels are available.</p></div>
+    </section>
+  </div>
+</main>
+<!--SHELL:FOOTER-->
+<footer class="site-footer"><div class="wrap"><div><strong>Borewell Forecast</strong> is a proof of concept for forecasting groundwater levels in Bengaluru borewells. Results are labelled by where the data came from: <span class="source real">vendor export</span> (15 days, July 2026, in the vendor's real format but with demonstration water-level values), <span class="source synthetic">synthetic test system</span> (450 simulated wells with a known answer) or <span class="source twin">digital twin</span> (a physics-based simulation of the 579 wells over a year). No real water-level measurement has been used yet, and nothing here is yet a validated field forecast.</div><div><strong>Explore</strong><ul><li><a href="../../">Overview</a></li><li><a href="../../forecast/">Try a forecast</a></li><li><a href="../../accuracy/">How accurate</a></li><li><a href="../../drivers/">What moves the water</a></li><li><a href="../../network/">Wells affect each other</a></li><li><a href="../../five-year/">ML‑Forecaster</a></li><li><a href="../../physics-sensors/">Stage 6 · Physics + sensors</a></li><li><a href="../../journey/">Our journey</a></li><li><a href="../../next/">What's next</a></li></ul></div><div><strong>More</strong><ul><li><a href="../../glossary/">Glossary of terms</a></li><li><a href="../../prototype/">Stage 1 · First prototype (vendor export)</a></li><li><a href="../../comparison/">Stage 2 · Scenario explorer</a></li><li><a href="../../validation/">Stage 2 · Hidden-truth test</a></li><li><a href="../../models/">Stage 2 · Three models compared</a></li><li><a href="https://github.com/mailabhiramsrinivas-art/borewell-water-forecast">Source code</a></li></ul></div></div></footer>
+<!--/SHELL:FOOTER-->
+<script src="../../assets/site.js?v=4267d9489b"></script>
+<script>const Stage6Base = "../";</script>
+<script src="../stage6.js?v=4267d9489b"></script>
+<script>
+(() => {
+  const $ = id => document.getElementById(id);
+  const { f1, f2, t } = Stage6;
+  const date = s => Kit.dateFmt.format(new Date(t(s)));
+  let D;
+
+  function residChart(el, e, lo, hi) {
+    const xs = e.weeks.map(t);
+    const res = e.weeks.map((w, k) => ({ x: xs[k], y: e.resid[k] }));
+    const cor = e.weeks.map((w, k) => ({ x: xs[k], y: e.bias[k] }));
+    const min = xs[0], max = xs[xs.length - 1];
+    Kit.line(el, { label: "Weekly residual and applied correction", height: 280, rightPad: 24,
+      x: { min, max, ticks: Stage6.monthTicks(min, max, 6), format: v => Kit.monthYearFmt.format(new Date(v)) },
+      y: { min: lo, max: hi, format: (v, tp) => `${tp ? f2(v) : Kit.fmt(v, 0)} m` },
+      series: [{ name: "Weekly residual", color: "var(--s-neutral)", line: false, markers: true, r: 2.2, points: res },
+        { name: "Correction applied", color: "var(--s-blue)", width: 2.6, points: cor }],
+      vlines: [{ x: t(e.fault_start), label: "fault begins" }, { x: t(e.first_flag), label: "" }],
+      tipTitle: x => `Week of ${Kit.dateFmt.format(new Date(x))}` });
+  }
+
+  function stuckChart(el, e) {
+    const i0 = Math.max(0, e.weeks.findIndex(w => t(w) >= t(e.fault_start)) - 16), i1 = Math.min(e.weeks.length, i0 + 44);
+    const W = e.weeks.slice(i0, i1), xs = W.map(t);
+    const ser = (arr) => W.map((w, k) => ({ x: xs[k], y: arr[i0 + k] }));
+    const end = new Date(t(e.fault_start) + e.size * 864e5).toISOString().slice(0, 10);
+    Kit.line(el, { label: "Weekly reading and true level around a frozen sensor", height: 260, rightPad: 24,
+      x: { min: xs[0], max: xs[xs.length - 1], ticks: Stage6.monthTicks(xs[0], xs[xs.length - 1], 2), format: v => Kit.monthYearFmt.format(new Date(v)) },
+      y: { invert: true, format: (v, tp) => `${tp ? f2(v) : Kit.fmt(v, 0)} m` },
+      series: [{ name: "True level", color: "var(--s-orange)", width: 2, points: ser(e.true) },
+        { name: "Weekly reading as logged", color: "var(--s-neutral)", width: 2, markers: true, r: 2.5, points: ser(e.raw) }],
+      vlines: [{ x: t(e.fault_start), label: `frozen for ${e.size} days` }, { x: t(end), label: "" }],
+      tipTitle: x => `Week of ${Kit.dateFmt.format(new Date(x))}` });
+  }
+
+  function draw() {
+    if (!D) return;
+    const o = D.offset, d = D.drift, s = D.stuck;
+    const rng = e => { const v = e.resid.filter(x => x !== null).concat(e.bias); return [Math.floor(Math.min(...v) - 0.5), Math.ceil(Math.max(...v) + 0.5)]; };
+    $("offTitle").textContent = `A sudden offset: ${o.site}, ${o.type_name}`;
+    $("offTake").textContent = `On ${date(o.fault_start)} the level sensor jumped by ${f1(o.size)} m. The correction started ${o.delay_weeks} weeks later, on ${date(o.first_flag)}, and has tracked it since.`;
+    residChart($("offChart"), o, ...rng(o));
+    $("driftTitle").textContent = `A slow drift: ${d.site}, ${d.type_name}`;
+    $("driftTake").textContent = `From ${date(d.fault_start)} the sensor drifted by ${f1(d.size)} m a year. It crossed the threshold after ${d.delay_weeks} weeks; the correction then follows the drift a few weeks behind.`;
+    residChart($("driftChart"), d, ...rng(d));
+    $("stuckTitle").textContent = `A frozen sensor: ${s.site}, ${s.type_name}`;
+    $("stuckTake").textContent = `On ${date(s.fault_start)} the sensor froze for ${s.size} days, logging the same value at start and stop. The model dropped all ${s.stuck.reduce((a, b) => a + b, 0)} frozen sessions from the first one and relied on the physics until readings resumed.`;
+    stuckChart($("stuckChart"), s);
+  }
+  Stage6.load("sensors").then(d => { D = d; draw(); }).catch(e => Stage6.fail($("offChart"), e));
+  Kit.onResize(draw);
+})();
+</script>
+</body>
+</html>

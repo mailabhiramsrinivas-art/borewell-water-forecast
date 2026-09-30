@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Stage 6 · Results · Borewell Forecast</title>
+  <meta name="description" content="Test-year results of the Stage 6 physics + sensors model on 579 simulated wells: error by weeks ahead, what each layer is worth, results by well type, and what did not work.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230b3a52'/%3E%3Cpath d='M16 5C12 12 9 16 9 20.5a7 7 0 0 0 14 0C23 16 20 12 16 5Z' fill='%235fc4d8'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="../../assets/site.css?v=4267d9489b">
+  <link rel="stylesheet" href="../stage6.css?v=4267d9489b">
+</head>
+<body data-page="physics-sensors-results">
+<!--SHELL:HEADER-->
+<a class="skip" href="#main">Skip to content</a>
+<header class="site-header"><div class="wrap"><a class="brand" href="../../"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M16 3C11 11 7 16 7 21.5a9 9 0 0 0 18 0C25 16 21 11 16 3Z" fill="#5fc4d8"/><path d="M11.5 22c2.8 1.8 6.2 1.8 9 0" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round"/></svg><span>Borewell Forecast</span><span class="poc">Proof of concept</span></a><button class="menu-toggle" aria-expanded="false" aria-controls="site-nav">Menu</button><nav class="site-nav" id="site-nav" aria-label="Main"><ul><li><a href="../../">Overview</a></li><li><a href="../../forecast/">Try a forecast</a></li><li><a href="../../accuracy/">How accurate</a></li><li><a href="../../drivers/">What moves the water</a></li><li><a href="../../network/">Wells affect each other</a></li><li><a href="../../five-year/">ML‑Forecaster</a></li><li><a href="../../physics-sensors/" class="section-active">Stage 6 · Physics + sensors</a></li><li><a href="../../journey/">Our journey</a></li><li><a href="../../next/">What's next</a></li></ul></nav></div></header>
+<nav class="subnav" aria-label="Stage 6 pages"><div class="wrap"><span>Stage 6:</span><a href="../../physics-sensors/">The model</a><a href="../../physics-sensors/results/" aria-current="page">Results</a><a href="../../physics-sensors/sensors/">Sensor faults</a><a href="../../physics-sensors/terrain/">Terrain and maps</a><a href="../../physics-sensors/explorer/">Explore a well</a></div></nav>
+<!--/SHELL:HEADER-->
+<main id="main">
+  <div class="wrap">
+    <div class="page-hero">
+      <p class="kicker">Stage 6 · Results · <span class="source sim"><svg viewBox="0 0 14 14" aria-hidden="true"><rect x="2" y="2" width="10" height="10" rx="2" fill="currentColor"/></svg>Simulated test world: 579 wells, two datasets</span></p>
+      <h1>Half the error of reading the gauge, and a clear view of what is still missing.</h1>
+      <p class="lede">Every number is on the test year, August 2025 to July 2026: a forecast issued every Sunday for every well from data up to that day, scored once against the simulated true weekly level. <a href="../">How the model works</a>.</p>
+    </div>
+
+    <div class="grid-4 stat-row">
+      <div class="stat lead"><span class="label">Error now (nowcast), dataset A</span><span class="value">0.52 m</span><span class="sub">0.91 m for the latest rested reading</span></div>
+      <div class="stat"><span class="label">4 weeks ahead</span><span class="value">0.61 m</span><span class="sub">1.05 m holding the reading flat</span></div>
+      <div class="stat"><span class="label">12 weeks ahead</span><span class="value">0.74 m</span><span class="sub">1.48 m flat; 1.15 m seasonal guess</span></div>
+      <div class="stat"><span class="label">Dataset B, 12 weeks ahead</span><span class="value">0.70 m</span><span class="sub">1.56 m flat; settings frozen from A</span></div>
+    </div>
+
+    <section>
+      <div class="chart-card">
+        <div class="chart-head">
+          <div><h3>Error by weeks ahead</h3><p class="takeaway">The model starts at half the error of the gauge and stays there: its error grows by about 0.2 m over twelve weeks, the gauge's by about 0.6 m.</p></div>
+          <div class="seg" id="dsErr" role="group" aria-label="Dataset"></div>
+        </div>
+        <div class="legend">
+          <span><i style="--c:var(--s-blue);height:4px"></i>Model, terrain-based start</span>
+          <span><i style="--c:#85b7eb"></i>Model, fleet-average start</span>
+          <span><i style="--c:var(--s-neutral)"></i>Latest rested reading, held flat</span>
+          <span><i style="--c:#c3c2b7"></i>Seasonal guess</span>
+        </div>
+        <p class="axis-note">Average error against the true weekly level, metres (lower is better)</p>
+        <div id="errChart"></div>
+        <details class="table-view"><summary>Show the numbers as a table</summary><div class="table-wrap" id="errTable"></div></details>
+      </div>
+    </section>
+
+    <section>
+      <div class="section-title"><h2>What we said we expected, before running it</h2><p>Four expectations were written into the plan and fingerprinted before any model ran. Three held on dataset A; one held on dataset B.</p></div>
+      <div class="card"><div class="table-wrap"><table>
+        <thead><tr><th>Expected in advance</th><th>Dataset A</th><th>Dataset B</th></tr></thead>
+        <tbody>
+          <tr><td>Beats holding the reading flat, at every horizon</td><td><span class="pass">Met</span>: 43–50 % less error</td><td><span class="pass">Met</span>: 51–55 % less error</td></tr>
+          <tr><td>Terrain-based start cuts the 12-week error on never-fitted wells by at least 10 %</td><td><span class="pass">Met, just</span>: 1.13 → 1.01 m (−11 %)</td><td><span class="miss">Missed</span>: 1.02 → 0.94 m (−8 %)</td></tr>
+          <tr><td>Sensor layer cuts the nowcast error on faulty-sensor wells by at least half</td><td><span class="pass">Met</span>: 2.68 → 1.11 m (−59 %)</td><td><span class="miss">Missed</span>: 3.40 → 1.97 m (−42 %)</td></tr>
+          <tr><td>The "80 % likely" range holds about 80 % of the time</td><td><span class="miss">Missed</span>: 3 % now, 30 % at 1 week, 63 % at 12 weeks</td><td><span class="miss">Missed</span>: 4 %, 34 %, 67 %</td></tr>
+        </tbody>
+      </table></div></div>
+    </section>
+
+    <section>
+      <div class="chart-card">
+        <div class="chart-head">
+          <div><h3>What each part is worth</h3><p class="takeaway" id="partsTake"></p></div>
+          <div style="display:grid;gap:8px;justify-items:end">
+            <div class="seg" id="dsParts" role="group" aria-label="Dataset"></div>
+            <div class="seg" id="hParts" role="group" aria-label="Weeks ahead"></div>
+            <div class="seg" id="gParts" role="group" aria-label="Wells"></div>
+          </div>
+        </div>
+        <p class="axis-note">Average error, metres (lower is better)</p>
+        <div id="partsChart"></div>
+      </div>
+      <p class="note" style="margin-top:10px">The sensor-fault layer matters most where sensors fail; the reading-time layer matters most on slow-recovering wells; the water physics matters most beyond a month, where holding even a cleaned reading flat falls behind.</p>
+    </section>
+
+    <section>
+      <div class="section-title"><h2>By type of well</h2><p>The simulator gives every well a hidden type from its terrain. The model never sees it; it is used here only to break down the scores.</p></div>
+      <div class="card">
+        <div class="chart-head"><div></div><div class="seg" id="dsType" role="group" aria-label="Dataset"></div></div>
+        <div class="table-wrap" id="typeTable"></div>
+        <p class="note" style="margin-top:10px">"Reads too deep" is the model's average nowcast minus the true level: a positive number means the model places the water table deeper than it is.</p>
+      </div>
+    </section>
+
+    <section>
+      <div class="section-title"><h2>What did not work: the slow wells</h2><p>Ridge wells in fractured rock and low-yield wells are still read about 1 m too deep (the gauge: about 1.8 m). The reason is in the data, not the model.</p></div>
+      <div class="two-col">
+        <div class="chart-card"><h3>A fast valley well</h3><p class="takeaway">Recovers within hours: by the next session the reading is back at the true level.</p><div id="fastChart"></div></div>
+        <div class="chart-card"><h3>A slow ridge well</h3><p class="takeaway">Never recovers between sessions: every reading carries the same standing drawdown.</p><div id="slowChart"></div></div>
+      </div>
+      <div class="legend" style="margin-top:10px">
+        <span><i style="--c:var(--s-blue)"></i>Water level in the well</span>
+        <span><i style="--c:var(--s-orange)"></i>True water table (what we forecast)</span>
+        <span><i class="dot" style="--c:var(--ink)"></i>Reading at the start of a session</span>
+      </div>
+      <p class="note">Illustration, not data: two sessions a day at 06:00 and 18:00. When a well always pumps on the same schedule, its standing drawdown is the same in every reading, and from level readings alone it cannot be told apart from a deeper water table. Fitted recovery times came out <em>negatively</em> related to the true ones (rank correlation −0.39 on A, −0.31 on B): the evidence simply is not in the readings.</p>
+      <div class="callout plain" style="margin-top:12px"><strong>The fix is a field practice, not more modelling</strong><p>A 48-hour pump-off rest once a month on slow wells, or a logger that keeps recording while the pump is off, would show how far each well recovers, and give an unbiased check for the ranges below.</p></div>
+    </section>
+
+    <section>
+      <div class="chart-card">
+        <div class="chart-head"><div><h3>Are the ranges honest? Not yet.</h3><p class="takeaway">The "80 % likely" range holds 3 % of the time for the nowcast and 63–67 % at twelve weeks. It is too narrow, mostly on the slow wells.</p></div></div>
+        <div class="legend">
+          <span><i style="--c:var(--s-blue);height:4px"></i>Dataset A</span>
+          <span><i style="--c:#85b7eb"></i>Dataset B</span>
+          <span><i style="--c:var(--s-neutral)"></i>Target: 80 %</span>
+        </div>
+        <p class="axis-note">Share of weeks where the true level fell inside the 80 % range</p>
+        <div id="covChart"></div>
+      </div>
+      <p class="note" style="margin-top:10px">Why: the ranges were set on the previous year against the model's own smoothed history, because the plan allows only data-side targets. That history carries the same slow-well bias, so the ranges are confidently narrow exactly where the model is wrong. By type at 12 weeks (A): valley wells 68–76 %, ridge weathered 67 %, ridge fractured 48 %, low yield 42 %. Unbiased long-rest readings from the field would fix the calibration.</p>
+    </section>
+
+    <section>
+      <div class="grid-2">
+        <div class="callout proof"><strong>What this shows</strong><ul class="plain"><li>Separating the true level from the reading halves the error of reading the gauge, now and twelve weeks ahead, on two differently built datasets.</li><li>The pump is a usable second depth gauge: it finds 80–88 % of faulty sensors with few false alarms. <a href="../sensors/">Sensor faults →</a></li><li>Terrain from public-quality maps helps most for wells with no history, at longer horizons. <a href="../terrain/">Terrain →</a></li></ul></div>
+        <div class="callout caution"><strong>What is not proven</strong><ul class="plain"><li>Everything is on simulated wells we built; the model's water balance is from the same family as the simulator's, so field results will be lower.</li><li>Slow wells stay biased and the ranges are too narrow until the field provides long-rest readings.</li><li>The reading-time correction slightly hurts the fastest valley wells (0.18 m against 0.09 m without it).</li></ul><p style="margin-top:8px"><a href="../explorer/">See individual wells →</a></p></div>
+      </div>
+    </section>
+  </div>
+</main>
+<!--SHELL:FOOTER-->
+<footer class="site-footer"><div class="wrap"><div><strong>Borewell Forecast</strong> is a proof of concept for forecasting groundwater levels in Bengaluru borewells. Results are labelled by where the data came from: <span class="source real">vendor export</span> (15 days, July 2026, in the vendor's real format but with demonstration water-level values), <span class="source synthetic">synthetic test system</span> (450 simulated wells with a known answer) or <span class="source twin">digital twin</span> (a physics-based simulation of the 579 wells over a year). No real water-level measurement has been used yet, and nothing here is yet a validated field forecast.</div><div><strong>Explore</strong><ul><li><a href="../../">Overview</a></li><li><a href="../../forecast/">Try a forecast</a></li><li><a href="../../accuracy/">How accurate</a></li><li><a href="../../drivers/">What moves the water</a></li><li><a href="../../network/">Wells affect each other</a></li><li><a href="../../five-year/">ML‑Forecaster</a></li><li><a href="../../physics-sensors/">Stage 6 · Physics + sensors</a></li><li><a href="../../journey/">Our journey</a></li><li><a href="../../next/">What's next</a></li></ul></div><div><strong>More</strong><ul><li><a href="../../glossary/">Glossary of terms</a></li><li><a href="../../prototype/">Stage 1 · First prototype (vendor export)</a></li><li><a href="../../comparison/">Stage 2 · Scenario explorer</a></li><li><a href="../../validation/">Stage 2 · Hidden-truth test</a></li><li><a href="../../models/">Stage 2 · Three models compared</a></li><li><a href="https://github.com/mailabhiramsrinivas-art/borewell-water-forecast">Source code</a></li></ul></div></div></footer>
+<!--/SHELL:FOOTER-->
+<script src="../../assets/site.js?v=4267d9489b"></script>
+<script>const Stage6Base = "../";</script>
+<script src="../stage6.js?v=4267d9489b"></script>
+<script>
+(() => {
+  const $ = id => document.getElementById(id);
+  const { f2, H } = Stage6;
+  const NAME = { B0: "Latest rested reading, held flat", B1: "Seasonal guess", B2: "Model's cleaned reading, held flat", "SSM-F": "Model, fleet-average start",
+    "SSM-T": "Model, terrain-based start", "SSM-T-noFault": "Model without the sensor-fault layer", "SSM-T-noRec": "Model without the reading-time layer" };
+  const TYPES = [["VW", "Valley, weathered rock"], ["VF", "Valley, fractured rock"], ["RW", "Ridge, weathered rock"], ["RF", "Ridge, fractured rock"], ["LY", "Low yield"]];
+  let R, ds = { err: "A", parts: "A", type: "A" }, hp = 0, gp = "all";
+  const hx = { min: 0, max: 12, ticks: [0, 2, 4, 6, 8, 10, 12], format: v => v === 0 ? "Now" : `${v} wk` };
+  const tipH = x => x === 0 ? "Now (week just ended)" : `${x} week${x > 1 ? "s" : ""} ahead`;
+
+  function drawErr() {
+    const M = R[ds.err].mae;
+    const s = (m, color, width, dash, label) => ({ name: NAME[m], color, width, dash, markers: m === "SSM-T", r: 3.5, points: H.map(h => ({ x: h, y: M[m].all[h] })), endLabel: label });
+    Kit.line($("errChart"), { label: "Average error by weeks ahead", height: 330, rightPad: 130, x: hx, y: { min: 0, format: (v, t) => t ? `${f2(v)} m` : `${Kit.fmt(v, 1)} m` },
+      series: [s("B0", "var(--s-neutral)", 2, null, "Held flat"), s("B1", "#c3c2b7", 2, null, "Seasonal"), s("SSM-F", "#85b7eb", 2, "6 4", null), s("SSM-T", "var(--s-blue)", 3.2, null, "Model")], tipTitle: tipH });
+    Kit.table($("errTable"), ["Weeks ahead", NAME.B0, NAME.B1, NAME["SSM-F"], NAME["SSM-T"], "Skill vs held flat"],
+      [0, 1, 2, 4, 8, 12].map(h => ({ cells: [h ? `${h}` : "Now", `${f2(M.B0.all[h])} m`, `${f2(M.B1.all[h])} m`, `${f2(M["SSM-F"].all[h])} m`, `${f2(M["SSM-T"].all[h])} m`, f2(1 - M["SSM-T"].all[h] / M.B0.all[h])] })));
+  }
+
+  function drawParts() {
+    const M = R[ds.parts].mae;
+    const order = ["B0", "SSM-T-noFault", "SSM-T-noRec", "B2", "SSM-T"];
+    const col = { B0: "var(--s-neutral)", "SSM-T-noFault": "var(--s-orange)", "SSM-T-noRec": "var(--s-aqua)", B2: "#85b7eb", "SSM-T": "var(--s-blue)" };
+    Kit.hbars($("partsChart"), { label: "Error by model variant", labelWidth: 290,
+      items: order.map(m => ({ label: NAME[m], value: M[m][gp][hp], color: col[m], valueText: `${f2(M[m][gp][hp])} m`, bold: m === "SSM-T" })) });
+    const full = M["SSM-T"][gp][hp], nf = M["SSM-T-noFault"][gp][hp], nr = M["SSM-T-noRec"][gp][hp], b2 = M.B2[gp][hp];
+    const grp = { all: "all wells", faulty: "faulty-sensor wells", healthy: "healthy-sensor wells" }[gp];
+    $("partsTake").textContent = `${hp ? hp + " weeks ahead" : "Now"}, ${grp}: without the sensor-fault layer the error is ${f2(nf)} m, without the reading-time layer ${f2(nr)} m, the cleaned reading held flat ${f2(b2)} m, the full model ${f2(full)} m.`;
+  }
+
+  function drawType() {
+    const M = R[ds.type].mae, B = R[ds.type].bias;
+    Kit.table($("typeTable"), ["Type (hidden from the model)", "Model now", "Held flat now", "Model 12 wk", "Held flat 12 wk", "Model reads too deep, now"],
+      TYPES.map(([k, n]) => ({ cells: [n, `${f2(M["SSM-T"][k][0])} m`, `${f2(M.B0[k][0])} m`, `${f2(M["SSM-T"][k][12])} m`, `${f2(M.B0[k][12])} m`, `${B["SSM-T"][k][0] > 0 ? "+" : ""}${f2(B["SSM-T"][k][0])} m`],
+        highlight: k === "RF" || k === "LY" })));
+  }
+
+  function drawCov() {
+    const C = k => H.map(h => ({ x: h, y: 100 * R[k].coverage["SSM-T"].all[h] }));
+    Kit.line($("covChart"), { label: "Range coverage by weeks ahead", height: 280, rightPad: 110, x: hx, y: { min: 0, max: 100, format: (v, t) => `${Kit.fmt(v, 0)} %` },
+      series: [{ name: "Target", color: "var(--s-neutral)", width: 1.6, dash: "5 5", points: H.map(h => ({ x: h, y: 80 })), endLabel: "Target 80 %", tip: false },
+        { name: "Dataset B", color: "#85b7eb", width: 2.2, points: C("B"), endLabel: "B" }, { name: "Dataset A", color: "var(--s-blue)", width: 3, markers: true, r: 3.5, points: C("A"), endLabel: "A" }],
+      tipTitle: tipH });
+  }
+
+  /* illustration: level in a pumped well, two sessions a day, two-store recovery */
+  function illus(el, tauSlow, fastShare, ss, durH) {
+    const dt = 5 / 60, pts = [], reads = [], base = 20;
+    let s1 = 0, s2 = 0;
+    const steps = Math.round(24 / dt), starts = [6, 18].map(h => Math.round(h / dt)), len = Math.round(durH / dt);
+    for (let day = 0; day < 6; day++) for (let k = 0; k < steps; k++) {
+      const hr = k * dt, on = starts.some(st => k >= st && k < st + len);
+      if (starts.includes(k)) reads.push({ t: day * 24 + hr, y: base + s1 + s2 });
+      const tf = 0.5, a1 = fastShare * ss, a2 = (1 - fastShare) * ss;
+      s1 += on ? (a1 - s1) * (1 - Math.exp(-dt / tf)) : -s1 * (1 - Math.exp(-dt / tf));
+      s2 += on ? (a2 - s2) * (1 - Math.exp(-dt / tauSlow)) : -s2 * (1 - Math.exp(-dt / tauSlow));
+      if (day >= 3) pts.push({ x: day * 24 + hr - 72, y: base + s1 + s2 });
+    }
+    const rd = reads.filter(r => r.t >= 72).map(r => ({ x: r.t - 72, y: r.y }));
+    Kit.line(el, { label: "Illustration of a well's level over three days", height: 230, rightPad: 20, margin: { left: 52 },
+      x: { min: 0, max: 72, ticks: [0, 12, 24, 36, 48, 60, 72], format: v => `${v} h` }, y: { min: 18, max: 46, invert: true, format: v => `${Kit.fmt(v, 0)} m` },
+      series: [{ name: "True water table", color: "var(--s-orange)", width: 2, dash: "6 4", points: [{ x: 0, y: base }, { x: 72, y: base }], tip: false },
+        { name: "Water level in the well", color: "var(--s-blue)", width: 2, points: pts.filter((p, i) => i % 3 === 0), tip: false },
+        { name: "Reading", color: "var(--ink)", line: false, markers: true, r: 4.5, points: rd }],
+      tipTitle: x => `${Kit.fmt(x, 0)} h` });
+  }
+
+  const drawAll = () => { if (!R) return; drawErr(); drawParts(); drawType(); drawCov(); illus($("fastChart"), 3, 0.5, 10, 2); illus($("slowChart"), 36, 0.35, 25, 2.5); };
+  const dsBtns = [{ value: "A", label: "Dataset A" }, { value: "B", label: "Dataset B" }];
+  Stage6.seg($("dsErr"), dsBtns, "A", v => { ds.err = v; drawErr(); });
+  Stage6.seg($("dsParts"), dsBtns, "A", v => { ds.parts = v; drawParts(); });
+  Stage6.seg($("dsType"), dsBtns, "A", v => { ds.type = v; drawType(); });
+  Stage6.seg($("hParts"), [{ value: 0, label: "Now" }, { value: 4, label: "4 weeks" }, { value: 12, label: "12 weeks" }], 0, v => { hp = v; drawParts(); });
+  Stage6.seg($("gParts"), [{ value: "all", label: "All wells" }, { value: "faulty", label: "Faulty sensors" }, { value: "healthy", label: "Healthy sensors" }], "all", v => { gp = v; drawParts(); });
+  Stage6.load("results").then(r => { R = r; drawAll(); }).catch(e => Stage6.fail($("errChart"), e));
+  Kit.onResize(drawAll);
+})();
+</script>
+</body>
+</html>

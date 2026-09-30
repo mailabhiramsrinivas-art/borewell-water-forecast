@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Stage 6 · Terrain and maps · Borewell Forecast</title>
+  <meta name="description" content="What public-quality terrain maps add to the Stage 6 model: the maps the model saw, how much each well setting terrain can predict, and the gain on wells with no history.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230b3a52'/%3E%3Cpath d='M16 5C12 12 9 16 9 20.5a7 7 0 0 0 14 0C23 16 20 12 16 5Z' fill='%235fc4d8'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="../../assets/site.css?v=4267d9489b">
+  <link rel="stylesheet" href="../stage6.css?v=4267d9489b">
+</head>
+<body data-page="physics-sensors-terrain">
+<!--SHELL:HEADER-->
+<a class="skip" href="#main">Skip to content</a>
+<header class="site-header"><div class="wrap"><a class="brand" href="../../"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M16 3C11 11 7 16 7 21.5a9 9 0 0 0 18 0C25 16 21 11 16 3Z" fill="#5fc4d8"/><path d="M11.5 22c2.8 1.8 6.2 1.8 9 0" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round"/></svg><span>Borewell Forecast</span><span class="poc">Proof of concept</span></a><button class="menu-toggle" aria-expanded="false" aria-controls="site-nav">Menu</button><nav class="site-nav" id="site-nav" aria-label="Main"><ul><li><a href="../../">Overview</a></li><li><a href="../../forecast/">Try a forecast</a></li><li><a href="../../accuracy/">How accurate</a></li><li><a href="../../drivers/">What moves the water</a></li><li><a href="../../network/">Wells affect each other</a></li><li><a href="../../five-year/">ML‑Forecaster</a></li><li><a href="../../physics-sensors/" class="section-active">Stage 6 · Physics + sensors</a></li><li><a href="../../journey/">Our journey</a></li><li><a href="../../next/">What's next</a></li></ul></nav></div></header>
+<nav class="subnav" aria-label="Stage 6 pages"><div class="wrap"><span>Stage 6:</span><a href="../../physics-sensors/">The model</a><a href="../../physics-sensors/results/">Results</a><a href="../../physics-sensors/sensors/">Sensor faults</a><a href="../../physics-sensors/terrain/" aria-current="page">Terrain and maps</a><a href="../../physics-sensors/explorer/">Explore a well</a></div></nav>
+<!--/SHELL:HEADER-->
+<main id="main">
+  <div class="wrap">
+    <div class="page-hero">
+      <p class="kicker">Stage 6 · Terrain and maps · <span class="source sim"><svg viewBox="0 0 14 14" aria-hidden="true"><rect x="2" y="2" width="10" height="10" rx="2" fill="currentColor"/></svg>Simulated test world: 579 wells, two datasets</span></p>
+      <h1>What maps can and can't tell us about a well.</h1>
+      <p class="lede">In the simulated city, terrain decides what kind of well you have: valley or ridge, weathered or fractured rock. The model never sees that. It gets imperfect maps, like the ones freely available for Bengaluru, and uses them only for a starting guess about each well, which the well's own data then corrects.</p>
+    </div>
+
+    <div class="grid-4 stat-row">
+      <div class="stat lead"><span class="label">Wells never fitted, 12 weeks ahead</span><span class="value">1.01 m</span><span class="sub">1.13 m with a fleet-average start; 1.62 m holding the reading flat</span></div>
+      <div class="stat"><span class="label">Gain from terrain, wells never fitted</span><span class="value">−11 % · −8 %</span><span class="sub">12-week error, dataset A · dataset B</span></div>
+      <div class="stat"><span class="label">Gain from terrain, wells with history</span><span class="value">none</span><span class="sub">three years of their own data outweigh it</span></div>
+      <div class="stat"><span class="label">Fracture lines on the map, dataset A</span><span class="value">26 of 40</span><span class="sub">plus 9 lines that are not real</span></div>
+    </div>
+
+    <section>
+      <div class="section-title"><h2>The maps the model saw</h2><p>Left: the simulator's true terrain, fracture lines and the hidden type of each well. Right: the degraded maps given to the model. Shading is elevation, darker is higher; blue discs are lakes.</p></div>
+      <div class="fig">
+        <img src="../assets/maps_true_vs_public.png" alt="Two maps of the 28 by 28 km simulated city. Left: true elevation, 40 fracture lines and 579 wells coloured by hidden type. Right: the public-quality elevation map with 26 fracture lines mapped, 9 false lines and 14 missed lines shown dotted, and the wells in grey." loading="lazy">
+        <p>Dataset A. On the right, dark blue lines are real fracture lines as mapped (shifted and shortened), dashed orange lines are false lines, dotted grey lines are real ones the map missed. The model sees neither the dotted lines nor the well types.</p>
+      </div>
+      <div class="card" style="margin-top:14px"><div class="table-wrap"><table>
+        <thead><tr><th>Map layer</th><th>What the model gets</th><th>How it was degraded</th></tr></thead>
+        <tbody>
+          <tr><td>Elevation</td><td>a 140 × 140 grid, 0.2 km cells</td><td>error of about 2 m, correlated over ~1 km, plus up to 4 m of roofs where the ground is paved, as a satellite surface model sees them</td></tr>
+          <tr><td>Fracture lines</td><td>line segments</td><td>30–80 % of real lines mapped (longer ones more often), each shifted about 0.2 km, turned by a few degrees and shortened; false lines added, on average a quarter as many (A: 26 of 40 plus 9 false; B: 20 of 35 plus 1 false)</td></tr>
+          <tr><td>Paved share</td><td>a grid</td><td>error of about ±0.05, correlated over ~1 km</td></tr>
+          <tr><td>Storm drains</td><td>a grid of valley floors</td><td>about 15 % left off the map, in patches</td></tr>
+          <tr><td>Lakes, zones</td><td>centres, administrative zones</td><td>exact, as in real maps</td></tr>
+        </tbody>
+      </table></div></div>
+      <p class="note" style="margin-top:10px">From these, each well gets 13 terrain features: elevation; how far it sits above or below its surroundings within 0.5, 1.5 and 3 km; slope; distance to the nearest mapped fracture line and the length of mapped lines within 1 km; distance to the nearest lake; a mapped drain within 300 m; paved share at the well and within 1 km; its zone; and its distance to the city centre.</p>
+    </section>
+
+    <section>
+      <div class="chart-card">
+        <div class="chart-head">
+          <div><h3>Wells the model was never fitted on</h3><p class="takeaway">For 116 wells with no fitted settings, a terrain-based start beats a fleet-average start from about a month ahead; at twelve weeks it is 11 % better on A and 8 % on B.</p></div>
+          <div class="seg" id="dsUn" role="group" aria-label="Dataset"></div>
+        </div>
+        <div class="legend">
+          <span><i style="--c:var(--s-blue);height:4px"></i>Terrain-based start</span>
+          <span><i style="--c:#85b7eb"></i>Fleet-average start</span>
+          <span><i style="--c:var(--s-neutral)"></i>Latest rested reading, held flat</span>
+        </div>
+        <p class="axis-note">Average error against the true weekly level, metres</p>
+        <div id="unChart"></div>
+        <details class="table-view"><summary>Show the numbers as a table</summary><div class="table-wrap" id="unTable"></div></details>
+      </div>
+      <p class="note" style="margin-top:10px">These wells still use their own readings to know where the water is today; what terrain supplies is how they respond: to rain, to pumping, over the season. For the nowcast the fleet-average start is marginally better (0.45 m against 0.48 m on A).</p>
+    </section>
+
+    <section>
+      <div class="chart-card">
+        <div class="chart-head">
+          <div><h3>How much of each well setting terrain can predict</h3><p class="takeaway">Terrain explains at most a quarter of any one setting, and most of them hardly at all. It is a starting guess, not a substitute for data.</p></div>
+          <div class="seg" id="dsR2" role="group" aria-label="Dataset"></div>
+        </div>
+        <p class="axis-note">Share of the variation between wells explained by terrain, on wells held out of each fit (0 = none)</p>
+        <div id="r2Chart"></div>
+      </div>
+      <p class="note" style="margin-top:10px">Why so little: the settings are fitted one by one from noisy readings, several of them trade off against each other (the four rain delays especially), and the maps are imperfect. Predicting whole behaviours, such as how far the level rises a month after 100 mm of rain, rather than individual settings, is the next thing to try.</p>
+    </section>
+
+    <section>
+      <div class="section-title"><h2>For real wells</h2></div>
+      <div class="grid-2">
+        <div class="card"><h3>The maps exist</h3><ul class="plain">
+          <li>Elevation: Copernicus 30 m, or CartoDEM from ISRO's Bhuvan portal.</li>
+          <li>Paved and built-up area: ESA WorldCover and the Global Human Settlement Layer.</li>
+          <li>Fracture lines: the geomorphology and lineament maps on Bhuvan and from the Geological Survey of India.</li>
+          <li>Lakes and drains: OpenStreetMap and the state lake inventory.</li>
+          <li>Aquifers: the Central Ground Water Board's aquifer mapping report for Bengaluru.</li></ul></div>
+        <div class="card"><h3>The wells' locations don't, yet</h3><p>The vendor's files identify wells only by an anonymous code. Three ways to connect them to the maps without exposing an address, easiest first:</p><ol class="plain" style="padding-left:1.2em">
+          <li style="margin-bottom:6px">The data holder runs our script on the true locations and returns only the 13 terrain values per anonymous well.</li>
+          <li style="margin-bottom:6px">Locations rounded to about 250 m: enough for terrain and for wells affecting each other.</li>
+          <li>Ward or PIN code only: paved share and rough elevation, not fracture lines.</li></ol>
+          <p class="note">Shifting every location by one secret offset keeps distances between wells but puts every well on the wrong spot of the map, so it doesn't work for terrain.</p></div>
+      </div>
+      <div class="callout plain" style="margin-top:14px"><strong>Next: let the maps drive the physics</strong><p>Today paved share, drains and lakes only shape each well's starting guess; rain soaks in through learned delays. The next version would give rain an explicit path: less water in where the ground is paved, a soil store that dries out, harvesting pits and drains that route water down. It has to be simpler than the simulator's own recipe, and it has to hold up on dataset B and real data, so the test stays honest.</p></div>
+    </section>
+  </div>
+</main>
+<!--SHELL:FOOTER-->
+<footer class="site-footer"><div class="wrap"><div><strong>Borewell Forecast</strong> is a proof of concept for forecasting groundwater levels in Bengaluru borewells. Results are labelled by where the data came from: <span class="source real">vendor export</span> (15 days, July 2026, in the vendor's real format but with demonstration water-level values), <span class="source synthetic">synthetic test system</span> (450 simulated wells with a known answer) or <span class="source twin">digital twin</span> (a physics-based simulation of the 579 wells over a year). No real water-level measurement has been used yet, and nothing here is yet a validated field forecast.</div><div><strong>Explore</strong><ul><li><a href="../../">Overview</a></li><li><a href="../../forecast/">Try a forecast</a></li><li><a href="../../accuracy/">How accurate</a></li><li><a href="../../drivers/">What moves the water</a></li><li><a href="../../network/">Wells affect each other</a></li><li><a href="../../five-year/">ML‑Forecaster</a></li><li><a href="../../physics-sensors/">Stage 6 · Physics + sensors</a></li><li><a href="../../journey/">Our journey</a></li><li><a href="../../next/">What's next</a></li></ul></div><div><strong>More</strong><ul><li><a href="../../glossary/">Glossary of terms</a></li><li><a href="../../prototype/">Stage 1 · First prototype (vendor export)</a></li><li><a href="../../comparison/">Stage 2 · Scenario explorer</a></li><li><a href="../../validation/">Stage 2 · Hidden-truth test</a></li><li><a href="../../models/">Stage 2 · Three models compared</a></li><li><a href="https://github.com/mailabhiramsrinivas-art/borewell-water-forecast">Source code</a></li></ul></div></div></footer>
+<!--/SHELL:FOOTER-->
+<script src="../../assets/site.js?v=4267d9489b"></script>
+<script>const Stage6Base = "../";</script>
+<script src="../stage6.js?v=4267d9489b"></script>
+<script>
+(() => {
+  const $ = id => document.getElementById(id);
+  const { f2, H } = Stage6;
+  let R, dsU = "A", dsR = "A";
+  const LABEL = [["trend", "Long-term decline"], ["X20", "Response to heavy rain, ~20 days later"], ["R20", "Response to rain, ~20 days later"],
+    ["R5", "Response to rain, ~5 days later"], ["R150", "Response to rain, ~150 days later"], ["a", "Pace of return to normal"],
+    ["V", "Response to own pumping"], ["N", "Response to neighbours' pumping"], ["g_10h", "Recovery left after 10 hours off"], ["log_q", "Day-to-day variability"]];
+
+  function drawUn() {
+    const M = R[dsU].mae;
+    const s = (m, color, width, dash, lab) => ({ name: { B0: "Held flat", "SSM-F": "Fleet-average start", "SSM-T": "Terrain-based start" }[m], color, width, dash,
+      markers: m === "SSM-T", r: 3.5, points: H.map(h => ({ x: h, y: M[m].unseen[h] })), endLabel: lab });
+    Kit.line($("unChart"), { label: "Error on wells never fitted", height: 310, rightPad: 120,
+      x: { min: 0, max: 12, ticks: [0, 2, 4, 6, 8, 10, 12], format: v => v ? `${v} wk` : "Now" }, y: { min: 0, format: (v, tp) => tp ? `${f2(v)} m` : `${Kit.fmt(v, 1)} m` },
+      series: [s("B0", "var(--s-neutral)", 2, null, "Held flat"), s("SSM-F", "#85b7eb", 2.2, "6 4", "Fleet start"), s("SSM-T", "var(--s-blue)", 3.2, null, "Terrain start")],
+      tipTitle: x => x ? `${x} week${x > 1 ? "s" : ""} ahead` : "Now" });
+    Kit.table($("unTable"), ["Weeks ahead", "Held flat", "Fleet-average start", "Terrain-based start", "Terrain vs fleet"],
+      [0, 1, 4, 8, 12].map(h => ({ cells: [h ? `${h}` : "Now", `${f2(M.B0.unseen[h])} m`, `${f2(M["SSM-F"].unseen[h])} m`, `${f2(M["SSM-T"].unseen[h])} m`,
+        `${Math.round(100 * (M["SSM-T"].unseen[h] / M["SSM-F"].unseen[h] - 1))} %`] })));
+  }
+
+  function drawR2() {
+    const r = R[dsR].prior_r2;
+    Kit.hbars($("r2Chart"), { label: "Share of each setting explained by terrain", labelWidth: 300, max: 0.5,
+      items: LABEL.map(([k, n]) => ({ label: n, value: Math.max(0, r[k]), color: r[k] > 0.1 ? "var(--s-blue)" : "#b5cfee",
+        valueText: r[k] > 0 ? `${Math.round(100 * r[k])} %` : "none" })) });
+  }
+
+  const draw = () => { if (R) { drawUn(); drawR2(); } };
+  const btns = [{ value: "A", label: "Dataset A" }, { value: "B", label: "Dataset B" }];
+  Stage6.seg($("dsUn"), btns, "A", v => { dsU = v; drawUn(); });
+  Stage6.seg($("dsR2"), btns, "A", v => { dsR = v; drawR2(); });
+  Stage6.load("results").then(r => { R = r; draw(); }).catch(e => Stage6.fail($("unChart"), e));
+  Kit.onResize(draw);
+})();
+</script>
+</body>
+</html>

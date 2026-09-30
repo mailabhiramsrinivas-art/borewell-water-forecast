@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Stage 6 · Explore a well · Borewell Forecast</title>
+  <meta name="description" content="Pick a simulated well and see its raw sensor readings, the model's estimate of the true water level, the true level itself and the model's twelve-week forecasts.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230b3a52'/%3E%3Cpath d='M16 5C12 12 9 16 9 20.5a7 7 0 0 0 14 0C23 16 20 12 16 5Z' fill='%235fc4d8'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="../../assets/site.css?v=4267d9489b">
+  <link rel="stylesheet" href="../stage6.css?v=4267d9489b">
+</head>
+<body data-page="physics-sensors-explorer">
+<!--SHELL:HEADER-->
+<a class="skip" href="#main">Skip to content</a>
+<header class="site-header"><div class="wrap"><a class="brand" href="../../"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M16 3C11 11 7 16 7 21.5a9 9 0 0 0 18 0C25 16 21 11 16 3Z" fill="#5fc4d8"/><path d="M11.5 22c2.8 1.8 6.2 1.8 9 0" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round"/></svg><span>Borewell Forecast</span><span class="poc">Proof of concept</span></a><button class="menu-toggle" aria-expanded="false" aria-controls="site-nav">Menu</button><nav class="site-nav" id="site-nav" aria-label="Main"><ul><li><a href="../../">Overview</a></li><li><a href="../../forecast/">Try a forecast</a></li><li><a href="../../accuracy/">How accurate</a></li><li><a href="../../drivers/">What moves the water</a></li><li><a href="../../network/">Wells affect each other</a></li><li><a href="../../five-year/">ML‑Forecaster</a></li><li><a href="../../physics-sensors/" class="section-active">Stage 6 · Physics + sensors</a></li><li><a href="../../journey/">Our journey</a></li><li><a href="../../next/">What's next</a></li></ul></nav></div></header>
+<nav class="subnav" aria-label="Stage 6 pages"><div class="wrap"><span>Stage 6:</span><a href="../../physics-sensors/">The model</a><a href="../../physics-sensors/results/">Results</a><a href="../../physics-sensors/sensors/">Sensor faults</a><a href="../../physics-sensors/terrain/">Terrain and maps</a><a href="../../physics-sensors/explorer/" aria-current="page">Explore a well</a></div></nav>
+<!--/SHELL:HEADER-->
+<main id="main">
+  <div class="wrap">
+    <div class="page-hero">
+      <p class="kicker">Stage 6 · Explore a well · <span class="source sim"><svg viewBox="0 0 14 14" aria-hidden="true"><rect x="2" y="2" width="10" height="10" rx="2" fill="currentColor"/></svg>Simulated test world: dataset A</span></p>
+      <h1>What the sensor said, what the model saw through it.</h1>
+      <p class="lede">Eighteen wells from dataset A: the best, a typical and the hardest well of each hidden type, and three wells whose level sensor failed. For each, the raw readings, the model's weekly estimate of the true level, the simulated true level the model never saw, and its twelve-week forecast from any Sunday of the test year.</p>
+    </div>
+
+    <div class="controls">
+      <div class="field" style="flex:1 1 320px"><label for="well">Well</label><select id="well"></select></div>
+      <div class="field" style="flex:2 1 360px"><span class="label" id="originLabel">Forecast issued on</span>
+        <div class="origin-row"><input type="range" id="origin" min="0" max="12" step="1" value="4" aria-labelledby="originLabel"><output id="originOut" for="origin"></output></div></div>
+      <div class="field"><span class="label">Show</span>
+        <div style="display:flex;flex-wrap:wrap;gap:6px 16px">
+          <label class="toggle"><input type="checkbox" id="showRaw" checked>Raw readings</label>
+          <label class="toggle"><input type="checkbox" id="showCorr">Corrected readings</label>
+          <label class="toggle"><input type="checkbox" id="showFlat">Reading held flat</label>
+        </div></div>
+    </div>
+
+    <section style="padding-top:18px">
+      <div class="chart-card">
+        <h3 id="wellTitle">Loading…</h3>
+        <div class="well-meta" id="wellMeta"></div>
+        <p class="takeaway" id="wellTake"></p>
+        <div class="legend">
+          <span><i style="--c:var(--s-orange);height:3px"></i>True level (simulated, never shown to the model)</span>
+          <span><i style="--c:var(--s-blue);height:4px"></i>Model's estimate each week</span>
+          <span><i class="band"></i>Forecast: median and 80 % range</span>
+          <span id="lgRaw"><i class="dot" style="--c:#b4b2a9"></i>Raw reading at session start</span>
+          <span id="lgCorr" class="hide"><i class="dot" style="--c:#1baf7a"></i>Corrected reading</span>
+          <span id="lgFlat" class="hide"><i style="--c:var(--s-neutral)"></i>Latest rested reading, held flat</span>
+        </div>
+        <p class="axis-note">Depth below ground, metres (deeper is lower)</p>
+        <div id="chart"></div>
+      </div>
+      <div class="grid-2" style="margin-top:14px">
+        <div class="callout plain"><strong>How to read it</strong><ul class="plain"><li><strong>Raw readings</strong> are start-of-session levels as logged: noisy, often taken before the well recovered, sometimes from a faulty sensor.</li><li>The <strong>model's estimate</strong> each week uses only data up to that Sunday.</li><li>The <strong>forecast</strong> is issued on the chosen Sunday and runs twelve weeks ahead with 20 possible rain years.</li><li>The <strong>true level</strong> is what the simulator knows; the model is scored against it.</li></ul></div>
+        <div class="callout caution"><strong>Why these wells</strong><p>Wells were picked by the model's twelve-week error on the test year, so the "hardest" ones show where it fails: mostly slow ridge and low-yield wells whose readings never show the full recovery. See <a href="../results/">What did not work</a>.</p></div>
+      </div>
+    </section>
+  </div>
+</main>
+<!--SHELL:FOOTER-->
+<footer class="site-footer"><div class="wrap"><div><strong>Borewell Forecast</strong> is a proof of concept for forecasting groundwater levels in Bengaluru borewells. Results are labelled by where the data came from: <span class="source real">vendor export</span> (15 days, July 2026, in the vendor's real format but with demonstration water-level values), <span class="source synthetic">synthetic test system</span> (450 simulated wells with a known answer) or <span class="source twin">digital twin</span> (a physics-based simulation of the 579 wells over a year). No real water-level measurement has been used yet, and nothing here is yet a validated field forecast.</div><div><strong>Explore</strong><ul><li><a href="../../">Overview</a></li><li><a href="../../forecast/">Try a forecast</a></li><li><a href="../../accuracy/">How accurate</a></li><li><a href="../../drivers/">What moves the water</a></li><li><a href="../../network/">Wells affect each other</a></li><li><a href="../../five-year/">ML‑Forecaster</a></li><li><a href="../../physics-sensors/">Stage 6 · Physics + sensors</a></li><li><a href="../../journey/">Our journey</a></li><li><a href="../../next/">What's next</a></li></ul></div><div><strong>More</strong><ul><li><a href="../../glossary/">Glossary of terms</a></li><li><a href="../../prototype/">Stage 1 · First prototype (vendor export)</a></li><li><a href="../../comparison/">Stage 2 · Scenario explorer</a></li><li><a href="../../validation/">Stage 2 · Hidden-truth test</a></li><li><a href="../../models/">Stage 2 · Three models compared</a></li><li><a href="https://github.com/mailabhiramsrinivas-art/borewell-water-forecast">Source code</a></li></ul></div></div></footer>
+<!--/SHELL:FOOTER-->
+<script src="../../assets/site.js?v=4267d9489b"></script>
+<script>const Stage6Base = "../";</script>
+<script src="../stage6.js?v=4267d9489b"></script>
+<script>
+(() => {
+  const $ = id => document.getElementById(id);
+  const { f2, t } = Stage6;
+  let D, w;
+  const date = x => Kit.dateFmt.format(new Date(x));
+  const FAULT = { offset: "sensor jumped (offset)", drift: "sensor drifting", stuck: "sensor froze (stuck)" };
+
+  function fillSelect() {
+    const sel = $("well"); sel.replaceChildren();
+    const groups = [["Faulty level sensor", w => w.fault !== "none"]].concat(
+      [["VW", "Valley, weathered rock"], ["VF", "Valley, fractured rock"], ["RW", "Ridge, weathered rock"], ["RF", "Ridge, fractured rock"], ["LY", "Low yield"]]
+        .map(([k, n]) => [n, w => w.type === k && w.fault === "none"]));
+    for (const [name, test] of groups) {
+      const og = document.createElement("optgroup"); og.label = name;
+      D.wells.forEach((w, k) => { if (test(w)) { const o = document.createElement("option"); o.value = k; o.textContent = `${w.site} · ${w.label.split(" · ")[1]}`; og.appendChild(o); } });
+      sel.appendChild(og);
+    }
+    const def = D.wells.findIndex(w => w.fault === "offset");
+    sel.value = String(def >= 0 ? def : 0);
+  }
+
+  function meta(w) {
+    const pills = [`<span class="pill">Hidden type: ${w.type_name}</span>`];
+    pills.push(w.unseen ? `<span class="pill warn">Never fitted: settings from terrain only</span>` : `<span class="pill">Fitted on 2021–2024 data</span>`);
+    if (w.fault !== "none") pills.push(`<span class="pill warn">${FAULT[w.fault]}${w.flagged ? ": caught by the model" : ": not caught"}</span>`);
+    else pills.push(`<span class="pill ok">Healthy sensor</span>`);
+    $("wellMeta").innerHTML = pills.join("");
+    const e = w.err;
+    $("wellTake").textContent = `Test-year average error: now ${f2(e["SSM-T"][0])} m for the model against ${f2(e.B0[0])} m for the latest rested reading; ` +
+      `12 weeks ahead ${f2(e["SSM-T"][2])} m against ${f2(e.B0[2])} m held flat.`;
+  }
+
+  function draw() {
+    if (!D) return;
+    w = D.wells[+$("well").value];
+    const fan = w.fans[+$("origin").value];
+    $("originOut").textContent = date(t(fan.origin));
+    $("wellTitle").textContent = `${w.site} · ${w.label}`;
+    meta(w);
+    const wx = w.weeks.map(t), dx = w.days.map(t);
+    const min = Math.min(dx[0] ?? wx[0], wx[0]), max = wx[wx.length - 1] + 3 * 864e5;
+    const series = [];
+    if ($("showRaw").checked) series.push({ name: "Raw reading", color: "#b4b2a9", line: false, markers: true, r: 1.8, points: w.days.map((d, k) => ({ x: dx[k], y: w.raw[k] })) });
+    if ($("showCorr").checked) series.push({ name: "Corrected reading", color: "#1baf7a", line: false, markers: true, r: 1.8, points: w.days.map((d, k) => ({ x: dx[k], y: w.corrected[k] })) });
+    if ($("showFlat").checked) series.push({ name: "Latest rested reading", color: "var(--s-neutral)", width: 1.6, points: w.weeks.map((d, k) => ({ x: wx[k], y: w.persist[k] })) });
+    const fx = fan.weeks.map(t);
+    series.push({ name: "Forecast median", color: "var(--brand)", width: 2.2, dash: "6 4", points: fx.map((x, k) => ({ x, y: fan.med[k] })),
+      band: fx.map((x, k) => ({ x, lo: fan.lo[k], hi: fan.hi[k] })), bandName: "Forecast 80 % range", bandColor: "rgba(42,120,214,.16)" });
+    series.push({ name: "True level", color: "var(--s-orange)", width: 2.2, points: w.weeks.map((d, k) => ({ x: wx[k], y: w.true[k] })) });
+    series.push({ name: "Model's estimate", color: "var(--s-blue)", width: 2.6, points: w.weeks.map((d, k) => ({ x: wx[k], y: w.now[k] })) });
+    // keep the y-range on the water, not on extreme faulty readings
+    const core = [...w.true, ...w.now, ...fan.lo, ...fan.hi].filter(v => v !== null);
+    let lo = Math.min(...core), hi = Math.max(...core);
+    const raws = [...($("showRaw").checked ? w.raw : []), ...($("showCorr").checked ? w.corrected : []), ...($("showFlat").checked ? w.persist : [])].filter(v => v !== null).sort((a, b) => a - b);
+    if (raws.length) { lo = Math.min(lo, raws[Math.floor(raws.length * 0.01)]); hi = Math.max(hi, raws[Math.floor(raws.length * 0.99)]); }
+    const pad = Math.max(0.3, (hi - lo) * 0.06);
+    Kit.line($("chart"), { label: `Levels and forecast for ${w.site}`, height: 420, rightPad: 24,
+      x: { min, max, ticks: Stage6.monthTicks(min, max, 2), format: v => Kit.monthYearFmt.format(new Date(v)) },
+      y: { min: Math.max(0, lo - pad), max: hi + pad, invert: true, format: (v, tp) => `${tp ? f2(v) : Kit.fmt(v, 0)} m`, unit: " m" },
+      vlines: [{ x: t("2025-08-01"), label: "test year" }, { x: t(fan.origin), label: "forecast issued" }],
+      series, tipTitle: x => date(x) });
+    $("lgRaw").classList.toggle("hide", !$("showRaw").checked);
+    $("lgCorr").classList.toggle("hide", !$("showCorr").checked);
+    $("lgFlat").classList.toggle("hide", !$("showFlat").checked);
+  }
+
+  ["well", "origin", "showRaw", "showCorr", "showFlat"].forEach(id => $(id).addEventListener("input", draw));
+  Stage6.load("explorer").then(d => { D = d; $("origin").max = String(D.wells[0].fans.length - 1); fillSelect(); draw(); }).catch(e => Stage6.fail($("chart"), e));
+  Kit.onResize(draw);
+})();
+</script>
+</body>
+</html>

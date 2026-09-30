@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Stage 6 · Physics + sensors · Borewell Forecast</title>
+  <meta name="description" content="A state-space model that separates the true water level from what the sensor reports: sensor faults, readings taken before a well has recovered, rain delays, pumping and terrain, tested on 579 simulated wells.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230b3a52'/%3E%3Cpath d='M16 5C12 12 9 16 9 20.5a7 7 0 0 0 14 0C23 16 20 12 16 5Z' fill='%235fc4d8'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="../assets/site.css?v=4267d9489b">
+  <link rel="stylesheet" href="stage6.css?v=4267d9489b">
+  <style>
+    .diagram-narrow { display: none; }
+    @media (max-width: 720px) { .diagram-wide { display: none; } .diagram-narrow { display: block; } }
+  </style>
+</head>
+<body data-page="physics-sensors">
+<!--SHELL:HEADER-->
+<a class="skip" href="#main">Skip to content</a>
+<header class="site-header"><div class="wrap"><a class="brand" href="../"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M16 3C11 11 7 16 7 21.5a9 9 0 0 0 18 0C25 16 21 11 16 3Z" fill="#5fc4d8"/><path d="M11.5 22c2.8 1.8 6.2 1.8 9 0" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round"/></svg><span>Borewell Forecast</span><span class="poc">Proof of concept</span></a><button class="menu-toggle" aria-expanded="false" aria-controls="site-nav">Menu</button><nav class="site-nav" id="site-nav" aria-label="Main"><ul><li><a href="../">Overview</a></li><li><a href="../forecast/">Try a forecast</a></li><li><a href="../accuracy/">How accurate</a></li><li><a href="../drivers/">What moves the water</a></li><li><a href="../network/">Wells affect each other</a></li><li><a href="../five-year/">ML‑Forecaster</a></li><li><a href="../physics-sensors/" aria-current="page">Stage 6 · Physics + sensors</a></li><li><a href="../journey/">Our journey</a></li><li><a href="../next/">What's next</a></li></ul></nav></div></header>
+<nav class="subnav" aria-label="Stage 6 pages"><div class="wrap"><span>Stage 6:</span><a href="../physics-sensors/" aria-current="page">The model</a><a href="../physics-sensors/results/">Results</a><a href="../physics-sensors/sensors/">Sensor faults</a><a href="../physics-sensors/terrain/">Terrain and maps</a><a href="../physics-sensors/explorer/">Explore a well</a></div></nav>
+<!--/SHELL:HEADER-->
+<main id="main">
+  <div class="wrap">
+    <div class="page-hero">
+      <p class="kicker">Stage 6 · Physics + sensors · <span class="source sim"><svg viewBox="0 0 14 14" aria-hidden="true"><rect x="2" y="2" width="10" height="10" rx="2" fill="currentColor"/></svg>Simulated test world: 579 wells, two datasets</span></p>
+      <h1>A model that separates the water from the sensor.</h1>
+      <p class="lede">A borewell sensor never reports the water table directly. It reports a level taken minutes or hours after the pump stopped, from an instrument that can drift, jump or freeze. This model keeps the true level as a hidden quantity, describes separately how the water moves and how the sensor gets it wrong, and corrects its estimate with every new reading.</p>
+      <p><a class="btn" href="./results/">See the results →</a> <a class="btn secondary" href="./explorer/">Explore a well</a></p>
+    </div>
+
+    <div class="grid-4 stat-row">
+      <div class="stat lead"><span class="label">Error now (nowcast)</span><span class="value">0.52 m</span><span class="sub">0.91 m for the latest rested reading: 43 % less</span></div>
+      <div class="stat"><span class="label">Error 12 weeks ahead</span><span class="value">0.74 m</span><span class="sub">1.48 m holding the reading flat; 1.15 m for a seasonal guess</span></div>
+      <div class="stat"><span class="label">Faulty sensors found</span><span class="value">88 %</span><span class="sub">52 of 59, with 6 false alarms among 520 healthy wells</span></div>
+      <div class="stat"><span class="label">Wells never fitted, 12 weeks ahead</span><span class="value">1.01 m</span><span class="sub">1.62 m holding the reading flat</span></div>
+    </div>
+    <p class="note" style="margin-top:10px">Dataset A, test year August 2025 – July 2026, error against the simulated true weekly level. Dataset B, built differently and run with every setting frozen, gives 0.50 m now and 0.70 m at 12 weeks (1.02 m and 1.56 m holding the reading flat).</p>
+
+    <section>
+      <div class="section-title"><h2>The idea</h2><p>Two equations instead of one: one for the water, one for the sensor. The filter keeps them honest with each other.</p></div>
+      <div class="fig diagram-wide">
+        <svg class="diagram" viewBox="0 0 1000 430" role="img" aria-label="Terrain, rain, own pumping and neighbours' pumping drive the hidden true water level. The sensor reports it with leftover drawdown, faults and noise. Each reading corrects the estimate.">
+          <defs><marker id="ah" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="#46525a" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
+          <g font-size="15">
+            <g fill="#ffffff" stroke="#c3c8c2">
+              <rect x="20" y="70" width="200" height="60" rx="10"/><rect x="20" y="150" width="200" height="60" rx="10"/>
+              <rect x="20" y="230" width="200" height="60" rx="10"/><rect x="20" y="310" width="200" height="60" rx="10"/>
+            </g>
+            <g fill="#0f1d26" font-weight="650"><text x="36" y="96">Terrain</text><text x="36" y="176">City rain</text><text x="36" y="256">Own pumping</text><text x="36" y="336">Neighbours' pumping</text></g>
+            <g fill="#6f7a80" font-size="13"><text x="36" y="117">public maps → starting guess</text><text x="36" y="197">arrives after 5–150 days</text><text x="36" y="277">volume from the pump's meter</text><text x="36" y="357">wells within 1.5 km</text></g>
+            <g stroke="#46525a" stroke-width="1.4" fill="none" marker-end="url(#ah)"><path d="M222 100H292"/><path d="M222 180H292"/><path d="M222 260H292"/><path d="M222 340H292"/></g>
+            <rect x="296" y="60" width="300" height="320" rx="16" fill="#e7f0fb" stroke="#9ec5f4"/>
+            <text x="316" y="92" fill="#0b3a52" font-weight="720" font-size="17">True water level</text>
+            <text x="316" y="113" fill="#0e5575" font-size="13">hidden: never measured directly</text>
+            <g fill="#ffffff" stroke="#9ec5f4"><rect x="316" y="132" width="260" height="66" rx="9"/><rect x="316" y="212" width="260" height="66" rx="9"/><rect x="316" y="292" width="260" height="66" rx="9"/></g>
+            <g fill="#0f1d26" font-weight="650" font-size="14"><text x="330" y="158">Drifts back toward normal</text><text x="330" y="238">Rain lifts it, pumping deepens it</text><text x="330" y="318">Long-term trend and season</text></g>
+            <g fill="#6f7a80" font-size="12.5"><text x="330" y="180">a learned "memory" for each well</text><text x="330" y="260">each through its own delay</text><text x="330" y="340">one yearly cycle, one slope</text></g>
+            <path d="M598 220H660" stroke="#46525a" stroke-width="1.4" fill="none" marker-end="url(#ah)"/>
+            <rect x="664" y="100" width="220" height="240" rx="16" fill="#fbf1e6" stroke="#efd9bf"/>
+            <text x="682" y="130" fill="#8a4b0f" font-weight="720" font-size="17">What the sensor reports</text>
+            <g fill="#0f1d26" font-size="14"><text x="682" y="170">+ drawdown left over</text><text x="682" y="189" fill="#6f7a80" font-size="12.5">from the last pumping</text>
+              <text x="682" y="226">+ offset, drift or</text><text x="682" y="245">  a stuck value</text><text x="682" y="264" fill="#6f7a80" font-size="12.5">checked against pump power</text>
+              <text x="682" y="300">+ noise and outliers</text></g>
+            <path d="M886 220H918" stroke="#46525a" stroke-width="1.4" fill="none" marker-end="url(#ah)"/>
+            <rect x="922" y="190" width="68" height="60" rx="10" fill="#0b3a52"/>
+            <text x="956" y="225" fill="#fff" font-weight="700" font-size="14" text-anchor="middle">Reading</text>
+            <path d="M956 188V28H446V56" stroke="#1c5cab" stroke-width="1.8" fill="none" stroke-dasharray="6 5" marker-end="url(#ah)"/>
+            <text x="700" y="20" fill="#1c5cab" font-size="14" font-weight="650" text-anchor="middle">each new reading corrects the estimate of the true level (Kalman filter)</text>
+          </g>
+        </svg>
+      </div>
+      <ol class="steps diagram-narrow">
+        <li><strong>Inputs.</strong> Terrain from public maps sets each well's starting guess; city rain arrives after delays of 5–150 days; own pumping and neighbours' pumping (within 1.5 km) deepen the level.</li>
+        <li><strong>The true level, hidden.</strong> It drifts back toward normal at a learned pace, rises with rain, falls with pumping, and follows a trend and a yearly cycle.</li>
+        <li><strong>What the sensor reports.</strong> The true level plus drawdown left over from the last pumping, plus any offset, drift or stuck value (checked against the pump's power), plus noise.</li>
+        <li><strong>Correction.</strong> Each new reading corrects the estimate of the true level (Kalman filter).</li>
+      </ol>
+    </section>
+
+    <section>
+      <div class="section-title"><h2>Three layers</h2><p>Each layer handles one way a reading can mislead. Each can be switched off, so its worth can be measured.</p></div>
+      <div class="layer-grid">
+        <div class="card"><span class="tag">Layer 1</span><h3>Sensor faults</h3><p>Pumps give a second, independent depth gauge: the power a pump draws per litre it lifts grows with the depth it lifts from. Every level reading is checked against it. A level sensor that drifts, jumps or freezes disagrees with the pump, and the disagreement is measured and removed. Impossible values, outliers and frozen readings are dropped first.</p><p class="note">Removing this layer raises the error on faulty-sensor wells from 1.11 m to 2.68 m.</p></div>
+        <div class="card"><span class="tag">Layer 2</span><h3>Readings taken too early</h3><p>Half of all readings are taken 8 to 16 hours after the pump last stopped, often before the well has fully recovered. Each well's recovery curve, a fast part and a slow part, is learned from pairs of sessions, and each start reading is corrected for the drawdown still left in it.</p><p class="note">Removing this layer raises the nowcast error from 0.52 m to 0.63 m; it helps most on ridge wells and slightly hurts the fastest valley wells.</p></div>
+        <div class="card"><span class="tag">Layer 3</span><h3>How the water moves</h3><p>Day by day, the true level drifts back toward normal, rises with rain arriving through four delays (about 5, 20, 60 and 150 days, with heavy rain treated separately), falls with the well's own and its neighbours' pumping, and follows a slow trend and a yearly cycle. Each well has about 20 settings, fitted from three years of its own data.</p><p class="note">This is what carries the forecast beyond a month: the cleaned reading held flat is 1.22 m off at 12 weeks, the model 0.74 m.</p></div>
+      </div>
+    </section>
+
+    <section>
+      <div class="section-title"><h2>The equations, compared with the earlier model</h2><p>The earlier outlook was one weekly equation fitted to the readings. The new model has two equations, one for the hidden level and one for the sensor, and takes each well's settings from terrain when it has no history. Depths are metres below ground: a larger number is deeper.</p></div>
+      <div class="two-col">
+        <div class="card">
+          <h3>Earlier model: weekly, from the last reading</h3>
+          <div class="eq-block"><div class="eq">Δ<i>y</i><sub>w</sub> = <i>c</i> + <i>b</i>·<i>V</i><sub>w</sub> − Σ<sub><i>j</i>=1..4</sub> <i>r</i><sub>j</sub>·<i>P</i><sub>j,w</sub> + <i>s</i><sub>1</sub> sin + <i>s</i><sub>2</sub> cos</div><p class="cap">pumping, rain in four lag windows (each only allowed to raise the level), a yearly cycle</p></div>
+          <div class="eq-block"><div class="eq"><i>ŷ</i> = ω<sub>d</sub>·<i>ŷ</i><sub>driver</sub> + ω<sub>a</sub>·<i>ŷ</i><sub>same week last year</sub> + ω<sub>t</sub>·<i>ŷ</i><sub>damped trend</sub></div><p class="cap">three forecasts blended, each starting from the last observed reading, which is taken as the truth</p></div>
+        </div>
+        <div class="card">
+          <h3>New model: daily, from the estimated true level</h3>
+          <div class="eq-block"><div class="eq"><i>h</i><sub>t+1</sub> = <i>a</i>·<i>h</i><sub>t</sub> + α<sub>0</sub> + α<sub>1</sub><i>t</i> + β<sub>V</sub><i>V</i><sub>t</sub> + γ<i>N</i><sub>t</sub> − Σ<sub><i>k</i></sub> (<i>c</i><sub>k</sub><i>R</i><sub>k,t</sub> + <i>d</i><sub>k</sub><i>X</i><sub>k,t</sub>) + <i>s</i><sub>1</sub> sin + <i>s</i><sub>2</sub> cos + <i>w</i><sub>t</sub></div><p class="cap">the hidden level: memory <i>a</i>, trend, own and neighbours' pumping, rain and heavy rain through four delays, yearly cycle, daily noise</p></div>
+          <div class="eq-block"><div class="eq">start<sub>k</sub> = <i>h</i><sub>t</sub> + <i>g</i>(Δ<i>t</i>)·(stop<sub>k−1</sub> − <i>h</i><sub>t</sub>) + <i>b</i><sub>t</sub> + ε<sub>k</sub>,&nbsp;&nbsp; <i>g</i>(Δ<i>t</i>) = φ<i>e</i><sup>−Δ<i>t</i>/τ<sub>f</sub></sup> + (1−φ)<i>e</i><sup>−Δ<i>t</i>/τ<sub>s</sub></sup></div><p class="cap">the sensor: leftover drawdown after Δ<i>t</i> hours off, sensor bias <i>b</i> (from the pump-power check), noise</p></div>
+          <div class="eq-block"><div class="eq">settings<sub>i</sub> ~ Normal( <i>f</i>(terrain<sub>i</sub>), sd<sup>2</sup> )</div><p class="cap">each well's ~20 settings start from a terrain-based guess <i>f</i> (gradient-boosted trees on the map features), then its own data takes over</p></div>
+        </div>
+      </div>
+      <details class="table-view" style="margin-top:12px"><summary>Term by term</summary>
+        <div class="table-wrap"><table class="cmp">
+          <thead><tr><th>Earlier model</th><th>New model</th><th>What changed</th></tr></thead>
+          <tbody>
+            <tr><td><code>c</code></td><td><code>α<sub>0</sub> + α<sub>1</sub>t</code></td><td>Adds a long-term trend</td></tr>
+            <tr><td><code>b·V</code></td><td><code>β<sub>V</sub>V + γN</code></td><td>Adds neighbours' pumping</td></tr>
+            <tr><td>Rain in 4 lag windows</td><td>Rain through 4 smooth delays, plus heavy rain separately</td><td>Delays are smooth; heavy rain gets its own response</td></tr>
+            <tr><td>Yearly cycle</td><td>Yearly cycle</td><td>Same, on a daily step</td></tr>
+            <tr><td>Same week last year</td><td>—</td><td>Dropped: the daily physics carries the season</td></tr>
+            <tr><td>Damped trend, blended</td><td><code>a·h<sub>t</sub></code></td><td>The level drifts back toward normal at a pace of (1 − <i>a</i>) per day</td></tr>
+            <tr><td>Reading taken as the truth</td><td>Sensor equation</td><td>Leftover drawdown, sensor bias and noise are separated from the true level</td></tr>
+            <tr><td>Settings shrunk to a pooled value</td><td>Settings shrunk to a terrain-based guess</td><td>Wells with no history get terrain-based settings</td></tr>
+          </tbody>
+        </table></div>
+      </details>
+    </section>
+
+    <section>
+      <div class="section-title"><h2>The test world</h2><p>Testing a model that separates truth from readings needs a world where the truth is known. We built one, then built the model without looking at it.</p></div>
+      <div class="grid-3">
+        <div class="card"><span class="source sim"><svg viewBox="0 0 14 14" aria-hidden="true"><rect x="2" y="2" width="10" height="10" rx="2" fill="currentColor"/></svg>Dataset A</span><h3 style="margin-top:12px">579 wells, five hidden types</h3><p>Valley or ridge, weathered or fractured rock, and low-yield wells, placed by terrain. Five years (2021–2026) after a two-year settling run, driven by real NASA rainfall. Percolation through paved ground, harvesting pits and drains, pipe leakage, lakes, and neighbours that affect each other. 1.8 million sessions, 43 million telemetry rows, faults on 10 % of wells.</p></div>
+        <div class="card"><span class="source sim"><svg viewBox="0 0 14 14" aria-hidden="true"><rect x="2" y="2" width="10" height="10" rx="2" fill="currentColor"/></svg>Dataset B</span><h3 style="margin-top:12px">Built differently, on purpose</h3><p>Every trait range scaled by an independent factor of 0.8–1.25, twice as many in-between wells, a different geography and pumping behaviour. The model was never tuned on it: every setting chosen on A was applied to B once. A method that only works on the world it was built for is exposed here.</p></div>
+        <div class="card"><span class="source sim"><svg viewBox="0 0 14 14" aria-hidden="true"><rect x="2" y="2" width="10" height="10" rx="2" fill="currentColor"/></svg>Public-quality maps</span><h3 style="margin-top:12px">Imperfect maps, like real ones</h3><p>The model never sees the simulator's terrain. It gets maps degraded the way public maps are: elevation with 2 m of error and roofs in it, about 60 % of fracture lines mapped and shifted, false lines added, paved share and drains with gaps. <a href="./terrain/">See the maps →</a></p></div>
+      </div>
+    </section>
+
+    <section>
+      <div class="section-title"><h2>How it was tested honestly</h2></div>
+      <div class="grid-2">
+        <div class="card">
+          <div class="gate">
+            <b>Plan first</b><span>Method, scoring and the expected results written down and fingerprinted (SHA-256) on 30 September 2026 at 06:52 UTC, before any model ran.</span>
+            <b>Changes logged</b><span>Eight changes before scoring, each with its reason and what had been seen: for example, making the fault correction look only backwards in time, and fixing a bug that pinned some settings to zero.</span>
+            <b>Firewall</b><span>The model code never reads the answer key; a test checks it. Only the map maker and the scorer may.</span>
+            <b>Split</b><span>Settings fitted on August 2021 – July 2024; band widths set on the next year using the model's own data only; test year August 2025 – July 2026, forecast every Sunday, scored once.</span>
+            <b>Unseen wells</b><span>116 wells never fitted: their settings come from terrain alone.</span>
+            <b>Baselines</b><span>The latest rested reading held flat; a seasonal guess; the model's own cleaned reading held flat.</span>
+          </div>
+        </div>
+        <div class="callout caution"><strong>Honest status</strong><ul class="plain"><li>All of this is on simulated wells we built ourselves. The model's water balance is from the same textbook family as the simulator's, so these scores are an upper bound for the field.</li><li>The pump-power check is idealised in the simulator (clean meters, no pipe friction or pump wear).</li><li>The map errors are our assumptions about public maps.</li><li>Slow ridge and low-yield wells are still read about 1 m too deep, and the uncertainty bands are too narrow. <a href="./results/">Why →</a></li><li>The simulated datasets are awaiting a hydrologist's review; if they change, the model is rerun.</li></ul></div>
+      </div>
+    </section>
+  </div>
+</main>
+<!--SHELL:FOOTER-->
+<footer class="site-footer"><div class="wrap"><div><strong>Borewell Forecast</strong> is a proof of concept for forecasting groundwater levels in Bengaluru borewells. Results are labelled by where the data came from: <span class="source real">vendor export</span> (15 days, July 2026, in the vendor's real format but with demonstration water-level values), <span class="source synthetic">synthetic test system</span> (450 simulated wells with a known answer) or <span class="source twin">digital twin</span> (a physics-based simulation of the 579 wells over a year). No real water-level measurement has been used yet, and nothing here is yet a validated field forecast.</div><div><strong>Explore</strong><ul><li><a href="../">Overview</a></li><li><a href="../forecast/">Try a forecast</a></li><li><a href="../accuracy/">How accurate</a></li><li><a href="../drivers/">What moves the water</a></li><li><a href="../network/">Wells affect each other</a></li><li><a href="../five-year/">ML‑Forecaster</a></li><li><a href="../physics-sensors/">Stage 6 · Physics + sensors</a></li><li><a href="../journey/">Our journey</a></li><li><a href="../next/">What's next</a></li></ul></div><div><strong>More</strong><ul><li><a href="../glossary/">Glossary of terms</a></li><li><a href="../prototype/">Stage 1 · First prototype (vendor export)</a></li><li><a href="../comparison/">Stage 2 · Scenario explorer</a></li><li><a href="../validation/">Stage 2 · Hidden-truth test</a></li><li><a href="../models/">Stage 2 · Three models compared</a></li><li><a href="https://github.com/mailabhiramsrinivas-art/borewell-water-forecast">Source code</a></li></ul></div></div></footer>
+<!--/SHELL:FOOTER-->
+<script src="../assets/site.js?v=4267d9489b"></script>
+</body>
+</html>
