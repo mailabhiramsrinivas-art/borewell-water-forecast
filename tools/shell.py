@@ -13,7 +13,7 @@ DIST = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
 NAV = [("overview", "", "Overview"), ("forecast", "forecast/", "Try a forecast"), ("accuracy", "accuracy/", "How accurate"),
        ("drivers", "drivers/", "What moves the water"), ("network", "network/", "Wells affect each other"),
        ("five-year", "five-year/", "ML‑Forecaster"),
-       ("physics-sensors", "physics-sensors/", "Stage 6 · Physics + sensors"),
+       ("physics-sensors", "physics-sensors/", "Stage 2"),
        ("journey", "journey/", "Our journey"), ("next", "next/", "What's next")]
 # earlier-stage tools live under "Our journey"
 JOURNEY_TOOLS = [("prototype", "prototype/", "Stage 1 · First prototype (vendor export)"),
@@ -22,7 +22,7 @@ JOURNEY_TOOLS = [("prototype", "prototype/", "Stage 1 · First prototype (vendor
                  ("models", "models/", "Stage 2 · Three models compared")]
 SECTION = {k: "journey" for k, _, _ in JOURNEY_TOOLS}
 SECTION["five-year-results"] = "five-year"
-# Stage 6 pages, with their own sub-navigation
+# Stage 2 (physics + sensors) pages, with their own sub-navigation
 STAGE6 = [("physics-sensors", "physics-sensors/", "The model"), ("physics-sensors-results", "physics-sensors/results/", "Results"),
           ("physics-sensors-sensors", "physics-sensors/sensors/", "Sensor faults"),
           ("physics-sensors-terrain", "physics-sensors/terrain/", "Terrain and maps"),
@@ -48,7 +48,7 @@ def header(page, p):
     if SECTION.get(page) == "physics-sensors" or page == "physics-sensors":
         cur = ' aria-current="page"'
         tools = "".join(f'<a href="{p}{href}"{cur if key == page else ""}>{label}</a>' for key, href, label in STAGE6)
-        html += f'\n<nav class="subnav" aria-label="Stage 6 pages"><div class="wrap"><span>Stage 6:</span>{tools}</div></nav>'
+        html += f'\n<nav class="subnav" aria-label="Stage 2 pages"><div class="wrap"><span>Stage 2:</span>{tools}</div></nav>'
     return html
 
 

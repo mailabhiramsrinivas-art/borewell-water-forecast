@@ -1,4 +1,4 @@
-/* Stage 6 · Physics + sensors — small helpers shared by the section's pages (uses Kit from assets/site.js). */
+/* Stage 2 · Physics + sensors — small helpers shared by the section's pages (uses Kit from assets/site.js). */
 const Stage6 = (() => {
   const cache = {};
   const load = name => cache[name] || (cache[name] = fetch(`${Stage6Base}data/${name}.json`).then(r => {

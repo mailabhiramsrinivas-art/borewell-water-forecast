@@ -1,4 +1,4 @@
-/* Stage 6 · Physics + sensors — page styles on top of the shared design system (assets/site.css). */
+/* Stage 2 · Physics + sensors — page styles on top of the shared design system (assets/site.css). */
 .source.sim { background: #fbf1e6; border-color: #efd9bf; }
 ul.plain { padding-left: 1.2em; margin: 0; } ul.plain li { margin-bottom: 6px; }
 .eq { font-family: "Times New Roman", Georgia, serif; font-size: 1.08rem; line-height: 1.7; margin: 6px 0; overflow-wrap: anywhere; }
