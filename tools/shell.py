@@ -30,6 +30,30 @@ STAGE6 = [("physics-sensors", "physics-sensors/", "The model"), ("physics-sensor
           ("physics-sensors-bengaluru", "physics-sensors/bengaluru/", "Bengaluru map"),
           ("physics-sensors-explorer", "physics-sensors/explorer/", "Explore a well")]
 SECTION.update({k: "physics-sensors" for k, _, _ in STAGE6[1:]})
+REVIEW = "reviewers/"
+BANNERS = {   # dated notices on pages that show an earlier iteration (review feedback, 1 October 2026)
+    "overview": "The headline numbers on this page are from <strong>iteration 1</strong> (a one-year digital twin, September 2026). They are kept as a record and have been superseded.",
+    "forecast": "<strong>Iteration 1</strong>: one-year digital twin, September 2026. Kept as a record.",
+    "accuracy": "<strong>Iteration 1</strong>: one-year digital twin, September 2026, eight test dates. Kept as a record.",
+    "drivers": "<strong>Iteration 1</strong>: one-year digital twin, September 2026. The value of rain depends on how a twin's recharge is built; later twins differ.",
+    "network": "A <strong>separate synthetic exploration</strong> on two simulated cities. It is not part of the forecasters under review. Real use needs well locations and one pumping test.",
+    "five-year": "<strong>Iteration 1</strong> of the five-year twin: one well population, recharge later found too generous. Later iterations, typed and paved, are reported in the team's response.",
+    "five-year-results": "<strong>Iteration 1</strong> of the five-year twin: one well population, recharge later found too generous. Later iterations, typed and paved, are reported in the team's response.",
+    "prototype": "<strong>Earlier stage</strong>, September 2026, kept as a record.",
+    "comparison": "<strong>Earlier stage</strong>, September 2026, kept as a record.",
+    "validation": "<strong>Earlier stage</strong>, September 2026, kept as a record.",
+    "models": "<strong>Earlier stage</strong>, September 2026, kept as a record.",
+}
+
+
+def banner(page, p):
+    if page not in BANNERS:
+        return ""
+    return (f'\n<div class="iteration-banner" role="note" style="background:#fff8ea;border-bottom:1px solid #f0dcae;font-size:.92rem">'
+            f'<div class="wrap" style="padding-top:9px;padding-bottom:9px">{BANNERS[page]} '
+            f'<a href="{p}{REVIEW}">Which numbers are current, and from which simulated world →</a></div></div>')
+
+
 DROP = ('<svg viewBox="0 0 32 32" aria-hidden="true"><path d="M16 3C11 11 7 16 7 21.5a9 9 0 0 0 18 0C25 16 21 11 16 3Z" fill="#5fc4d8"/>'
         '<path d="M11.5 22c2.8 1.8 6.2 1.8 9 0" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round"/></svg>')
 
@@ -51,7 +75,7 @@ def header(page, p):
         cur = ' aria-current="page"'
         tools = "".join(f'<a href="{p}{href}"{cur if key == page else ""}>{label}</a>' for key, href, label in STAGE6)
         html += f'\n<nav class="subnav" aria-label="Stage 2 pages"><div class="wrap"><span>Stage 2:</span>{tools}</div></nav>'
-    return html
+    return html + banner(page, p)
 
 
 def footer(p):
@@ -60,9 +84,10 @@ def footer(p):
             f'Results are labelled by where the data came from: <span class="source real">vendor export</span> (15 days, July 2026, in the vendor\'s real format but with demonstration water-level values), '
             f'<span class="source synthetic">synthetic test system</span> (450 simulated wells with a known answer) or '
             f'<span class="source twin">digital twin</span> (a physics-based simulation of the 579 wells over a year). '
-            f'No real water-level measurement has been used yet, and nothing here is yet a validated field forecast.</div>'
+            f'No real water-level measurement has been used yet, and nothing here is yet a validated field forecast. '
+            f'Built by the FARII consortium.</div>'
             f'<div><strong>Explore</strong><ul>{"".join(f"<li><a href={chr(34)}{p}{h}{chr(34)}>{l}</a></li>" for _, h, l in NAV)}</ul></div>'
-            f'<div><strong>More</strong><ul><li><a href="{p}glossary/">Glossary of terms</a></li>'
+            f'<div><strong>More</strong><ul><li><a href="{p}{REVIEW}">For reviewers: current numbers</a></li><li><a href="{p}glossary/">Glossary of terms</a></li>'
             f'{"".join(f"<li><a href={chr(34)}{p}{h}{chr(34)}>{l}</a></li>" for _, h, l in JOURNEY_TOOLS)}'
             f'<li><a href="https://github.com/mailabhiramsrinivas-art/borewell-water-forecast">Source code</a></li></ul></div>'
             f'</div></footer>')

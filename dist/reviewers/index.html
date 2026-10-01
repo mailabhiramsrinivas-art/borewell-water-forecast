@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>For reviewers · Borewell Forecast</title>
+  <meta name="description" content="Which numbers on this site are current, which simulated world each comes from, what it is scored against and how future pumping is handled.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230b3a52'/%3E%3Cpath d='M16 5C12 12 9 16 9 20.5a7 7 0 0 0 14 0C23 16 20 12 16 5Z' fill='%235fc4d8'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="../assets/site.css?v=bab9b867a8">
+  <style>
+    ul.plain { padding-left: 1.2em; margin: 0; } ul.plain li { margin-bottom: 6px; }
+    td.status-current { color: #1b6b45; font-weight: 700; } td.status-record { color: #6f7a80; font-weight: 650; }
+    .tight td, .tight th { font-size: .9rem; }
+  </style>
+</head>
+<body data-page="reviewers">
+<!--SHELL:HEADER-->
+<a class="skip" href="#main">Skip to content</a>
+<header class="site-header"><div class="wrap"><a class="brand" href="../"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M16 3C11 11 7 16 7 21.5a9 9 0 0 0 18 0C25 16 21 11 16 3Z" fill="#5fc4d8"/><path d="M11.5 22c2.8 1.8 6.2 1.8 9 0" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round"/></svg><span>Borewell Forecast</span><span class="poc">Proof of concept</span></a><button class="menu-toggle" aria-expanded="false" aria-controls="site-nav">Menu</button><nav class="site-nav" id="site-nav" aria-label="Main"><ul><li><a href="../">Overview</a></li><li><a href="../forecast/">Try a forecast</a></li><li><a href="../accuracy/">How accurate</a></li><li><a href="../drivers/">What moves the water</a></li><li><a href="../network/">Wells affect each other</a></li><li><a href="../five-year/">ML‑Forecaster</a></li><li><a href="../physics-sensors/">Stage 2</a></li><li><a href="../journey/">Our journey</a></li><li><a href="../next/">What's next</a></li></ul></nav></div></header>
+<!--/SHELL:HEADER-->
+<main id="main">
+  <div class="wrap">
+    <div class="page-hero">
+      <p class="kicker">For reviewers · FARII consortium · updated 1 October 2026</p>
+      <h1>Which numbers are current, and where each comes from.</h1>
+      <p class="lede">This site records several iterations, built on different simulated worlds. Every number below says which world it comes from, what it is scored against and how future pumping is handled. <strong>No real water-level measurement has been used anywhere.</strong></p>
+    </div>
+
+    <section style="padding-top:0">
+      <div class="section-title"><h2>Pages, worlds and status</h2></div>
+      <div class="card"><div class="table-wrap"><table class="tight">
+        <thead><tr><th>Pages</th><th>World</th><th>Scored against</th><th>Future pumping</th><th>Status</th></tr></thead>
+        <tbody>
+          <tr><td><a href="../physics-sensors/">Stage 2 · Physics + sensors</a> (7 pages)</td><td>Our Phase 2 simulated city: 579 wells, five hidden terrain types, two differently built datasets (A, B). Plus worlds C–E (below).</td><td>True weekly aquifer level, from the simulator's hidden record</td><td>Resampled from the well's own last 8 weeks. No future plan is used.</td><td class="status-current">Current</td></tr>
+          <tr><td><a href="../five-year/">ML‑Forecaster</a> (2 pages)</td><td>The team's five-year twin, iteration 1</td><td>Twin readings with ±0.2 m noise</td><td>As stated on the page</td><td class="status-record">Iteration 1. The typed and paved iterations are in the team's response.</td></tr>
+          <tr><td><a href="../">Overview</a>, <a href="../forecast/">Try a forecast</a>, <a href="../accuracy/">How accurate</a>, <a href="../drivers/">What moves the water</a></td><td>One-year digital twin (the final year of the five-year twin, iteration 1)</td><td>Twin's observed resting level, eight test dates</td><td>Mean of the well's last 8 weeks</td><td class="status-record">Iteration 1, kept as a record</td></tr>
+          <tr><td><a href="../network/">Wells affect each other</a></td><td>Two separately simulated cities</td><td>The simulator's true links</td><td>—</td><td class="status-record">Separate exploration; not part of either forecaster</td></tr>
+          <tr><td><a href="../prototype/">Stage 1</a> and the earlier Stage 2 tools</td><td>Vendor export (demonstration level values) and a 450-well test system</td><td>—</td><td>—</td><td class="status-record">Earlier stages, kept as a record</td></tr>
+        </tbody>
+      </table></div></div>
+    </section>
+
+    <section>
+      <div class="section-title"><h2>Current numbers: the state-space model (Stage 2)</h2><p>Test year August 2025 – July 2026, a forecast every Sunday for 579 wells. The method and the expected results were fixed and fingerprinted before any run, and the test year was scored once.</p></div>
+      <div class="card"><div class="table-wrap"><table class="tight">
+        <thead><tr><th>Mean absolute error</th><th class="num">Now</th><th class="num">4 weeks</th><th class="num">12 weeks</th></tr></thead>
+        <tbody>
+          <tr class="highlight"><td>Model, dataset A</td><td class="num">0.52 m</td><td class="num">0.61 m</td><td class="num">0.74 m</td></tr>
+          <tr><td>Reading held flat, dataset A</td><td class="num">0.91 m</td><td class="num">1.05 m</td><td class="num">1.48 m</td></tr>
+          <tr class="highlight"><td>Model, dataset B (settings frozen from A)</td><td class="num">0.50 m</td><td class="num">0.57 m</td><td class="num">0.70 m</td></tr>
+          <tr><td>Reading held flat, dataset B</td><td class="num">1.02 m</td><td class="num">1.16 m</td><td class="num">1.56 m</td></tr>
+        </tbody>
+      </table></div>
+      <p class="note" style="margin-top:8px">Faulty level sensors found: 88 % (A), 80 % (B). The 80 % bands under-cover in A and B (30–67 %). Slow ridge and low-yield wells read about 1 m too deep. <a href="../physics-sensors/results/">Full results</a>.</p></div>
+    </section>
+
+    <section>
+      <div class="section-title"><h2>Harder worlds: well loss and a Bengaluru-calibrated rain response</h2><p>Two review points were tested on new simulated cities. The model's settings were unchanged.</p></div>
+      <div class="card"><div class="table-wrap"><table>
+        <thead><tr><th>Test year, model v1.1</th><th class="num">A · as before</th><th class="num">C · + well loss</th><th class="num">D · Bengaluru rain</th><th class="num">E · both</th></tr></thead>
+        <tbody>
+          <tr><td>How much the true level moves, May→November (median well)</td><td class="num">1.0 m</td><td class="num">1.0 m</td><td class="num">2.4 m</td><td class="num">2.4 m</td></tr>
+          <tr class="highlight"><td>Model error, now / 12 weeks ahead</td><td class="num">0.52 / 0.74 m</td><td class="num">0.47 / 0.74 m</td><td class="num">0.61 / 1.52 m</td><td class="num">0.53 / 1.46 m</td></tr>
+          <tr><td>Reading held flat, 12 weeks ahead</td><td class="num">1.48 m</td><td class="num">1.52 m</td><td class="num">3.57 m</td><td class="num">3.58 m</td></tr>
+          <tr><td>Model's lead over it at 12 weeks (skill)</td><td class="num">+0.50</td><td class="num">+0.51</td><td class="num">+0.57</td><td class="num">+0.59</td></tr>
+          <tr><td>Wells never fitted, 12 weeks ahead</td><td class="num">1.01 m</td><td class="num">1.09 m</td><td class="num">2.48 m</td><td class="num">2.45 m</td></tr>
+          <tr><td>Faulty level sensors found</td><td class="num">88 %</td><td class="num">79 %</td><td class="num">100 %</td><td class="num">81 %</td></tr>
+          <tr><td>"80 % likely" range held, 12 weeks ahead</td><td class="num">63 %</td><td class="num">64 %</td><td class="num">79 %</td><td class="num">79 %</td></tr>
+          <tr><td>Error removed by rain data, 12 weeks ahead</td><td class="num">38 %</td><td class="num">32 %</td><td class="num">33 %</td><td class="num">30 %</td></tr>
+        </tbody></table></div>
+        <p class="note" style="margin-top:8px">Same model settings in every world. A uses Phase 2 dataset A. C adds a non-linear well loss (drawdown growing with the square of the pumping rate) that the model does not contain. D recalibrates the simulator's rain response to measured Bengaluru levels. E combines C and D.</p></div>
+      <div class="grid-3" style="margin-top:14px">
+        <div class="card"><h3>Non-linear well loss: the model holds up</h3><p>Accuracy is unchanged even though the model has no such term. The cost falls on the sensor check, which relies on pump power tracking depth: it finds 79 % of faulty sensors instead of 88 %.</p></div>
+        <div class="card"><h3>Bengaluru-like rain: much harder, still well ahead</h3><p>Calibrated to 154 Bengaluru borewells (Sekhar et al. 2018), levels swing about 2.4 times as much. Holding the reading flat is then 3.6 m off at 12 weeks; the model is 1.5 m off. Its ranges become honest (79 %), and rain data still removes about a third of the 12-week error.</p></div>
+        <div class="card"><h3>A weakness found and fixed</h3><p>In world E, two near-surface wells had a sensor offset that made their readings look above ground. The first version dropped those readings as impossible and drifted hundreds of metres. Three guards were added after scoring (v1.1): above-ground readings are kept as possible offsets, no well is fitted on too little data, and estimates stay within 0–300 m. A is unchanged; E's 12-week error fell from 2.41 m to 1.46 m.</p></div>
+      </div>
+      <details class="table-view" style="margin-top:12px"><summary>How the simulator was calibrated to Bengaluru</summary><div class="table-wrap"><table>
+        <thead><tr><th>Measure</th><th class="num">Measured (Sekhar et al. 2018)</th><th class="num">Simulator before</th><th class="num">After calibration</th></tr></thead>
+        <tbody>
+          <tr><td>Rise after the extreme rain, July → September 2017</td><td class="num">13.3 m</td><td class="num">2.5 m</td><td class="num">9.4 m</td></tr>
+          <tr><td>Drought year 2016</td><td class="num">5.4 m deeper</td><td class="num">2.8 m deeper</td><td class="num">3.6 m deeper</td></tr>
+          <tr><td>Share of rain that recharges (paper's method)</td><td class="num">13.5 %</td><td class="num">5.7 %</td><td class="num">17.8 %</td></tr>
+          <tr><td>Shallowest month in 2016</td><td class="num">August</td><td class="num">January</td><td class="num">August</td></tr>
+          <tr><td>Depth to water, mean</td><td class="num">25.7 m</td><td class="num">29.0 m</td><td class="num">20.6 m</td></tr>
+        </tbody></table></div>
+        <p class="note" style="margin-top:6px">Targets and tolerances were written down before any calibration run. Calibration ran on 2015–2017 rain scaled to the city's rain gauges. It needed faster recharge and a smaller specific yield (close to the paper's 0.005); the actual recharge is 11.5 % of rain. The rise and the drought fall are still weaker than measured, though within the pre-set bands.</p></details>
+    </section>
+
+    <section>
+      <div class="grid-2">
+        <div class="callout caution"><strong>Read every figure as an upper bound</strong><ul class="plain">
+          <li>Most simulated wells obey the model's own core equations: a store that drains toward a base level, deepened by pumping, raised by delayed recharge. World C adds a non-linear well loss the model does not contain.</li>
+          <li>How much rain helps a forecast depends on how a twin's recharge is built. In our Bengaluru-calibrated world, rain data removes about a third of the 12-week error. A twin with mostly constant leakage will show far less.</li>
+          <li>The simulated city puts valleys shallower than ridges. Measurements in Bengaluru (Sekhar et al. 2018) find the opposite.</li></ul></div>
+        <div class="callout plain"><strong>What real data would settle</strong><ul class="plain">
+          <li>Real water levels, ideally with a 48-hour pump-off rest once a month on slow wells.</li>
+          <li>Well locations, or the terrain values the data holder computes for each well.</li>
+          <li>The per-well monthly Bengaluru series behind Sekhar et al. (2018), for a well-by-well calibration.</li></ul></div>
+      </div>
+    </section>
+  </div>
+</main>
+<!--SHELL:FOOTER-->
+<footer class="site-footer"><div class="wrap"><div><strong>Borewell Forecast</strong> is a proof of concept for forecasting groundwater levels in Bengaluru borewells. Results are labelled by where the data came from: <span class="source real">vendor export</span> (15 days, July 2026, in the vendor's real format but with demonstration water-level values), <span class="source synthetic">synthetic test system</span> (450 simulated wells with a known answer) or <span class="source twin">digital twin</span> (a physics-based simulation of the 579 wells over a year). No real water-level measurement has been used yet, and nothing here is yet a validated field forecast. Built by the FARII consortium.</div><div><strong>Explore</strong><ul><li><a href="../">Overview</a></li><li><a href="../forecast/">Try a forecast</a></li><li><a href="../accuracy/">How accurate</a></li><li><a href="../drivers/">What moves the water</a></li><li><a href="../network/">Wells affect each other</a></li><li><a href="../five-year/">ML‑Forecaster</a></li><li><a href="../physics-sensors/">Stage 2</a></li><li><a href="../journey/">Our journey</a></li><li><a href="../next/">What's next</a></li></ul></div><div><strong>More</strong><ul><li><a href="../reviewers/">For reviewers: current numbers</a></li><li><a href="../glossary/">Glossary of terms</a></li><li><a href="../prototype/">Stage 1 · First prototype (vendor export)</a></li><li><a href="../comparison/">Stage 2 · Scenario explorer</a></li><li><a href="../validation/">Stage 2 · Hidden-truth test</a></li><li><a href="../models/">Stage 2 · Three models compared</a></li><li><a href="https://github.com/mailabhiramsrinivas-art/borewell-water-forecast">Source code</a></li></ul></div></div></footer>
+<!--/SHELL:FOOTER-->
+<script src="../assets/site.js?v=bab9b867a8"></script>
+</body>
+</html>
