@@ -16,10 +16,10 @@ NAV = [("overview", "", "Overview"), ("forecast", "forecast/", "Try a forecast")
        ("physics-sensors", "physics-sensors/", "Stage 2"),
        ("journey", "journey/", "Our journey"), ("next", "next/", "What's next")]
 # earlier-stage tools live under "Our journey"
-JOURNEY_TOOLS = [("prototype", "prototype/", "Stage 1 · First prototype (vendor export)"),
-                 ("comparison", "comparison/", "Stage 2 · Scenario explorer"),
-                 ("validation", "validation/", "Stage 2 · Hidden-truth test"),
-                 ("models", "models/", "Stage 2 · Three models compared")]
+JOURNEY_TOOLS = [("prototype", "prototype/", "Step 1 · First prototype (vendor export)"),
+                 ("comparison", "comparison/", "Step 2 · Scenario explorer"),
+                 ("validation", "validation/", "Step 2 · Hidden-truth test"),
+                 ("models", "models/", "Step 2 · Three models compared")]
 SECTION = {k: "journey" for k, _, _ in JOURNEY_TOOLS}
 SECTION["five-year-results"] = "five-year"
 # Stage 2 (physics + sensors) pages, with their own sub-navigation
@@ -39,10 +39,10 @@ BANNERS = {   # dated notices on pages that show an earlier iteration (review fe
     "network": "A <strong>separate synthetic exploration</strong> on two simulated cities. It is not part of the forecasters under review. Real use needs well locations and one pumping test.",
     "five-year": "<strong>Iteration 1</strong> of the five-year twin: one well population, recharge later found too generous. The later typed and typed + paved iterations are reported in the team's response.",
     "five-year-results": "<strong>Iteration 1</strong> of the five-year twin: one well population, recharge later found too generous. The later typed and typed + paved iterations are reported in the team's response.",
-    "prototype": "<strong>Earlier stage</strong>, September 2026, kept as a record.",
-    "comparison": "<strong>Earlier stage</strong>, September 2026, kept as a record.",
-    "validation": "<strong>Earlier stage</strong>, September 2026, kept as a record.",
-    "models": "<strong>Earlier stage</strong>, September 2026, kept as a record.",
+    "prototype": "<strong>Iteration 1, step 1</strong> (July 2026), kept as a record.",
+    "comparison": "<strong>Iteration 1, step 2</strong> (September 2026), kept as a record.",
+    "validation": "<strong>Iteration 1, step 2</strong> (September 2026), kept as a record.",
+    "models": "<strong>Iteration 1, step 2</strong> (September 2026), kept as a record.",
 }
 ANCHOR = {"five-year": ("#response", "Typed + paved results, as reported in the response →"),
           "five-year-results": ("#response", "Typed + paved results, as reported in the response →"),
@@ -75,7 +75,7 @@ def header(page, p):
     if SECTION.get(page) == "journey" or page == "journey":
         cur = ' aria-current="page"'
         tools = "".join(f'<a href="{p}{href}"{cur if key == page else ""}>{label}</a>' for key, href, label in JOURNEY_TOOLS)
-        html += f'\n<nav class="subnav" aria-label="Earlier-stage tools"><div class="wrap"><span>Earlier stages:</span>{tools}</div></nav>'
+        html += f'\n<nav class="subnav" aria-label="Earlier-step tools"><div class="wrap"><span>Earlier steps:</span>{tools}</div></nav>'
     if SECTION.get(page) == "physics-sensors" or page == "physics-sensors":
         cur = ' aria-current="page"'
         tools = "".join(f'<a href="{p}{href}"{cur if key == page else ""}>{label}</a>' for key, href, label in STAGE6)

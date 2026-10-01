@@ -95,7 +95,7 @@
         <a class="card" href="./forecast/">
           <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 17l5-5 4 3 8-8"/><path d="M15 7h5v5"/></svg></div>
           <h3>A forecast for every well</h3>
-          <p>For each of the ~500 wells we monitor: where its water is now, and where it is likely to be in 4, 8 and 12 weeks, with a range.</p>
+          <p>For each of the ~500 wells in the digital twin: where its water is now, and where it is likely to be in 4, 8 and 12 weeks, with a range.</p>
           <span class="go">Try it →</span>
         </a>
         <a class="card" href="./drivers/">
@@ -114,22 +114,23 @@
     </section>
 
     <section>
-      <div class="section-title"><h2>Where the data comes from</h2><p>We are careful to say where every result comes from. No real water-level measurement has been used yet, and each result on this site carries one of these labels.</p></div>
+      <div class="section-title"><h2>Where the data comes from</h2><p>We are careful to say where every result comes from. No real water-level measurement has been used yet. Results on the iteration 1 pages carry one of these labels; later work runs on five-year simulated cities, described on the <a href="./five-year/">ML forecaster</a> and <a href="./physics-sensors/">Stage 2</a> pages.</p></div>
       <div class="grid-3">
         <div class="card"><span class="source real"><svg viewBox="0 0 14 14" aria-hidden="true"><circle cx="7" cy="7" r="5" fill="currentColor"/></svg>Vendor export (demo levels)</span><h3 style="margin-top:12px">15 days, 579 wells, vendor format</h3><p>A 15-day export (July 2026) in the monitoring vendor's own format. Its water-level values are demonstration data, not real measurements, so it proves the data pipeline, not real-world accuracy. The full sensor history is released after approval.</p></div>
         <div class="card"><span class="source synthetic"><svg viewBox="0 0 14 14" aria-hidden="true"><rect x="2" y="2" width="10" height="10" rx="2" fill="none" stroke="currentColor" stroke-width="2"/></svg>Synthetic test system</span><h3 style="margin-top:12px">450 simulated wells, known answers</h3><p>A test system where the true water level is known, so we could check which methods recover it and what data they need.</p></div>
-        <div class="card"><span class="source twin"><svg viewBox="0 0 14 14" aria-hidden="true"><path d="M7 1l6 6-6 6-6-6z" fill="currentColor"/></svg>Digital twin</span><h3 style="margin-top:12px">A full year for all 579 wells</h3><p>A physics-based simulation of the same wells over a year, including the monsoon. It stands in for the long real history we are requesting.</p></div>
+        <div class="card"><span class="source twin"><svg viewBox="0 0 14 14" aria-hidden="true"><path d="M7 1l6 6-6 6-6-6z" fill="currentColor"/></svg>Digital twin</span><h3 style="margin-top:12px">A full year for all 579 wells</h3><p>A physics-based simulation of the same wells over a year, including the monsoon: the final year of the five-year twin. It stands in for the long real history we are requesting.</p></div>
       </div>
     </section>
 
     <section>
-      <div class="section-title"><h2>How we got here</h2><p>Each stage answered one question and set up the next.</p></div>
+      <div class="section-title"><h2>How we got here</h2><p>Each step answered one question and set up the next.</p></div>
       <div class="journey-mini">
-        <a class="card" href="./prototype/"><span class="num">STAGE 1</span><h3>Can pump records become forecasts?</h3><p>Yes: a 15-day vendor export was cleaned, linked and modelled.</p></a>
-        <a class="card" href="./models/"><span class="num">STAGE 2</span><h3>What matters most: data or model?</h3><p>Data. Resting-level readings cut error from 4.2 m to 0.5 m on a test system.</p></a>
-        <a class="card" href="./accuracy/"><span class="num">STAGE 3</span><h3>How far ahead can we see?</h3><p>Twelve weeks, at half the error of guessing, with honest ranges.</p></a>
-        <a class="card" href="./network/"><span class="num">STAGE 4</span><h3>Do wells affect each other?</h3><p>In simulation, yes (a separate exploration). We know what data would measure it.</p></a>
+        <a class="card" href="./prototype/"><span class="num">STEP 1</span><h3>Can pump records become forecasts?</h3><p>Yes: a 15-day vendor export was cleaned, linked and modelled.</p></a>
+        <a class="card" href="./models/"><span class="num">STEP 2</span><h3>What matters most: data or model?</h3><p>Data. Resting-level readings cut error from 4.2 m to 0.5 m on a test system.</p></a>
+        <a class="card" href="./accuracy/"><span class="num">STEP 3</span><h3>How far ahead can we see?</h3><p>Twelve weeks, at half the error of guessing, with honest ranges.</p></a>
+        <a class="card" href="./network/"><span class="num">STEP 4</span><h3>Do wells affect each other?</h3><p>In simulation, yes (a separate exploration). We know what data would measure it.</p></a>
       </div>
+      <p class="note" style="margin-top:12px">These four steps were iteration 1 (July–September 2026). Since then: the <a href="./five-year/">ML forecaster</a> on five-year twins, and <a href="./physics-sensors/">Stage 2 · Physics + sensors</a>.</p>
       <p style="margin-top:18px"><a class="btn secondary" href="./journey/">Read the full journey</a> <a class="btn secondary" href="./next/">What we need next</a></p>
     </section>
 
@@ -139,7 +140,7 @@
   </div>
 </main>
 <!--SHELL:FOOTER-->
-<footer class="site-footer"><div class="wrap"><div><strong>Borewell Forecast</strong> is a proof of concept for forecasting groundwater levels in Bengaluru borewells. Results are labelled by where the data came from: <span class="source real">vendor export</span> (15 days, July 2026, in the vendor's real format but with demonstration water-level values), <span class="source synthetic">synthetic test system</span> (450 simulated wells with a known answer) or <span class="source twin">digital twin</span> (physics-based simulations of the 579 wells: one year in iteration 1, five years in later iterations and in Stage 2). No real water-level measurement has been used yet, and nothing here is yet a validated field forecast. Built by the FARII consortium.</div><div><strong>Explore</strong><ul><li><a href="./">Overview</a></li><li><a href="./forecast/">Try a forecast</a></li><li><a href="./accuracy/">How accurate</a></li><li><a href="./drivers/">What moves the water</a></li><li><a href="./network/">Wells affect each other</a></li><li><a href="./five-year/">ML‑Forecaster</a></li><li><a href="./physics-sensors/">Stage 2</a></li><li><a href="./journey/">Our journey</a></li><li><a href="./next/">What's next</a></li></ul></div><div><strong>More</strong><ul><li><a href="./reviewers/">For reviewers: current numbers</a></li><li><a href="./glossary/">Glossary of terms</a></li><li><a href="./prototype/">Stage 1 · First prototype (vendor export)</a></li><li><a href="./comparison/">Stage 2 · Scenario explorer</a></li><li><a href="./validation/">Stage 2 · Hidden-truth test</a></li><li><a href="./models/">Stage 2 · Three models compared</a></li><li><a href="https://github.com/mailabhiramsrinivas-art/borewell-water-forecast">Source code</a></li></ul></div></div></footer>
+<footer class="site-footer"><div class="wrap"><div><strong>Borewell Forecast</strong> is a proof of concept for forecasting groundwater levels in Bengaluru borewells. Results are labelled by where the data came from: <span class="source real">vendor export</span> (15 days, July 2026, in the vendor's real format but with demonstration water-level values), <span class="source synthetic">synthetic test system</span> (450 simulated wells with a known answer) or <span class="source twin">digital twin</span> (physics-based simulations of the 579 wells: one year in iteration 1, five years in later iterations and in Stage 2). No real water-level measurement has been used yet, and nothing here is yet a validated field forecast. Built by the FARII consortium.</div><div><strong>Explore</strong><ul><li><a href="./">Overview</a></li><li><a href="./forecast/">Try a forecast</a></li><li><a href="./accuracy/">How accurate</a></li><li><a href="./drivers/">What moves the water</a></li><li><a href="./network/">Wells affect each other</a></li><li><a href="./five-year/">ML‑Forecaster</a></li><li><a href="./physics-sensors/">Stage 2</a></li><li><a href="./journey/">Our journey</a></li><li><a href="./next/">What's next</a></li></ul></div><div><strong>More</strong><ul><li><a href="./reviewers/">For reviewers: current numbers</a></li><li><a href="./glossary/">Glossary of terms</a></li><li><a href="./prototype/">Step 1 · First prototype (vendor export)</a></li><li><a href="./comparison/">Step 2 · Scenario explorer</a></li><li><a href="./validation/">Step 2 · Hidden-truth test</a></li><li><a href="./models/">Step 2 · Three models compared</a></li><li><a href="https://github.com/mailabhiramsrinivas-art/borewell-water-forecast">Source code</a></li></ul></div></div></footer>
 <!--/SHELL:FOOTER-->
 <script src="./assets/site.js?v=bab9b867a8"></script>
 </body>
