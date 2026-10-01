@@ -31,32 +31,42 @@ STAGE6 = [("physics-sensors", "physics-sensors/", "The model"), ("physics-sensor
           ("physics-sensors-explorer", "physics-sensors/explorer/", "Explore a well")]
 SECTION.update({k: "physics-sensors" for k, _, _ in STAGE6[1:]})
 REVIEW = "reviewers/"
-BANNERS = {   # dated notices on pages that show an earlier iteration (review feedback, 1 October 2026)
-    "overview": "The headline numbers on this page are from <strong>iteration 1</strong> (a one-year digital twin, September 2026). They are kept as a record and have been superseded.",
-    "forecast": "<strong>Iteration 1</strong>: one-year digital twin, September 2026. Kept as a record.",
-    "accuracy": "<strong>Iteration 1</strong>: one-year digital twin, September 2026, eight test dates. Kept as a record.",
-    "drivers": "<strong>Iteration 1</strong>: one-year digital twin, September 2026. The value of rain depends on how a twin's recharge is built; later twins differ.",
-    "network": "A <strong>separate synthetic exploration</strong> on two simulated cities. It is not part of the forecasters under review. Real use needs well locations and one pumping test.",
-    "five-year": "<strong>Iteration 1</strong> of the five-year twin: one well population, recharge later found too generous. The later typed and typed + paved iterations are reported in the team's response.",
-    "five-year-results": "<strong>Iteration 1</strong> of the five-year twin: one well population, recharge later found too generous. The later typed and typed + paved iterations are reported in the team's response.",
-    "prototype": "<strong>Iteration 1, step 1</strong> (July 2026), kept as a record.",
-    "comparison": "<strong>Iteration 1, step 2</strong> (September 2026), kept as a record.",
-    "validation": "<strong>Iteration 1, step 2</strong> (September 2026), kept as a record.",
-    "models": "<strong>Iteration 1, step 2</strong> (September 2026), kept as a record.",
+# One strip under the header of every model page: which model this is, and the data it was tested on.
+# kind "current" is a calm teal strip, "earlier" an amber one for superseded or side pages.
+HOME_MODELS = ("#models", "All models and data →")
+S2 = ("current", "<strong>Current model · Stage 2.</strong> Data used: our own five-year simulated city of 579 wells, in two differently built "
+      "versions (A and B). Harder versions (C to E) are on the results page.", HOME_MODELS)
+ML = ("current", "<strong>Current model · ML forecaster.</strong> Data used: a five-year simulated copy of the 579 wells, calibrated to published "
+      "Bengaluru observations.", HOME_MODELS)
+STEP2 = ("earlier", "<strong>Earlier step 2.</strong> Data used: a synthetic test system of 450 simulated wells over six months. Kept as a record.", HOME_MODELS)
+ITER1 = "<strong>Earlier version (iteration 1).</strong> Data used: a one-year simulated copy of the wells, September 2026."
+STRIPS = {
+    "five-year": ML, "five-year-results": ML,
+    "physics-sensors": S2, "physics-sensors-results": S2, "physics-sensors-sensors": S2, "physics-sensors-terrain": S2,
+    "physics-sensors-map": S2, "physics-sensors-explorer": S2,
+    "physics-sensors-bengaluru": ("current", "<strong>Stage 2.</strong> Data used: real public terrain data for Bengaluru (satellite elevation and "
+                                  "OpenStreetMap). No wells and no water levels are on this map.", HOME_MODELS),
+    "forecast": ("earlier", ITER1 + " Kept as a record.", HOME_MODELS),
+    "accuracy": ("earlier", ITER1 + " Tested on eight dates. Kept as a record.", HOME_MODELS),
+    "drivers": ("earlier", ITER1 + " How much rain helps depends on how a simulated city is built, and later cities differ.",
+                (REVIEW + "#rain", "Why the value of rain differs →")),
+    "network": ("earlier", "<strong>Separate exploration.</strong> Data used: two simulated cities of 450 wells with a crack network. "
+                "It is not part of either current model. Real use needs well locations and one pumping test.",
+                (REVIEW + "#neighbours", "Which model uses neighbours, and how →")),
+    "prototype": ("earlier", "<strong>Earlier step 1.</strong> Data used: a 15-day vendor export for 579 wells, with demonstration water levels. "
+                  "Kept as a record.", HOME_MODELS),
+    "comparison": STEP2, "validation": STEP2, "models": STEP2,
 }
-ANCHOR = {"five-year": ("#response", "Typed + paved results, as reported in the response →"),
-          "five-year-results": ("#response", "Typed + paved results, as reported in the response →"),
-          "drivers": ("#rain", "Why the value of rain differs between iterations →"),
-          "network": ("#neighbours", "Which forecaster uses neighbours, and how →")}
+STRIP_STYLE = {"current": "background:#eaf4f3;border-bottom:1px solid #c9e2de", "earlier": "background:#fff8ea;border-bottom:1px solid #f0dcae"}
 
 
 def banner(page, p):
-    if page not in BANNERS:
+    if page not in STRIPS:
         return ""
-    anchor, link = ANCHOR.get(page, ("", "Which numbers are current, and from which simulated world →"))
-    return (f'\n<div class="iteration-banner" role="note" style="background:#fff8ea;border-bottom:1px solid #f0dcae;font-size:.92rem">'
-            f'<div class="wrap" style="padding-top:9px;padding-bottom:9px">{BANNERS[page]} '
-            f'<a href="{p}{REVIEW}{anchor}">{link}</a></div></div>')
+    kind, text, (href, link) = STRIPS[page]
+    return (f'\n<div class="iteration-banner" role="note" style="{STRIP_STYLE[kind]};font-size:.92rem">'
+            f'<div class="wrap" style="padding-top:9px;padding-bottom:9px">{text} '
+            f'<a href="{p}{href}">{link}</a></div></div>')
 
 
 DROP = ('<svg viewBox="0 0 32 32" aria-hidden="true"><path d="M16 3C11 11 7 16 7 21.5a9 9 0 0 0 18 0C25 16 21 11 16 3Z" fill="#5fc4d8"/>'

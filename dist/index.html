@@ -22,8 +22,32 @@
     .diagram svg { display: block; width: 100%; height: auto; }
     .diagram p { color: #cfe2ea; font-size: .88rem; margin: 8px 4px 2px; }
     @media (max-width: 880px) { .home-hero .wrap { grid-template-columns: 1fr; } }
-    .results-strip { margin-top: -26px; }
     .stat .source { margin-top: 10px; }
+    .models-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+    @media (max-width: 820px) { .models-grid { grid-template-columns: 1fr; } }
+    .model-card { background: var(--card); border: 1px solid var(--line); border-top: 4px solid var(--brand-2); border-radius: var(--radius); padding: 22px 22px 20px; box-shadow: var(--shadow); display: flex; flex-direction: column; }
+    .model-card h3 { margin: 10px 0 6px; font-size: 1.3rem; }
+    .model-card p { margin: 0 0 12px; }
+    .pill { display: inline-block; padding: 3px 10px; border-radius: 99px; font-size: .74rem; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; }
+    .pill.current { background: #dff1ea; color: #14573c; }
+    .pill.earlier { background: #eef2f4; color: #4a5a63; }
+    .pill.side { background: #fdecc8; color: #7a4b00; }
+    .data-used { background: #f1f6f8; border: 1px solid #dbe6ea; border-radius: 12px; padding: 12px 14px; margin: 2px 0 12px; }
+    .data-used b { display: block; font-size: .74rem; letter-spacing: .07em; text-transform: uppercase; color: var(--brand-2); margin-bottom: 3px; }
+    .data-used span { font-size: .95rem; color: var(--ink); }
+    .model-card .result { font-size: .95rem; color: var(--ink-2); }
+    .model-card .go { margin-top: auto; font-weight: 650; color: var(--brand-2); text-decoration: none; }
+    .rows { border: 1px solid var(--line); border-radius: var(--radius); background: var(--card); box-shadow: var(--shadow); overflow: hidden; }
+    .row { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 1.25fr) minmax(0, 1.2fr); gap: 6px 22px; padding: 15px 20px; border-top: 1px solid var(--line); align-items: start; }
+    .row:first-child { border-top: 0; }
+    .row.head { background: #f4f6f5; font-size: .76rem; font-weight: 700; letter-spacing: .07em; text-transform: uppercase; color: var(--muted); padding: 10px 20px; }
+    .row .name { font-weight: 680; }
+    .row .name a { color: inherit; }
+    .row .small { font-size: .93rem; color: var(--ink-2); }
+    .row .lab { display: none; font-size: .72rem; font-weight: 700; letter-spacing: .07em; text-transform: uppercase; color: var(--muted); }
+    @media (max-width: 820px) { .row { grid-template-columns: 1fr; } .row.head { display: none; } .row .lab { display: block; margin-top: 4px; } }
+    .data-rows .row { grid-template-columns: minmax(0, .9fr) minmax(0, 1.7fr) minmax(0, .9fr); }
+    @media (max-width: 820px) { .data-rows .row { grid-template-columns: 1fr; } }
     .iter-tag { display: inline-block; margin-top: 8px; padding: 2px 8px; border-radius: 999px; font-size: .74rem; font-weight: 700; letter-spacing: .02em; background: #eef2f4; color: #4a5a63; }
     .stat.superseded .value { color: #8a969c; text-decoration: line-through; text-decoration-thickness: 2px; }
     .stat.superseded .iter-tag { background: #fdecc8; color: #7a4b00; }
@@ -37,7 +61,6 @@
 <!--SHELL:HEADER-->
 <a class="skip" href="#main">Skip to content</a>
 <header class="site-header"><div class="wrap"><a class="brand" href="./"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M16 3C11 11 7 16 7 21.5a9 9 0 0 0 18 0C25 16 21 11 16 3Z" fill="#5fc4d8"/><path d="M11.5 22c2.8 1.8 6.2 1.8 9 0" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round"/></svg><span>Borewell Forecast</span><span class="poc">Proof of concept</span></a><button class="menu-toggle" aria-expanded="false" aria-controls="site-nav">Menu</button><nav class="site-nav" id="site-nav" aria-label="Main"><ul><li><a href="./" aria-current="page">Overview</a></li><li><a href="./forecast/">Try a forecast</a></li><li><a href="./accuracy/">How accurate</a></li><li><a href="./drivers/">What moves the water</a></li><li><a href="./network/">Wells affect each other</a></li><li><a href="./five-year/">ML‑Forecaster</a></li><li><a href="./physics-sensors/">Stage 2</a></li><li><a href="./journey/">Our journey</a></li><li><a href="./next/">What's next</a></li></ul></nav></div></header>
-<div class="iteration-banner" role="note" style="background:#fff8ea;border-bottom:1px solid #f0dcae;font-size:.92rem"><div class="wrap" style="padding-top:9px;padding-bottom:9px">The headline numbers on this page are from <strong>iteration 1</strong> (a one-year digital twin, September 2026). They are kept as a record and have been superseded. <a href="./reviewers/">Which numbers are current, and from which simulated world →</a></div></div>
 <!--/SHELL:HEADER-->
 <main id="main">
   <section class="home-hero">
@@ -47,8 +70,8 @@
         <h1>Know how deep a well's water will be, weeks before it gets there.</h1>
         <p class="lede">Many homes and businesses in Bengaluru depend on borewells. Their water level rises with the monsoon, falls with pumping, and a well can run low with little warning. We built a proof of concept that turns routine pump records into forecasts for each well, with an honest range around every forecast.</p>
         <div class="cta">
-          <a class="btn" href="./forecast/">Try a forecast for a well →</a>
-          <a class="btn secondary" href="./journey/">See how we built it</a>
+          <a class="btn" href="#models">See the models and the data ↓</a>
+          <a class="btn secondary" href="./forecast/">Try a forecast for a well</a>
         </div>
       </div>
       <figure class="diagram" aria-labelledby="diagramCaption">
@@ -78,48 +101,81 @@
     </div>
   </section>
 
-  <div class="wrap results-strip">
+  <div class="wrap">
+    <section id="models">
+      <div class="section-title"><h2>The models and the data, at a glance</h2><p>Two forecasting models are current. Each one is tested on its own simulated copy of the wells, because no real water-level measurement has been released yet.</p></div>
+      <div class="models-grid">
+        <div class="model-card">
+          <div><span class="pill current">Current model</span></div>
+          <h3>ML forecaster</h3>
+          <p>Reads how each well behaves from its own pump records, then a learning layer corrects the forecast. It looks from one day to twelve weeks ahead.</p>
+          <div class="data-used"><b>Data used</b><span>A five-year simulated copy of the 579 wells, calibrated to published Bengaluru observations: six kinds of well, paved city wards and real Bengaluru rainfall.</span></div>
+          <p class="result"><strong>Result.</strong> Twelve weeks ahead the typical forecast is 0.70&nbsp;m off, against 1.30&nbsp;m for assuming nothing changes. One day ahead it is 0.18&nbsp;m off.</p>
+          <a class="go" href="./five-year/">See the ML forecaster →</a>
+        </div>
+        <div class="model-card">
+          <div><span class="pill current">Current model</span></div>
+          <h3>Stage 2 · Physics + sensors</h3>
+          <p>Separates the true water level from what the sensor reports, finds faulty sensors, and forecasts up to twelve weeks ahead.</p>
+          <div class="data-used"><b>Data used</b><span>Our own five-year simulated city of 579 wells, built twice in different ways, plus harder versions with well loss and a rain response calibrated to measured Bengaluru levels.</span></div>
+          <p class="result"><strong>Result.</strong> Twelve weeks ahead the average forecast is 0.74&nbsp;m off, against 1.48&nbsp;m for trusting the latest reading. It finds 88&nbsp;% of faulty sensors.</p>
+          <a class="go" href="./physics-sensors/">See Stage 2 →</a>
+        </div>
+      </div>
+      <p class="note" style="margin-top:12px">The two models are tested on different simulated cities and measured in slightly different ways, so their numbers should not be compared with each other.</p>
+
+      <h3 style="margin:30px 0 12px">Earlier steps, kept as a record</h3>
+      <div class="rows">
+        <div class="row head"><div>Model</div><div>What it did</div><div>Data used</div></div>
+        <div class="row"><div><span class="pill earlier">Earlier</span><div class="name" style="margin-top:6px"><a href="./accuracy/">First weekly forecast</a></div></div>
+          <div class="small"><span class="lab">What it did</span>The first 12-week forecast for each well. Pages: <a href="./forecast/">Try a forecast</a>, <a href="./accuracy/">How accurate</a>, <a href="./drivers/">What moves the water</a>.</div>
+          <div class="small"><span class="lab">Data used</span>A one-year simulated copy of the wells.</div></div>
+        <div class="row"><div><span class="pill earlier">Earlier</span><div class="name" style="margin-top:6px"><a href="./models/">Three-model comparison</a></div></div>
+          <div class="small"><span class="lab">What it did</span>Tested whether better readings or a cleverer model matters more. Better readings won.</div>
+          <div class="small"><span class="lab">Data used</span>A synthetic test system of 450 simulated wells over six months.</div></div>
+        <div class="row"><div><span class="pill earlier">Earlier</span><div class="name" style="margin-top:6px"><a href="./prototype/">First prototype</a></div></div>
+          <div class="small"><span class="lab">What it did</span>Proved that routine pump records can be cleaned, linked and turned into forecasts.</div>
+          <div class="small"><span class="lab">Data used</span>A 15-day vendor export for 579 wells, with demonstration water levels.</div></div>
+        <div class="row"><div><span class="pill side">Separate exploration</span><div class="name" style="margin-top:6px"><a href="./network/">Wells affect each other</a></div></div>
+          <div class="small"><span class="lab">What it did</span>Explored whether a model can learn which wells' pumping lowers their neighbours' water. Not part of either current model.</div>
+          <div class="small"><span class="lab">Data used</span>Two simulated cities of 450 wells with a crack network.</div></div>
+      </div>
+    </section>
+
+    <section id="data">
+      <div class="section-title"><h2>The data sets</h2><p>Six sets of data appear on this site. Most are simulated, and none contains real water levels from the wells.</p></div>
+      <div class="rows data-rows">
+        <div class="row head"><div>Data set</div><div>What it is</div><div>Used by</div></div>
+        <div class="row"><div><span class="source twin"><svg viewBox="0 0 14 14" aria-hidden="true"><path d="M7 1l6 6-6 6-6-6z" fill="currentColor"/></svg>Bengaluru-calibrated twin</span></div>
+          <div class="small"><span class="lab">What it is</span>579 simulated wells, hour by hour, August 2021 to July 2026. Recharge is checked against published Bengaluru observations.</div>
+          <div class="small"><span class="lab">Used by</span><a href="./five-year/">ML forecaster</a></div></div>
+        <div class="row"><div><span class="source twin"><svg viewBox="0 0 14 14" aria-hidden="true"><path d="M7 1l6 6-6 6-6-6z" fill="currentColor"/></svg>Stage 2 simulated city</span></div>
+          <div class="small"><span class="lab">What it is</span>579 simulated wells over five years, with well types set by terrain, paved ground, faulty sensors and imperfect maps. Built in two different ways, plus three harder versions.</div>
+          <div class="small"><span class="lab">Used by</span><a href="./physics-sensors/">Stage 2 · Physics + sensors</a></div></div>
+        <div class="row"><div><span class="source twin"><svg viewBox="0 0 14 14" aria-hidden="true"><path d="M7 1l6 6-6 6-6-6z" fill="currentColor"/></svg>One-year twin</span></div>
+          <div class="small"><span class="lab">What it is</span>One year of simulated records for the wells, in the vendor's file format.</div>
+          <div class="small"><span class="lab">Used by</span>First weekly forecast</div></div>
+        <div class="row"><div><span class="source synthetic"><svg viewBox="0 0 14 14" aria-hidden="true"><rect x="2" y="2" width="10" height="10" rx="2" fill="none" stroke="currentColor" stroke-width="2"/></svg>Synthetic test systems</span></div>
+          <div class="small"><span class="lab">What it is</span>Small simulated systems of 450 wells where the true answer is known: one over six months, and two cities with a crack network.</div>
+          <div class="small"><span class="lab">Used by</span>Three-model comparison; Wells affect each other</div></div>
+        <div class="row"><div><span class="source real"><svg viewBox="0 0 14 14" aria-hidden="true"><circle cx="7" cy="7" r="5" fill="currentColor"/></svg>Vendor export (demo levels)</span></div>
+          <div class="small"><span class="lab">What it is</span>15 days in July 2026 for 579 wells, in the monitoring vendor's own format. Its water-level values are demonstration data, not real measurements.</div>
+          <div class="small"><span class="lab">Used by</span>First prototype</div></div>
+        <div class="row"><div><span class="source real"><svg viewBox="0 0 14 14" aria-hidden="true"><circle cx="7" cy="7" r="5" fill="currentColor"/></svg>Real public data</span></div>
+          <div class="small"><span class="lab">What it is</span>Bengaluru's daily rainfall, satellite elevation, OpenStreetMap, and a published study of measured Bengaluru groundwater levels.</div>
+          <div class="small"><span class="lab">Used by</span>Rainfall for the current models; calibration of the simulated cities; the <a href="./physics-sensors/bengaluru/">Bengaluru map</a></div></div>
+      </div>
+      <div class="callout caution" style="margin-top:16px"><strong>No real water-level measurement has been used yet</strong><p>Every result on this site comes from simulated wells or demonstration data. The full sensor history is released after approval, and the next step is to repeat these tests on it. <a href="./next/">What that needs →</a></p></div>
+    </section>
+
+    <section>
+      <div class="section-title"><h2>Earlier headline numbers</h2><p>From the first weekly forecast (iteration 1, September 2026), on the one-year twin. Kept as a record; the current models are above.</p></div>
     <div class="grid-4">
       <div class="stat"><span class="label">Typical error, one week ahead</span><span class="value">0.3 m</span><span class="sub">71% of forecasts land within 0.5 m</span><span class="source twin"><svg viewBox="0 0 14 14" aria-hidden="true"><path d="M7 1l6 6-6 6-6-6z" fill="currentColor"/></svg>Digital twin</span><span class="iter-tag">Iteration 1 · Sept 2026</span></div>
       <div class="stat"><span class="label">Average error, twelve weeks ahead</span><span class="value">1.3 m</span><span class="sub">Half the 2.8 m error of assuming nothing changes</span><span class="source twin"><svg viewBox="0 0 14 14" aria-hidden="true"><path d="M7 1l6 6-6 6-6-6z" fill="currentColor"/></svg>Digital twin</span><span class="iter-tag">Iteration 1 · Sept 2026</span></div>
       <div class="stat"><span class="label">Our "80% likely" ranges held</span><span class="value">80%</span><span class="sub">of the time, tested before the answer was known</span><span class="source twin"><svg viewBox="0 0 14 14" aria-hidden="true"><path d="M7 1l6 6-6 6-6-6z" fill="currentColor"/></svg>Digital twin</span><span class="iter-tag">Iteration 1 · Sept 2026</span></div>
       <div class="stat superseded"><span class="label">Rainfall cuts 12-week error by</span><span class="value">32%</span><span class="sub">Superseded. How much rain helps depends on how a simulated city's recharge is built, and later cities give different answers. <a href="./reviewers/#rain">Why →</a></span><span class="source twin"><svg viewBox="0 0 14 14" aria-hidden="true"><path d="M7 1l6 6-6 6-6-6z" fill="currentColor"/></svg>Digital twin</span><span class="iter-tag">Iteration 1 · superseded</span></div>
     </div>
-    <p class="note" style="margin-top:10px">These four figures are from iteration 1 (a one-year digital twin, September 2026) and are kept as a record. <a href="./reviewers/">Current numbers, and the simulated world each comes from →</a></p>
-  </div>
-
-  <div class="wrap">
-    <section>
-      <div class="section-title"><h2>What we built</h2><p>Three capabilities, each tested against answers the model was not allowed to see in advance.</p></div>
-      <div class="grid-3">
-        <a class="card" href="./forecast/">
-          <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 17l5-5 4 3 8-8"/><path d="M15 7h5v5"/></svg></div>
-          <h3>A forecast for every well</h3>
-          <p>For each of the ~500 wells in the digital twin: where its water is now, and where it is likely to be in 4, 8 and 12 weeks, with a range.</p>
-          <span class="go">Try it →</span>
-        </a>
-        <a class="card" href="./drivers/">
-          <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M7 16a4 4 0 1 1 1-7.9A5 5 0 0 1 18 9a3.5 3.5 0 0 1 0 7"/><path d="M9 19l-1 2M13 19l-1 2M17 19l-1 2"/></svg></div>
-          <h3>What moves the water</h3>
-          <p>How much the monsoon lifts a well, how much pumping pulls it down, and how long rain takes to reach the groundwater.</p>
-          <span class="go">Explore →</span>
-        </a>
-        <a class="card" href="./network/">
-          <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="5" cy="6" r="2.5"/><circle cx="19" cy="7" r="2.5"/><circle cx="12" cy="18" r="2.5"/><path d="M7.3 7.1l9.3.6M6.3 8.2l4.4 7.6M17.7 9.2l-4.4 6.6"/></svg></div>
-          <h3>How wells affect each other</h3>
-          <p>A separate synthetic exploration, not part of the forecasters under review: which wells' pumping hurts their neighbours most in a simulated city, and what it would take to measure that for real.</p>
-          <span class="go">See the simulation →</span>
-        </a>
-      </div>
-    </section>
-
-    <section>
-      <div class="section-title"><h2>Where the data comes from</h2><p>We are careful to say where every result comes from. No real water-level measurement has been used yet. Results on the iteration 1 pages carry one of these labels; later work runs on five-year simulated cities, described on the <a href="./five-year/">ML forecaster</a> and <a href="./physics-sensors/">Stage 2</a> pages.</p></div>
-      <div class="grid-3">
-        <div class="card"><span class="source real"><svg viewBox="0 0 14 14" aria-hidden="true"><circle cx="7" cy="7" r="5" fill="currentColor"/></svg>Vendor export (demo levels)</span><h3 style="margin-top:12px">15 days, 579 wells, vendor format</h3><p>A 15-day export (July 2026) in the monitoring vendor's own format. Its water-level values are demonstration data, not real measurements, so it proves the data pipeline, not real-world accuracy. The full sensor history is released after approval.</p></div>
-        <div class="card"><span class="source synthetic"><svg viewBox="0 0 14 14" aria-hidden="true"><rect x="2" y="2" width="10" height="10" rx="2" fill="none" stroke="currentColor" stroke-width="2"/></svg>Synthetic test system</span><h3 style="margin-top:12px">450 simulated wells, known answers</h3><p>A test system where the true water level is known, so we could check which methods recover it and what data they need.</p></div>
-        <div class="card"><span class="source twin"><svg viewBox="0 0 14 14" aria-hidden="true"><path d="M7 1l6 6-6 6-6-6z" fill="currentColor"/></svg>Digital twin</span><h3 style="margin-top:12px">A full year for all 579 wells</h3><p>A physics-based simulation of the same wells over a year, including the monsoon: the final year of the five-year twin. It stands in for the long real history we are requesting.</p></div>
-      </div>
     </section>
 
     <section>
@@ -130,12 +186,12 @@
         <a class="card" href="./accuracy/"><span class="num">STEP 3</span><h3>How far ahead can we see?</h3><p>Twelve weeks, at half the error of guessing, with honest ranges.</p></a>
         <a class="card" href="./network/"><span class="num">STEP 4</span><h3>Do wells affect each other?</h3><p>In simulation, yes (a separate exploration). We know what data would measure it.</p></a>
       </div>
-      <p class="note" style="margin-top:12px">These four steps were iteration 1 (July–September 2026). Since then: the <a href="./five-year/">ML forecaster</a> on five-year twins, and <a href="./physics-sensors/">Stage 2 · Physics + sensors</a>.</p>
+      <p class="note" style="margin-top:12px">These four steps were iteration 1 (July–September 2026). The two current models, the <a href="./five-year/">ML forecaster</a> and <a href="./physics-sensors/">Stage 2 · Physics + sensors</a>, came after.</p>
       <p style="margin-top:18px"><a class="btn secondary" href="./journey/">Read the full journey</a> <a class="btn secondary" href="./next/">What we need next</a></p>
     </section>
 
     <section>
-      <div class="callout caution"><strong>Honest status</strong><p>This is a proof of concept. The long-range results come from a digital twin and a synthetic test system, and the 15-day vendor export carries demonstration water levels, so no real level measurement has been used yet. The next step is to repeat these tests on real long-term data. <a href="./next/">Here is what that needs</a>.</p></div>
+      <div class="callout caution"><strong>Honest status</strong><p>This is a proof of concept. Every result comes from simulated wells, and the 15-day vendor export carries demonstration water levels, so no real level measurement has been used yet. The next step is to repeat these tests on real long-term data. <a href="./next/">Here is what that needs</a>.</p></div>
     </section>
   </div>
 </main>

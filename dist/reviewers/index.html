@@ -33,9 +33,8 @@
         <thead><tr><th>Pages</th><th>World</th><th>Scored against</th><th>Future pumping</th><th>Status</th></tr></thead>
         <tbody>
           <tr><td><a href="../physics-sensors/">Stage 2 · Physics + sensors</a> (7 pages)</td><td>Our Phase 2 simulated city: 579 wells, five hidden terrain types, two differently built datasets (A, B). Plus worlds C–E (below).</td><td>True weekly aquifer level, from the simulator's hidden record</td><td>Resampled from the well's own last 8 weeks. No future plan is used.</td><td class="status-current">Current</td></tr>
-          <tr><td><a href="../five-year/">ML‑Forecaster</a> (2 pages)</td><td>The team's five-year twin, iteration 1</td><td>Twin readings with ±0.2 m noise</td><td>Not stated on the page</td><td class="status-record">Iteration 1. Later iterations are in the team's response (<a href="#response">below</a>).</td></tr>
-          <tr><td>Not on this site: the team's response</td><td>The team's typed + paved five-year twin: six kinds of well, 739 links, 225 features, 32.4 million telemetry rows, paved recharge</td><td>As stated in the response</td><td>As stated in the response</td><td class="status-current">Current (<a href="#response">summary</a>)</td></tr>
-          <tr><td><a href="../">Overview</a>, <a href="../forecast/">Try a forecast</a>, <a href="../accuracy/">How accurate</a>, <a href="../drivers/">What moves the water</a></td><td>One-year digital twin (the final year of the five-year twin, iteration 1)</td><td>Twin's observed resting level, eight test dates</td><td>Mean of the well's last 8 weeks</td><td class="status-record">Iteration 1, kept as a record</td></tr>
+          <tr><td><a href="../five-year/">ML‑Forecaster</a> (2 pages)</td><td>The team's Bengaluru-calibrated five-year twin: 579 wells, six kinds of well, 198 paved wards, 739 links, IMD rainfall</td><td>The twin's true, noise-free water level. Stress tests: the observed resting level.</td><td>Days 1 and 7 use the operator's pumping plan (on the twin, the schedule then run). Weeks 4 and 12 use no plan.</td><td class="status-current">Current</td></tr>
+          <tr><td><a href="../forecast/">Try a forecast</a>, <a href="../accuracy/">How accurate</a>, <a href="../drivers/">What moves the water</a>, and the earlier headline numbers on the <a href="../">overview</a></td><td>One-year digital twin (the final year of the five-year twin, iteration 1)</td><td>Twin's observed resting level, eight test dates</td><td>Mean of the well's last 8 weeks</td><td class="status-record">Iteration 1, kept as a record</td></tr>
           <tr><td><a href="../network/">Wells affect each other</a></td><td>Two separately simulated cities</td><td>The simulator's true links</td><td>—</td><td class="status-record">Separate exploration; not part of either forecaster</td></tr>
           <tr><td><a href="../prototype/">Steps 1 and 2</a> of the journey</td><td>Vendor export (demonstration level values) and a 450-well test system</td><td>—</td><td>—</td><td class="status-record">Earlier steps, kept as a record</td></tr>
         </tbody>
@@ -57,32 +56,32 @@
     </section>
 
     <section id="response">
-      <div class="section-title"><h2>Current numbers: the ML forecaster (team's response)</h2><p>The typed + paved five-year twin, scored at every weekly forecast date of the test year (480–492 wells). The figures are as reported in the response; they are summarised here, not re-run.</p></div>
+      <div class="section-title"><h2>Current numbers: the ML forecaster</h2><p>The Bengaluru-calibrated five-year twin, test year August 2025 – July 2026, a forecast every Monday for every well. The figures are as shown on the <a href="../five-year/results/">ML forecaster results page</a>; they are summarised here, not re-run.</p></div>
       <div class="card"><div class="table-wrap"><table class="tight">
-        <thead><tr><th>As reported in the response</th><th class="num">12 weeks ahead</th></tr></thead>
+        <thead><tr><th>Against the twin's true level</th><th class="num">Day 1</th><th class="num">Day 7</th><th class="num">Week 4</th><th class="num">Week 12</th></tr></thead>
         <tbody>
-          <tr class="highlight"><td>Forecast error</td><td class="num">0.84 m mean (0.62 m median)</td></tr>
-          <tr><td>Assuming no change</td><td class="num">1.01 m</td></tr>
-          <tr><td>Value of the rain features</td><td class="num">0.00 at horizons of days; no claim at weeks</td></tr>
-          <tr><td>Neighbour term in the forecaster</td><td class="num">None</td></tr>
-          <tr><td>Geology in the twin</td><td class="num">None</td></tr>
+          <tr class="highlight"><td>Typical miss (median)</td><td class="num">0.18 m</td><td class="num">0.24 m</td><td class="num">0.39 m</td><td class="num">0.70 m</td></tr>
+          <tr><td>Average miss (mean)</td><td class="num">0.55 m</td><td class="num">0.64 m</td><td class="num">0.71 m</td><td class="num">1.07 m</td></tr>
+          <tr><td>Forecasts within ±1 m</td><td class="num">94 %</td><td class="num">90 %</td><td class="num">80 %</td><td class="num">64 %</td></tr>
+          <tr><td>Doing nothing, typical miss (where both are available)</td><td class="num">0.33 m</td><td class="num">0.37 m</td><td class="num">0.58 m</td><td class="num">1.30 m</td></tr>
         </tbody>
-      </table></div></div>
+      </table></div>
+      <p class="note" style="margin-top:8px">The 80 % bands contain 81–84 % of observed readings at days and 79–82 % at weeks. The rain inputs lower the per-well mean error by 0.05–0.07 m at 4–12 weeks. Stress tests run on the reference twin, before the recharge calibration: its 12-week per-well mean error is 0.84 m (median 0.62 m), and 0.80 m (0.56 m) with a quadratic well loss.</p></div>
     </section>
 
     <section id="rain">
       <div class="section-title"><h2>Why the two forecasters report different numbers</h2><p>They run on different simulated cities, so both sets of numbers can be true at once. Neither has been checked on real wells.</p></div>
       <div class="card"><div class="table-wrap"><table class="tight">
-        <thead><tr><th></th><th>ML forecaster (team's response)</th><th>State-space model (Stage 2)</th></tr></thead>
+        <thead><tr><th></th><th>ML forecaster</th><th>State-space model (Stage 2)</th></tr></thead>
         <tbody>
-          <tr><td>Simulated city</td><td>The team's typed + paved five-year twin</td><td>Our Phase 2 city (A, B), plus harder worlds C–E</td></tr>
-          <tr><td>12-week error, against assuming no change</td><td>0.84 m against 1.01 m</td><td>0.74 m against 1.48 m (A); 1.52 m against 3.57 m (D, Bengaluru-calibrated rain)</td></tr>
-          <tr><td>Value of rain</td><td>Rain features worth 0.00 at horizons of days; no claim at weeks</td><td>Removes 38 % of the 12-week error in A, about a third in D; little a week ahead</td></tr>
-          <tr id="neighbours"><td>Neighbouring wells</td><td>No neighbour term</td><td>A simple distance-based term: neighbours' pumping within 1.5 km. Not the crack network on <a href="../network/">Wells affect each other</a>, which is a separate exploration.</td></tr>
-          <tr><td>Geology</td><td>None in the twin</td><td>Hidden terrain types shape the city; the model sees them only through imperfect public-quality maps</td></tr>
+          <tr><td>Simulated city</td><td>The team's Bengaluru-calibrated five-year twin</td><td>Our Stage 2 city (A, B), plus harder worlds C–E</td></tr>
+          <tr><td>12-week miss, against doing nothing</td><td>Typical 0.70 m against 1.30 m</td><td>Typical 0.36 m against 0.73 m, average 0.74 m against 1.48 m (A). Average 1.52 m against 3.57 m (D, Bengaluru-calibrated rain)</td></tr>
+          <tr><td>Value of rain</td><td>Rain inputs lower the per-well mean error by 0.05–0.07 m at 4–12 weeks</td><td>Removes 38 % of the 12-week error in A, about a third in D; little a week ahead</td></tr>
+          <tr id="neighbours"><td>Neighbouring wells</td><td>No neighbour term. The twin's wells are linked, and the models learn each well together with its neighbours.</td><td>A simple distance-based term: neighbours' pumping within 1.5 km. Not the crack network on <a href="../network/">Wells affect each other</a>, which is a separate exploration.</td></tr>
+          <tr><td>Kinds of well</td><td>Six hidden kinds, by rock layer and by valley or ridge position; paved wards</td><td>Five hidden terrain types; the model sees them only through imperfect public-quality maps</td></tr>
         </tbody>
       </table></div>
-      <p class="note" style="margin-top:8px">How much rain helps is a property of the simulated city as much as of the model. It depends on how much recharge comes from rain rather than steady leakage, how long rain takes to arrive, and how much the level moves at all. Where assuming no change is only about 1 m off at 12 weeks, there is little movement left for rain to explain. In our city, rain reaches the water table weeks to months late, so rain that has already fallen predicts the coming weeks. Real records will show which city is closer to Bengaluru.</p></div>
+      <p class="note" style="margin-top:8px">How much rain helps is a property of the simulated city as much as of the model. It depends on how much recharge comes from rain rather than steady sources, how long rain takes to arrive, and how much the level moves. In our city, rain reaches the water table weeks to months late, so rain that has already fallen predicts the coming weeks. Real records will show which city is closer to Bengaluru.</p></div>
     </section>
 
     <section>
