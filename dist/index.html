@@ -24,6 +24,9 @@
     @media (max-width: 880px) { .home-hero .wrap { grid-template-columns: 1fr; } }
     .results-strip { margin-top: -26px; }
     .stat .source { margin-top: 10px; }
+    .iter-tag { display: inline-block; margin-top: 8px; padding: 2px 8px; border-radius: 999px; font-size: .74rem; font-weight: 700; letter-spacing: .02em; background: #eef2f4; color: #4a5a63; }
+    .stat.superseded .value { color: #8a969c; text-decoration: line-through; text-decoration-thickness: 2px; }
+    .stat.superseded .iter-tag { background: #fdecc8; color: #7a4b00; }
     .journey-mini { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 14px; }
     @media (max-width: 900px) { .journey-mini { grid-template-columns: 1fr 1fr; } }
     @media (max-width: 560px) { .journey-mini { grid-template-columns: 1fr; } }
@@ -77,10 +80,12 @@
 
   <div class="wrap results-strip">
     <div class="grid-4">
-      <div class="stat"><span class="label">Typical error, one week ahead</span><span class="value">0.3 m</span><span class="sub">71% of forecasts land within 0.5 m</span><span class="source twin"><svg viewBox="0 0 14 14" aria-hidden="true"><path d="M7 1l6 6-6 6-6-6z" fill="currentColor"/></svg>Digital twin</span></div>
-      <div class="stat"><span class="label">Average error, twelve weeks ahead</span><span class="value">1.3 m</span><span class="sub">Half the 2.8 m error of assuming nothing changes</span><span class="source twin"><svg viewBox="0 0 14 14" aria-hidden="true"><path d="M7 1l6 6-6 6-6-6z" fill="currentColor"/></svg>Digital twin</span></div>
-      <div class="stat"><span class="label">Our "80% likely" ranges held</span><span class="value">80%</span><span class="sub">of the time, tested before the answer was known</span><span class="source twin"><svg viewBox="0 0 14 14" aria-hidden="true"><path d="M7 1l6 6-6 6-6-6z" fill="currentColor"/></svg>Digital twin</span></div>
-      <div class="stat"><span class="label">Rainfall cuts 12-week error by</span><span class="value">32%</span><span class="sub">Rain reaches the groundwater over 1–4 weeks</span><span class="source twin"><svg viewBox="0 0 14 14" aria-hidden="true"><path d="M7 1l6 6-6 6-6-6z" fill="currentColor"/></svg>Digital twin</span></div>
+      <div class="stat"><span class="label">Typical error, one week ahead</span><span class="value">0.3 m</span><span class="sub">71% of forecasts land within 0.5 m</span><span class="source twin"><svg viewBox="0 0 14 14" aria-hidden="true"><path d="M7 1l6 6-6 6-6-6z" fill="currentColor"/></svg>Digital twin</span><span class="iter-tag">Iteration 1 · Sept 2026</span></div>
+      <div class="stat"><span class="label">Average error, twelve weeks ahead</span><span class="value">1.3 m</span><span class="sub">Half the 2.8 m error of assuming nothing changes</span><span class="source twin"><svg viewBox="0 0 14 14" aria-hidden="true"><path d="M7 1l6 6-6 6-6-6z" fill="currentColor"/></svg>Digital twin</span><span class="iter-tag">Iteration 1 · Sept 2026</span></div>
+      <div class="stat"><span class="label">Our "80% likely" ranges held</span><span class="value">80%</span><span class="sub">of the time, tested before the answer was known</span><span class="source twin"><svg viewBox="0 0 14 14" aria-hidden="true"><path d="M7 1l6 6-6 6-6-6z" fill="currentColor"/></svg>Digital twin</span><span class="iter-tag">Iteration 1 · Sept 2026</span></div>
+      <div class="stat superseded"><span class="label">Rainfall cuts 12-week error by</span><span class="value">32%</span><span class="sub">Superseded. How much rain helps depends on how a simulated city's recharge is built, and later cities give different answers. <a href="./reviewers/#rain">Why →</a></span><span class="source twin"><svg viewBox="0 0 14 14" aria-hidden="true"><path d="M7 1l6 6-6 6-6-6z" fill="currentColor"/></svg>Digital twin</span><span class="iter-tag">Iteration 1 · superseded</span></div>
+    </div>
+    <p class="note" style="margin-top:10px">These four figures are from iteration 1 (a one-year digital twin, September 2026) and are kept as a record. <a href="./reviewers/">Current numbers, and the simulated world each comes from →</a></p>
   </div>
 
   <div class="wrap">
@@ -102,7 +107,7 @@
         <a class="card" href="./network/">
           <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="5" cy="6" r="2.5"/><circle cx="19" cy="7" r="2.5"/><circle cx="12" cy="18" r="2.5"/><path d="M7.3 7.1l9.3.6M6.3 8.2l4.4 7.6M17.7 9.2l-4.4 6.6"/></svg></div>
           <h3>How wells affect each other</h3>
-          <p>A simulation showing which wells' pumping hurts their neighbours most, and what it would take to measure that for real.</p>
+          <p>A separate synthetic exploration, not part of the forecasters under review: which wells' pumping hurts their neighbours most in a simulated city, and what it would take to measure that for real.</p>
           <span class="go">See the simulation →</span>
         </a>
       </div>
@@ -123,7 +128,7 @@
         <a class="card" href="./prototype/"><span class="num">STAGE 1</span><h3>Can pump records become forecasts?</h3><p>Yes: a 15-day vendor export was cleaned, linked and modelled.</p></a>
         <a class="card" href="./models/"><span class="num">STAGE 2</span><h3>What matters most: data or model?</h3><p>Data. Resting-level readings cut error from 4.2 m to 0.5 m on a test system.</p></a>
         <a class="card" href="./accuracy/"><span class="num">STAGE 3</span><h3>How far ahead can we see?</h3><p>Twelve weeks, at half the error of guessing, with honest ranges.</p></a>
-        <a class="card" href="./network/"><span class="num">STAGE 4</span><h3>Do wells affect each other?</h3><p>In simulation, yes. We know what data would measure it.</p></a>
+        <a class="card" href="./network/"><span class="num">STAGE 4</span><h3>Do wells affect each other?</h3><p>In simulation, yes (a separate exploration). We know what data would measure it.</p></a>
       </div>
       <p style="margin-top:18px"><a class="btn secondary" href="./journey/">Read the full journey</a> <a class="btn secondary" href="./next/">What we need next</a></p>
     </section>
@@ -134,7 +139,7 @@
   </div>
 </main>
 <!--SHELL:FOOTER-->
-<footer class="site-footer"><div class="wrap"><div><strong>Borewell Forecast</strong> is a proof of concept for forecasting groundwater levels in Bengaluru borewells. Results are labelled by where the data came from: <span class="source real">vendor export</span> (15 days, July 2026, in the vendor's real format but with demonstration water-level values), <span class="source synthetic">synthetic test system</span> (450 simulated wells with a known answer) or <span class="source twin">digital twin</span> (a physics-based simulation of the 579 wells over a year). No real water-level measurement has been used yet, and nothing here is yet a validated field forecast. Built by the FARII consortium.</div><div><strong>Explore</strong><ul><li><a href="./">Overview</a></li><li><a href="./forecast/">Try a forecast</a></li><li><a href="./accuracy/">How accurate</a></li><li><a href="./drivers/">What moves the water</a></li><li><a href="./network/">Wells affect each other</a></li><li><a href="./five-year/">ML‑Forecaster</a></li><li><a href="./physics-sensors/">Stage 2</a></li><li><a href="./journey/">Our journey</a></li><li><a href="./next/">What's next</a></li></ul></div><div><strong>More</strong><ul><li><a href="./reviewers/">For reviewers: current numbers</a></li><li><a href="./glossary/">Glossary of terms</a></li><li><a href="./prototype/">Stage 1 · First prototype (vendor export)</a></li><li><a href="./comparison/">Stage 2 · Scenario explorer</a></li><li><a href="./validation/">Stage 2 · Hidden-truth test</a></li><li><a href="./models/">Stage 2 · Three models compared</a></li><li><a href="https://github.com/mailabhiramsrinivas-art/borewell-water-forecast">Source code</a></li></ul></div></div></footer>
+<footer class="site-footer"><div class="wrap"><div><strong>Borewell Forecast</strong> is a proof of concept for forecasting groundwater levels in Bengaluru borewells. Results are labelled by where the data came from: <span class="source real">vendor export</span> (15 days, July 2026, in the vendor's real format but with demonstration water-level values), <span class="source synthetic">synthetic test system</span> (450 simulated wells with a known answer) or <span class="source twin">digital twin</span> (physics-based simulations of the 579 wells: one year in iteration 1, five years in later iterations and in Stage 2). No real water-level measurement has been used yet, and nothing here is yet a validated field forecast. Built by the FARII consortium.</div><div><strong>Explore</strong><ul><li><a href="./">Overview</a></li><li><a href="./forecast/">Try a forecast</a></li><li><a href="./accuracy/">How accurate</a></li><li><a href="./drivers/">What moves the water</a></li><li><a href="./network/">Wells affect each other</a></li><li><a href="./five-year/">ML‑Forecaster</a></li><li><a href="./physics-sensors/">Stage 2</a></li><li><a href="./journey/">Our journey</a></li><li><a href="./next/">What's next</a></li></ul></div><div><strong>More</strong><ul><li><a href="./reviewers/">For reviewers: current numbers</a></li><li><a href="./glossary/">Glossary of terms</a></li><li><a href="./prototype/">Stage 1 · First prototype (vendor export)</a></li><li><a href="./comparison/">Stage 2 · Scenario explorer</a></li><li><a href="./validation/">Stage 2 · Hidden-truth test</a></li><li><a href="./models/">Stage 2 · Three models compared</a></li><li><a href="https://github.com/mailabhiramsrinivas-art/borewell-water-forecast">Source code</a></li></ul></div></div></footer>
 <!--/SHELL:FOOTER-->
 <script src="./assets/site.js?v=bab9b867a8"></script>
 </body>

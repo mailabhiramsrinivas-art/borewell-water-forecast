@@ -37,21 +37,26 @@ BANNERS = {   # dated notices on pages that show an earlier iteration (review fe
     "accuracy": "<strong>Iteration 1</strong>: one-year digital twin, September 2026, eight test dates. Kept as a record.",
     "drivers": "<strong>Iteration 1</strong>: one-year digital twin, September 2026. The value of rain depends on how a twin's recharge is built; later twins differ.",
     "network": "A <strong>separate synthetic exploration</strong> on two simulated cities. It is not part of the forecasters under review. Real use needs well locations and one pumping test.",
-    "five-year": "<strong>Iteration 1</strong> of the five-year twin: one well population, recharge later found too generous. Later iterations, typed and paved, are reported in the team's response.",
-    "five-year-results": "<strong>Iteration 1</strong> of the five-year twin: one well population, recharge later found too generous. Later iterations, typed and paved, are reported in the team's response.",
+    "five-year": "<strong>Iteration 1</strong> of the five-year twin: one well population, recharge later found too generous. The later typed and typed + paved iterations are reported in the team's response.",
+    "five-year-results": "<strong>Iteration 1</strong> of the five-year twin: one well population, recharge later found too generous. The later typed and typed + paved iterations are reported in the team's response.",
     "prototype": "<strong>Earlier stage</strong>, September 2026, kept as a record.",
     "comparison": "<strong>Earlier stage</strong>, September 2026, kept as a record.",
     "validation": "<strong>Earlier stage</strong>, September 2026, kept as a record.",
     "models": "<strong>Earlier stage</strong>, September 2026, kept as a record.",
 }
+ANCHOR = {"five-year": ("#response", "Typed + paved results, as reported in the response →"),
+          "five-year-results": ("#response", "Typed + paved results, as reported in the response →"),
+          "drivers": ("#rain", "Why the value of rain differs between iterations →"),
+          "network": ("#neighbours", "Which forecaster uses neighbours, and how →")}
 
 
 def banner(page, p):
     if page not in BANNERS:
         return ""
+    anchor, link = ANCHOR.get(page, ("", "Which numbers are current, and from which simulated world →"))
     return (f'\n<div class="iteration-banner" role="note" style="background:#fff8ea;border-bottom:1px solid #f0dcae;font-size:.92rem">'
             f'<div class="wrap" style="padding-top:9px;padding-bottom:9px">{BANNERS[page]} '
-            f'<a href="{p}{REVIEW}">Which numbers are current, and from which simulated world →</a></div></div>')
+            f'<a href="{p}{REVIEW}{anchor}">{link}</a></div></div>')
 
 
 DROP = ('<svg viewBox="0 0 32 32" aria-hidden="true"><path d="M16 3C11 11 7 16 7 21.5a9 9 0 0 0 18 0C25 16 21 11 16 3Z" fill="#5fc4d8"/>'
@@ -83,7 +88,7 @@ def footer(p):
             f'<div><strong>Borewell Forecast</strong> is a proof of concept for forecasting groundwater levels in Bengaluru borewells. '
             f'Results are labelled by where the data came from: <span class="source real">vendor export</span> (15 days, July 2026, in the vendor\'s real format but with demonstration water-level values), '
             f'<span class="source synthetic">synthetic test system</span> (450 simulated wells with a known answer) or '
-            f'<span class="source twin">digital twin</span> (a physics-based simulation of the 579 wells over a year). '
+            f'<span class="source twin">digital twin</span> (physics-based simulations of the 579 wells: one year in iteration 1, five years in later iterations and in Stage 2). '
             f'No real water-level measurement has been used yet, and nothing here is yet a validated field forecast. '
             f'Built by the FARII consortium.</div>'
             f'<div><strong>Explore</strong><ul>{"".join(f"<li><a href={chr(34)}{p}{h}{chr(34)}>{l}</a></li>" for _, h, l in NAV)}</ul></div>'
